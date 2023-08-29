@@ -79,6 +79,12 @@ class RegisterController extends BaseApiController
                 'unique:users,email,NULL,id'
             ],
             'password' => ['required', 'string', 'min:3'],
+            'phone_number' => [
+                'required',
+                'min:9',
+                'max:15',
+                'unique:users,phone_number,NULL,id'
+            ],
         ];
 
 
