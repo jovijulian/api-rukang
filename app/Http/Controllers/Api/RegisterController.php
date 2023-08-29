@@ -54,7 +54,6 @@ class RegisterController extends BaseApiController
 
     protected function store(array $data): Model
     {
-        //        dd(Uuid::uuid4()->toString());
         $user = User::query()->create([
             'id' =>  Uuid::uuid4()->toString(),
             'email' => $data['email'],
@@ -63,6 +62,7 @@ class RegisterController extends BaseApiController
             'phone_number' => $data['phone_number'],
             'address' => $data['address'],
             'birthdate' => $data['birthdate'],
+            'created_by' => $data['email'],
         ]);
         return $user;
     }
