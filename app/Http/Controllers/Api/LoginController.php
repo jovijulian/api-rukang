@@ -18,6 +18,12 @@ use Lcobucci\JWT\Parser as JwtParser;
 use League\OAuth2\Server\AuthorizationServer;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Laravel\Passport\RefreshToken;
 
 class LoginController extends ParentAccessTokenController
 {
@@ -114,6 +120,30 @@ class LoginController extends ParentAccessTokenController
 
         if ($validator->fails()) {
             throw new HttpResponseException(ResponseStd::validation($validator, 'POST'));
+        }
+    }
+
+    public function logout()
+    {
+        DB::beginTransaction();
+        try {
+            // Get the currently authenticated user
+            $user = Auth::user();
+
+            if (empty($user)) {
+                return ResponseStd::fail("User is not authenticated.", 401);
+            }
+
+            $token = $user->token();
+            // Revoke the user's access token
+            $token->revoke();
+            RefreshToken::where('access_token_id', $token->id)->update(['revoked' => true]);
+            DB::commit();
+            return ResponseStd::okNoOutput("User has been logged out and access token has been revoked successfully");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return ResponseStd::fail($e->getMessage());
         }
     }
 }
