@@ -50,14 +50,14 @@ class LoginController extends ParentAccessTokenController
             $model = User::query()->where('email', $body['username'])->first();
             $verified = !empty($model->isActive);
 
-            if ($verified === false) {
-                throw new BadRequestHttpException("Login gagal, Akun Anda belum diverifikasi oleh admin.");
-            }
+
             // if verified is false => email not verify
 
             $responseData = (new UserResource($model));
             $this->ValidateEmail($model, $body['password']);
-
+            if ($verified === false) {
+                throw new BadRequestHttpException("Login gagal, Akun Anda belum diverifikasi oleh admin.");
+            }
             $data = array_merge($tmp, $body);
 
 
