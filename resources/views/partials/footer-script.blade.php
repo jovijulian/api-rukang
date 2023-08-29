@@ -1,6 +1,9 @@
 <!-- jQuery -->
 <script src="assets/js/jquery-3.6.0.min.js"></script>
 
+<!-- Axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <!-- Feather Icon JS -->
 <script src="assets/js/feather.min.js"></script>
 

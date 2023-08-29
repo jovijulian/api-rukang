@@ -13,35 +13,37 @@
             <div class="login-logo logo-normal">
               <img src="assets/img/logo.png" alt="img">
             </div>
-            <a href="index.html" class="login-logo logo-white">
+            <a href="/" class="login-logo logo-white">
               <img src="assets/img/logo-white.png" alt="">
             </a>
             <div class="login-userheading">
               <h3>Sign In</h3>
-              <h4>Please login to your account</h4>
+              <h4>Silahkan masuk ke akun anda</h4>
             </div>
-            <div class="form-login">
-              <label>Email</label>
-              <div class="form-addons">
-                <input type="text" placeholder="Enter your email address">
-                <img src="assets/img/icons/mail.svg" alt="img">
+            <form id="signin-form">
+              <div class="form-login">
+                <label for="email">Email</label>
+                <div class="form-addons">
+                  <input type="text" id="email" placeholder="Masukan email anda">
+                  <img src="assets/img/icons/mail.svg" alt="img">
+                </div>
               </div>
-            </div>
-            <div class="form-login">
-              <label>Password</label>
-              <div class="pass-group">
-                <input type="password" class="pass-input" placeholder="Enter your password">
-                <span class="fas toggle-password fa-eye-slash"></span>
+              <div class="form-login">
+                <label for="password">Password</label>
+                <div class="pass-group">
+                  <input type="password" id="password" class="pass-input" placeholder="Masukan password anda">
+                  <span class="fas toggle-password fa-eye-slash"></span>
+                </div>
               </div>
-            </div>
-            <div class="form-login">
-              <div class="alreadyuser">
-                <h4><a href="forgetpassword.html" class="hover-a">Forgot Password?</a></h4>
+              <div class="form-login">
+                <div class="alreadyuser">
+                  <h4><a href="/" class="hover-a">Lupa Password?</a></h4>
+                </div>
               </div>
-            </div>
-            <div class="form-login">
-              <a class="btn btn-login" href="index.html">Sign In</a>
-            </div>
+              <div class="form-login">
+                <button type="submit" class="btn btn-login">Sign In</button>
+              </div>
+            </form>
             <div class="signinform text-center">
               <h4>Don’t have an account? <a href="/signup" class="hover-a">Sign Up</a></h4>
             </div>
@@ -53,4 +55,74 @@
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(function() {
+
+      const token = localStorage.getItem('access_token')
+      const expirationTime = localStorage.getItem('expires_at')
+
+      if (token && expirationTime && Date.now() < parseInt(expirationTime)) {
+        window.location.href = "{{url('/dashboard')}}"
+      }
+
+      $('#signin-form').on('submit', function() {
+        event.preventDefault()
+        $('#global-loader').show()
+
+        const data = {
+          username: $('#email').val(),
+          password: $('#password').val()
+        }
+
+        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        let config = {
+          headers: {
+            'X-CSRF-TOKEN': token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+
+
+        axios.post("{{ url('oauth/token') }}", data, config)
+          .then(function(res) {
+            const data = res.data.data.item
+            const currentUser = data.user
+            const expiresIn = data.expires_in
+            const expirationTime = Date.now() + (expiresIn * 1000)
+
+            localStorage.setItem('current_user', JSON.stringify(currentUser))
+            localStorage.setItem('token_type', data.token_type)
+            localStorage.setItem('access_token', data.access_token)
+            localStorage.setItem('expires_at', expirationTime)
+
+            window.location.href = "{{ url('/dashboard') }}"
+          })
+          .catch(function(err) {
+            $('#global-loader').hide()
+
+            if (err.response.data.meta.code === 400) {
+              const errorMessage = err.response.data.meta.errors[0]
+              if (errorMessage.errors) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: errorMessage.errors
+                })
+              }
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Internal server error'
+              })
+            }
+          })
+
+
+
+      })
+    })
+  </script>
 @endsection

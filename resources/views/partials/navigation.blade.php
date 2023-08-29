@@ -185,7 +185,7 @@
             <img src="assets/img/profiles/avator1.jpg" alt="" class="img-fluid">
           </span>
           <span class="user-detail">
-            <span class="user-name">John Smilga</span>
+            <span class="user-name fullname">John Smilga</span>
             <span class="user-role">Super Admin</span>
           </span>
         </span>
@@ -196,7 +196,7 @@
             <span class="user-img"><img src="assets/img/profiles/avator1.jpg" alt="">
               <span class="status online"></span></span>
             <div class="profilesets">
-              <h6>John Smilga</h6>
+              <h6 class="fullname">John Smilga</h6>
               <h5>Super Admin</h5>
             </div>
           </div>
@@ -205,8 +205,8 @@
           <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
               data-feather="settings"></i>Settings</a>
           <hr class="m-0">
-          <a class="dropdown-item logout pb-0" href="signin.html"><img src="assets/img/icons/log-out.svg"
-              class="me-2" alt="img">Logout</a>
+          <button class="dropdown-item logout pb-0 logout-account"><img src="assets/img/icons/log-out.svg"
+              class="me-2" alt="img">Logout</button>
         </div>
       </div>
     </li>
@@ -220,7 +220,7 @@
     <div class="dropdown-menu dropdown-menu-right">
       <a class="dropdown-item" href="profile.html">My Profile</a>
       <a class="dropdown-item" href="generalsettings.html">Settings</a>
-      <a class="dropdown-item" href="signin.html">Logout</a>
+      <a class="dropdown-item logout-account">Logout</a>
     </div>
   </div>
   <!-- /Mobile Menu -->
@@ -478,7 +478,7 @@
               </ul>
             </li>
             <li>
-              <a href="signin.html"><i data-feather="log-out"></i><span>Logout</span> </a>
+              <a class="logout-account"><i data-feather="log-out"></i><span>Logout</span> </a>
             </li>
           </ul>
         </li>
@@ -486,4 +486,46 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function() {
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+
+    $('.fullname').text(currentUser.fullname)
+
+    $('.logout-account').on('click', function() {
+      const tokenType = localStorage.getItem('token_type')
+      const accessToken = localStorage.getItem('access_token')
+
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      let config = {
+        headers: {
+          'X-CSRF-TOKEN': token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `${tokenType} ${accessToken}`
+        }
+      }
+
+      axios.delete("{{ url('api/v1/auth/logout') }}", config)
+        .then(function(res) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: res.data.meta.message,
+            showConfirmButton: false,
+            timer: 3000
+          })
+          
+          localStorage.clear()
+
+          window.location.href = "{{ url('/') }}"
+        })
+        .catch(function(err) {
+          console.log(err)
+        })
+
+    })
+  })
+</script>
 <!-- /Sidebar -->
