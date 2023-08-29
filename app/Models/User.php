@@ -47,6 +47,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'address',
         'birthdate',
         'isActive',
+        'created_by',
     ];
 
     /**
