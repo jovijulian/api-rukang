@@ -51,7 +51,7 @@ class LoginController extends ParentAccessTokenController
             $verified = !empty($model->isActive);
 
             if ($verified === false) {
-                throw new BadRequestHttpException("Invalid login, Your account has not been verified by an admin.");
+                throw new BadRequestHttpException("Login gagal, Akun Anda belum diverifikasi oleh admin.");
             }
             // if verified is false => email not verify
 
@@ -100,7 +100,7 @@ class LoginController extends ParentAccessTokenController
     protected function ValidateEmail($data, $inputPWD)
     {
         if (empty($data) || Hash::check($inputPWD, $data->password) === false) {
-            throw new BadRequestHttpException("Email or password is Wrong.");
+            throw new BadRequestHttpException("Email atau password salah.");
         }
     }
 
@@ -115,7 +115,6 @@ class LoginController extends ParentAccessTokenController
      */
     public function validate($data, array $rules, array $messages = [], array $customAttributes = [])
     {
-        //        dd($customAttributes);
         $validator = $this->getValidationFactory()->make($data, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
@@ -131,7 +130,7 @@ class LoginController extends ParentAccessTokenController
             $user = Auth::user();
 
             if (empty($user)) {
-                return ResponseStd::fail("User is not authenticated.", 401);
+                return ResponseStd::fail("Pengguna tidak terautentikasi.", 401);
             }
 
             $token = $user->token();
@@ -139,7 +138,7 @@ class LoginController extends ParentAccessTokenController
             $token->revoke();
             RefreshToken::where('access_token_id', $token->id)->update(['revoked' => true]);
             DB::commit();
-            return ResponseStd::okNoOutput("User has been logged out and access token has been revoked successfully");
+            return ResponseStd::okNoOutput("Anda telah berhasil logout.");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
