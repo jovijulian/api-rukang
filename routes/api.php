@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
@@ -22,6 +23,9 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::controller(RegisterController::class)->group(function () {
             Route::post('/register', 'create');
+        });
+        Route::controller(LoginController::class)->group(function () {
+            Route::delete('/logout', 'logout')->middleware('auth:api');
         });
     });
 });
