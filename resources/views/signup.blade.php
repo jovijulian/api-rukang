@@ -45,20 +45,27 @@
                 <label for="phone">Nomor Telepon</label>
                 <div class="form-addons">
                   <input type="text" id="phone" placeholder="Masukan nomor telepon anda" required>
-                  <img src="assets/img/icons/mail.svg" alt="img">
+                  <img src="assets/img/icons/phone.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
                 <label for="address">Alamat</label>
                 <div class="form-addons">
                   <input type="text" id="address" placeholder="Masukan alamat anda" required>
-                  <img src="assets/img/icons/mail.svg" alt="img">
+                  <img src="assets/img/icons/map.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
                 <label for="password">Password</label>
                 <div class="pass-group">
                   <input type="password" id="password" class="pass-input " placeholder="Masukan password anda" required>
+                  <span class="fas toggle-password fa-eye-slash"></span>
+                </div>
+              </div>
+              <div class="form-login">
+                <label for="password-confirm">Konfirmasi Password</label>
+                <div class="pass-group">
+                  <input type="password" id="password-confirm" class="pass-input " placeholder="Masukan password anda" required>
                   <span class="fas toggle-password fa-eye-slash"></span>
                 </div>
               </div>
@@ -87,10 +94,27 @@
       if (token && expirationTime && Date.now() < parseInt(expirationTime)) {
         window.location.href = "{{url('/dashboard')}}"
       }
+
+      $("#phone").keypress(function (e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+          return false;
+        }
+      })
         
       $('#signup-form').on('submit', function() {
         event.preventDefault()
         $('#global-loader').show()
+        
+
+        if($('#password-confirm').val() != $('#password').val()) {
+          $('#global-loader').hide()
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Konfirmasi password salah'
+          })
+          return
+        }
 
         const data = {
           fullname: $('#fullname').val(),
