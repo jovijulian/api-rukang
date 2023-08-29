@@ -40,9 +40,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $keyType = 'string';
     protected $fillable = [
         'id',
-        'name',
         'email',
         'password',
+        'fullname',
+        'phone_number',
+        'address',
+        'birthdate',
+        'isActive',
     ];
 
     /**
