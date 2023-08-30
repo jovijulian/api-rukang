@@ -22,6 +22,16 @@ Route::get('/signup', function () {
     return view('signup');
 });
 
+Route::get('/verification', [RegisterController::class, 'verif']);
+Route::get('/verification-success', [RegisterController::class, 'verification_success'])->name('verification-success');
+
+Route::get('/forgot-password', [ForgetPasswordController::class, 'sendEmail']);
+Route::get('/forgot-password/verif-email', [ForgetPasswordController::class, 'verifEmail']);
+Route::get('/change-password', [ForgetPasswordController::class, 'newPassword'])->name('change-password');
+Route::get('/change-password-success', [ForgetPasswordController::class, 'changePasswordSuccess'])->name('change-password-success');
+
+
+
 Route::get('/dashboard', function () {
     return view('pages.dashboard.index');
 });
@@ -29,5 +39,5 @@ Route::get('/dashboard', function () {
 Route::get('/product', function () {
     return view('pages.product.index');
 });
-Route::get('/verification-success', [RegisterController::class, 'verification_success'])->name('verification-success');
-Route::get('/change-password', [ForgetPasswordController::class, 'newPassword'])->name('change-password');
+
+
