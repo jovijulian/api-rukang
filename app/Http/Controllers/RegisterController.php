@@ -29,7 +29,7 @@ class RegisterController extends Controller
 
     public function verif()
     {
-        return view('verification.verif-user');
+        return view('pages.verification.verif-user');
     }
 
     public function verification_success(Request $request)
@@ -41,12 +41,12 @@ class RegisterController extends Controller
             $message = "null";
             if (!$user) {
                 $message = "User Tidak Ditemukan";
-                return view('verification.verification-failed', compact('message'));
+                return view('pages.verification.verification-failed', compact('message'));
             }
             //Cek jika user sudah terverifikasi.
             if ($user->hasVerifiedEmail()) {
                 $message = "User Sudah Terverifikasi";
-                return view('verification.verification-failed', compact('message'));
+                return view('pages.verification.verification-failed', compact('message'));
             }
             if ($request->hash === sha1(substr($user->id, 4, 6) . $user->email)) {
                 // Generate default data.
@@ -54,15 +54,15 @@ class RegisterController extends Controller
                     event(new Verified($user));
                 }
                 DB::commit();
-                return view('verification.verification-success');
+                return view('pages.verification.verification-success');
             } else {
-                return view('verification.verification-failed');
+                return view('pages.verification.verification-failed');
             }
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             $message = "Terjadi Kesalahan pada Server";
-            return view('verification.verification-failed', compact('message'));
+            return view('pages.verification.verification-failed', compact('message'));
         }
     }
 }

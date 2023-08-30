@@ -1,8 +1,8 @@
 @extends('layouts/main')
 
-<section>
+@section('title')
   <title>Signin</title>
-</section>
+@endsection
 
 @section('main')
   <div class="main-wrapper">
@@ -24,28 +24,28 @@
               <div class="form-login">
                 <label for="email">Email</label>
                 <div class="form-addons">
-                  <input type="text" id="email" placeholder="Masukan email anda">
+                  <input type="text" id="email" placeholder="Masukan email anda" required>
                   <img src="assets/img/icons/mail.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
                 <label for="password">Password</label>
                 <div class="pass-group">
-                  <input type="password" id="password" class="pass-input" placeholder="Masukan password anda">
+                  <input type="password" id="password" class="pass-input" placeholder="Masukan password anda" required>
                   <span class="fas toggle-password fa-eye-slash"></span>
                 </div>
               </div>
               <div class="form-login">
                 <div class="alreadyuser">
-                  <h4><a href="/" class="hover-a">Lupa Password?</a></h4>
+                  <h4><a href="/forgot-password" class="hover-a">Lupa Password?</a></h4>
                 </div>
               </div>
               <div class="form-login">
-                <button type="submit" class="btn btn-login">Sign In</button>
+                <button type="submit" class="btn btn-login">Masuk</button>
               </div>
             </form>
             <div class="signinform text-center">
-              <h4>Don’t have an account? <a href="/signup" class="hover-a">Sign Up</a></h4>
+              <h4>Tidak punya akun? <a href="/signup" class="hover-a">Daftar sekarang</a></h4>
             </div>
           </div>
         </div>

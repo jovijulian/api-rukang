@@ -1,8 +1,8 @@
 @extends('layouts/main')
 
-<section>
+@section('title')
   <title>Signup</title>
-</section>
+@endsection
 
 @section('main')
   <div class="main-wrapper">
@@ -51,7 +51,8 @@
               <div class="form-login">
                 <label for="address">Alamat</label>
                 <div class="form-addons">
-                  <input type="text" id="address" placeholder="Masukan alamat anda" required>
+                  {{-- <input type="text" id="address" placeholder="Masukan alamat anda" required> --}}
+                  <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan alamat anda" required></textarea>
                   <img src="assets/img/icons/map.svg" alt="img">
                 </div>
               </div>
@@ -65,7 +66,8 @@
               <div class="form-login">
                 <label for="password-confirm">Konfirmasi Password</label>
                 <div class="pass-group">
-                  <input type="password" id="password-confirm" class="pass-input " placeholder="Masukan password anda" required>
+                  <input type="password" id="password-confirm" class="pass-input " placeholder="Masukan konfirmasi password"
+                    required>
                   <span class="fas toggle-password fa-eye-slash"></span>
                 </div>
               </div>
@@ -74,7 +76,7 @@
               </div>
             </form>
             <div class="signinform text-center">
-              <h4>Sudah punya akun? <a href="/" class="hover-a">Sign In</a></h4>
+              <h4>Sudah punya akun? <a href="/" class="hover-a">Masuk sekarang</a></h4>
             </div>
           </div>
         </div>
@@ -92,21 +94,21 @@
       const expirationTime = localStorage.getItem('expires_at')
 
       if (token && expirationTime && Date.now() < parseInt(expirationTime)) {
-        window.location.href = "{{url('/dashboard')}}"
+        window.location.href = "{{ url('/dashboard') }}"
       }
 
-      $("#phone").keypress(function (e) {
+      $("#phone").keypress(function(e) {
         if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
           return false;
         }
       })
-        
+
       $('#signup-form').on('submit', function() {
         event.preventDefault()
         $('#global-loader').show()
-        
 
-        if($('#password-confirm').val() != $('#password').val()) {
+
+        if ($('#password-confirm').val() != $('#password').val()) {
           $('#global-loader').hide()
           Swal.fire({
             icon: 'warning',
@@ -137,15 +139,15 @@
         axios.post("{{ url('api/v1/auth/register') }}", data, config)
           .then(function(res) {
             // $('#global-loader').hide()
-            window.location.href = '{{ url('/') }}'
+            window.location.href = "{{ url('/verification') }}"
           })
           .catch(function(err) {
             $('#global-loader').hide()
-            
+
             if (err.response.data.meta.code === 422) {
               const errMessage = err.response.data.errors[0]
 
-              if(errMessage.email) {
+              if (errMessage.email) {
                 Swal.fire({
                   icon: 'warning',
                   title: 'Oops...',
@@ -154,7 +156,7 @@
                 return
               }
 
-              if(errMessage.phone_number) {
+              if (errMessage.phone_number) {
                 Swal.fire({
                   icon: 'warning',
                   title: 'Oops...',
