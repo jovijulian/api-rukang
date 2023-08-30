@@ -13,10 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use App\Traits\MustVerifyEmail;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasFactory, Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens;
+    use HasFactory, Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
 
     /**
      * The primary key for the model.
@@ -48,6 +49,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'birthdate',
         'isActive',
         'created_by',
+        'reset_password_token',
+        'token_expire'
     ];
 
     /**
