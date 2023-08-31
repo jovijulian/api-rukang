@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DescriptionController;
 use App\Http\Controllers\Api\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,14 @@ Route::prefix('v1')->group(function () {
     });
     Route::prefix('segment')->group(function () {
         Route::controller(SegmentController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+        });
+    });
+    Route::prefix('description')->group(function () {
+        Route::controller(DescriptionController::class)->group(function () {
             Route::get('/index', 'index')->middleware('auth:api');
             Route::post('/create', 'store')->middleware('auth:api');
             Route::get('/detail/{id}', 'show')->middleware('auth:api');

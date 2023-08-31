@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SegmentResource extends JsonResource
+class DescriptionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,7 @@ class SegmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'segment_name' => $this->segment_name,
-            'segment_place' => $this->segment_place,
-            'barcode_color' => $this->barcode_color,
+            'description' => $this->description,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
