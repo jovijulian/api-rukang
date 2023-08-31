@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Segment;
+use App\Models\Description;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SegmentResource;
+use App\Http\Resources\DescriptionResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class SegmentController extends Controller
+class DescriptionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,19 +34,19 @@ class SegmentController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND segment_name LIKE '%$search_term%'";
+                $conditions .= " AND descriptions.description LIKE '%$search_term%'";
             }
 
-            $paginate = Segment::query()->select(['segments.*'])
+            $paginate = Description::query()->select(['descriptions.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Segment::query()
+            $countAll = Description::query()
                 ->count();
 
             // paging response.
-            $response = SegmentResource::collection($paginate);
+            $response = DescriptionResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,8 +70,7 @@ class SegmentController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'segment_name' => ['required', 'string', 'min:1', 'max:50'],
-            'segment_place' => ['required', 'string', 'min:1', 'max:50'],
+            'description' => ['required', 'string'],
             'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
@@ -81,21 +80,19 @@ class SegmentController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $segment = new Segment();
+        $descriptionData = new Description();
 
-        // input data segment
-        $segment->segment_name = $data['segment_name'];
-        $segment->segment_place = $data['segment_place'];
-        $segment->barcode_color = $data['barcode_color'];
-        $segment->created_at = $timeNow;
-        $segment->updated_at = $timeNow;
-        $segment->created_by = $data['created_by'];
-        $segment->updated_by = null;
+        // input data description
+        $descriptionData->description = $data['description'];
+        $descriptionData->created_at = $timeNow;
+        $descriptionData->updated_at = $timeNow;
+        $descriptionData->created_by = $data['created_by'];
+        $descriptionData->updated_by = null;
 
-        // save segment
-        $segment->save();
+        // save description
+        $descriptionData->save();
 
-        return $segment;
+        return $descriptionData;
     }
 
     /**
@@ -113,7 +110,7 @@ class SegmentController extends Controller
             DB::commit();
 
             // return
-            $single = new SegmentResource($model);
+            $single = new DescriptionResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -136,11 +133,11 @@ class SegmentController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Segment::query()->find($id);
+            $model = Description::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Segment not Found");
+                throw new BadRequestHttpException("Description not Found");
             }
-            $single = new SegmentResource($model);
+            $single = new DescriptionResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -163,8 +160,7 @@ class SegmentController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'segment_name' => ['required', 'string', 'min:1', 'max:50'],
-            'segment_place' => ['required', 'string', 'min:1', 'max:50'],
+            'description' => ['required', 'string'],
             'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
@@ -174,22 +170,20 @@ class SegmentController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find segment by id
-        $segment = Segment::find($id);
+        // Find description by id
+        $descriptionData = Description::find($id);
 
-        if (empty($segment)) {
-            throw new \Exception("Invalid segment id", 406);
+        if (empty($descriptionData)) {
+            throw new \Exception("Invalid description id", 406);
         }
-        $segment->id = $id;
-        $segment->segment_name = $data['segment_name'];
-        $segment->segment_place = $data['segment_place'];
-        $segment->barcode_color = $data['barcode_color'];
-        $segment->updated_at = $timeNow;
-        $segment->updated_by = $data['updated_by'];
+        $descriptionData->id = $id;
+        $descriptionData->description = $data['description'];
+        $descriptionData->updated_at = $timeNow;
+        $descriptionData->updated_by = $data['updated_by'];
         //Save
-        $segment->save();
+        $descriptionData->save();
 
-        return $segment;
+        return $descriptionData;
     }
 
     /**
@@ -208,7 +202,7 @@ class SegmentController extends Controller
             DB::commit();
 
             // return.
-            $single = new SegmentResource($data);
+            $single = new DescriptionResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
