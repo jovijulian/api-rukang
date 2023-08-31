@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Group;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class GroupSeeder extends Seeder
 {
@@ -18,7 +16,7 @@ class GroupSeeder extends Seeder
     {
         $timeNow = \Carbon\Carbon::now();
         Group::query()->create([
-            'id' =>  Uuid::uuid4()->toString(),
+            'id' =>  "1",
             'group_name' => "Kelompok 1",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
@@ -27,7 +25,7 @@ class GroupSeeder extends Seeder
         ]);
 
         Group::query()->create([
-            'id' =>  Uuid::uuid4()->toString(),
+            'id' =>  "2",
             'group_name' => "Kelompok 2",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
@@ -36,7 +34,7 @@ class GroupSeeder extends Seeder
         ]);
 
         Group::query()->create([
-            'id' =>  Uuid::uuid4()->toString(),
+            'id' =>  "3",
             'group_name' => "Kelompok 3",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
@@ -45,7 +43,7 @@ class GroupSeeder extends Seeder
         ]);
 
         Group::query()->create([
-            'id' =>  Uuid::uuid4()->toString(),
+            'id' =>  "4",
             'group_name' => "Kelompok 4",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
@@ -54,7 +52,7 @@ class GroupSeeder extends Seeder
         ]);
 
         Group::query()->create([
-            'id' =>  Uuid::uuid4()->toString(),
+            'id' =>  "5",
             'group_name' => "Kelompok 5",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,

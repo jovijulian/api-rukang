@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone_number', 15)->unique();
             $table->string('address', 100);
             $table->date('birthdate');
-            $table->string('group_id', 40)->nullable();
+            $table->bigInteger('group_id')->unsigned()->nullable();
             $table->string('group_name', 100)->comment("Nama Kelompok")->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('isActive')->default(false);
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
             $table->string('updated_by', 40)->nullable();
-            $table->string('role', 10);
+            $table->boolean('isAdmin')->default(false);
 
             $table->foreign('group_id')->references('id')->on('groups');
         });
