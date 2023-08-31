@@ -62,6 +62,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware('auth:api');
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
         });
     });
     Route::prefix('category')->group(function () {

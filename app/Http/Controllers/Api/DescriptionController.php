@@ -222,8 +222,37 @@ class DescriptionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    protected function delete($id)
+    {
+
+        $description = Description::find($id);
+        if ($description == null) {
+            throw new \Exception("Deskripsi tidak ada", 404);
+        }
+        $description->delete();
+
+        return $description;
+    }
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $this->delete($id);
+            DB::commit();
+            // return
+            return ResponseStd::okNoOutput("Deskripsi berhasil dihapus.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage());
+                }
+            }
+        }
     }
 }
