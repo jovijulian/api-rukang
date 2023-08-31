@@ -28,6 +28,14 @@
                 </div>
               </div>
               <div class="form-login">
+                <label for="group">Kelompok</label>
+                <div class="form-addons">
+                  <select id="group" class="form-control select">
+                    <option value="1" selected="selected" disabled>Pilih kelompok anda</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-login">
                 <label for="email">Email</label>
                 <div class="form-addons">
                   <input type="email" id="email" placeholder="Masukan email anda" required>
@@ -66,8 +74,8 @@
               <div class="form-login">
                 <label for="password-confirm">Konfirmasi Password</label>
                 <div class="pass-group">
-                  <input type="password" id="password-confirm" class="pass-input " placeholder="Masukan konfirmasi password"
-                    required>
+                  <input type="password" id="password-confirm" class="pass-input "
+                    placeholder="Masukan konfirmasi password" required>
                   <span class="fas toggle-password fa-eye-slash"></span>
                 </div>
               </div>
@@ -90,6 +98,7 @@
   <script>
     $(document).ready(function() {
 
+      // CEK APAKAH LOGIN ATAU TIDAK
       const token = localStorage.getItem('access_token')
       const expirationTime = localStorage.getItem('expires_at')
 
@@ -97,18 +106,55 @@
         window.location.href = "{{ url('/dashboard') }}"
       }
 
+      // PHONE NUMBER HANYA ANGKA
       $("#phone").keypress(function(e) {
         if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
           return false;
         }
       })
 
+      // GET KELOMPOK
+      axios.get("{{ url('api/v1/group/group') }}")
+        .then(function(res) {
+          const groups = res.data.data.items
+          groups.forEach(group => {
+            $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)
+          });
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+
+
+      // SUBMIT FORM
       $('#signup-form').on('submit', function() {
         event.preventDefault()
         $('#global-loader').show()
 
+        const data = {
+          fullname: $('#fullname').val(),
+          email: $('#email').val(),
+          birthdate: $('#birthdate').val(),
+          phone_number: $('#phone').val(),
+          address: $('#address').val(),
+          password: $('#password').val(),
+          group_id: $('#group').val(),
+          group_name: $('#group').find("option:selected").text(),
+        }
 
-        if ($('#password-confirm').val() != $('#password').val()) {
+        // VALIDASI GROUP SELECT
+        if (!data.group_id) {
+          $('#global-loader').hide()
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Toloh pilih kelompok anda'
+          })
+          return
+        }
+
+        // VALIDASI PASSWORD
+        if ($('#password-confirm').val() != data.password) {
           $('#global-loader').hide()
           Swal.fire({
             icon: 'warning',
@@ -118,15 +164,7 @@
           return
         }
 
-        const data = {
-          fullname: $('#fullname').val(),
-          email: $('#email').val(),
-          birthdate: $('#birthdate').val(),
-          phone_number: $('#phone').val(),
-          address: $('#address').val(),
-          password: $('#password').val()
-        }
-
+        // KONFIGURASI AXIOS
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         let config = {
           headers: {
@@ -135,6 +173,7 @@
             'Accept': 'application/json'
           }
         }
+        
 
         axios.post("{{ url('api/v1/auth/register') }}", data, config)
           .then(function(res) {
