@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             OauthKeySeeder::class,
+            GroupSeeder::class,
             UserSeeder::class,
         ]);
     }

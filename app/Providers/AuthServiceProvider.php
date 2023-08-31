@@ -26,8 +26,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-        Passport::tokensExpireIn(Carbon::now()->addMinutes(1));
-        Passport::refreshTokensExpireIn(Carbon::now()->addMinutes(1));
+        Passport::tokensExpireIn(Carbon::now()->addMinutes(60));
+        Passport::refreshTokensExpireIn(Carbon::now()->addMinutes(60));
         Route::post('oauth/token', ['middleware' => 'throttle', 'as' => 'passport.token', 'uses' => '\App\Http\Controllers\Api\LoginController@issueToken']);
     }
 }

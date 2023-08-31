@@ -66,6 +66,8 @@ class RegisterController extends BaseApiController
             'phone_number' => $data['phone_number'],
             'address' => $data['address'],
             'birthdate' => $data['birthdate'],
+            'group_id' => $data['group_id'],
+            'group_name' => $data['group_name'],
             'created_by' => $data['email'],
         ]);
         return $user;
@@ -90,6 +92,8 @@ class RegisterController extends BaseApiController
                 'max:15',
                 'unique:users,phone_number,NULL,id'
             ],
+            'group_id' => ['required', 'string'],
+            'group_name' => ['required', 'string', 'between:1,100'],
         ];
 
 

@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        \Illuminate\Support\Facades\DB::statement('SET SESSION sql_require_primary_key=0');
         Schema::create('users', function (Blueprint $table) {
             $table->string('id', 40)->primary();
             $table->string('email', 80)->unique();
@@ -19,12 +20,16 @@ return new class extends Migration
             $table->string('phone_number', 15)->unique();
             $table->string('address', 100);
             $table->date('birthdate');
+            $table->string('group_id', 40)->nullable();
+            $table->string('group_name', 100)->comment("Nama Kelompok")->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('isActive')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
             $table->string('updated_by', 40)->nullable();
+
+            $table->foreign('group_id')->references('id')->on('groups');
         });
     }
 

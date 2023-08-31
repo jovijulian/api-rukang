@@ -48,7 +48,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'address',
         'birthdate',
         'isActive',
+        'group_id',
+        'group_name',
         'created_by',
+        'updated_by',
         'reset_password_token',
         'token_expire'
     ];
@@ -72,4 +75,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }
