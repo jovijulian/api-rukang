@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\GroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,11 @@ Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::post('/reset-password', 'resetPassword');
+        });
+    });
+    Route::prefix('group')->group(function () {
+        Route::controller(GroupController::class)->group(function () {
+            Route::get('/group', 'getGroups');
         });
     });
 });
