@@ -113,4 +113,51 @@ class UserController extends Controller
             }
         }
     }
+
+    public function setActiveUser($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $this->updateActiveUser($id, $request->all(), $request);
+            if (empty($data)) {
+                throw new BadRequestHttpException("User Not Found.");
+            }
+            DB::commit();
+            $single = new UserResource($data);
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else if ($e instanceof BadRequestHttpException) {
+                    return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
+                } else {
+                    return ResponseStd::fail($e->getMessage());
+                }
+            }
+        }
+    }
+
+    protected function updateActiveUser($id, array $data, Request $request)
+    {
+        $timeNow = Carbon::now();
+        $user = User::find($id);
+
+        if (empty($user)) {
+            throw new \Exception("Invalid user id", 406);
+        }
+        $user->id = $id;
+        $user->isActive = $data['isActive'];
+        $user->updated_at = $timeNow;
+        $user->updated_by = $data['updated_by'];
+
+        //Save
+        $user->save();
+
+        return $user;
+    }
 }
