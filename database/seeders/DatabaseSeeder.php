@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             OauthKeySeeder::class,
             GroupSeeder::class,
+            SegmentSeeder::class,
+            DescriptionSeeder::class,
+            CategorySeeder::class,
+            ProcessSeeder::class,
             UserSeeder::class,
         ]);
     }
