@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'address' => "Bandung",
             'birthdate' => "2002-07-31",
             'isActive' => "1",
-            'role' => "Admin",
+            'isAdmin' => 1,
         ]);
     }
 }

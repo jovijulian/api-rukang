@@ -53,7 +53,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'created_by',
         'updated_by',
         'reset_password_token',
-        'token_expire'
+        'token_expire',
+        'isAdmin'
     ];
 
     /**
@@ -79,5 +80,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function group()
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->isAdmin;
     }
 }
