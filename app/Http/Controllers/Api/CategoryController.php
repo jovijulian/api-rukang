@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Description;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DescriptionResource;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class DescriptionController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,19 +34,19 @@ class DescriptionController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND descriptions.description LIKE '%$search_term%'";
+                $conditions .= " AND categories.category LIKE '%$search_term%'";
             }
 
-            $paginate = Description::query()->select(['descriptions.*'])
+            $paginate = Category::query()->select(['categories.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Description::query()
+            $countAll = Category::query()
                 ->count();
 
             // paging response.
-            $response = DescriptionResource::collection($paginate);
+            $response = CategoryResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,7 +70,7 @@ class DescriptionController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'description' => ['required', 'string'],
+            'category' => ['required', 'string', 'min:1', 'max:20'],
             'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
@@ -80,19 +80,19 @@ class DescriptionController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $descriptionData = new Description();
+        $categoryData = new Category();
 
-        // input data description
-        $descriptionData->description = $data['description'];
-        $descriptionData->created_at = $timeNow;
-        $descriptionData->updated_at = $timeNow;
-        $descriptionData->created_by = $data['created_by'];
-        $descriptionData->updated_by = null;
+        // input data category
+        $categoryData->category = $data['category'];
+        $categoryData->created_at = $timeNow;
+        $categoryData->updated_at = $timeNow;
+        $categoryData->created_by = $data['created_by'];
+        $categoryData->updated_by = null;
 
-        // save description
-        $descriptionData->save();
+        // save category
+        $categoryData->save();
 
-        return $descriptionData;
+        return $categoryData;
     }
 
     /**
@@ -110,7 +110,7 @@ class DescriptionController extends Controller
             DB::commit();
 
             // return
-            $single = new DescriptionResource($model);
+            $single = new CategoryResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -133,11 +133,11 @@ class DescriptionController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Description::query()->find($id);
+            $model = Category::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Keterangan tidak ada");
+                throw new BadRequestHttpException("Kategori tidak ada");
             }
-            $single = new DescriptionResource($model);
+            $single = new CategoryResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -160,7 +160,7 @@ class DescriptionController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'description' => ['required', 'string'],
+            'category' => ['required', 'string', 'min:1', 'max:20'],
             'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
@@ -170,20 +170,20 @@ class DescriptionController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find description by id
-        $descriptionData = Description::find($id);
+        // Find category by id
+        $categoryData = Category::find($id);
 
-        if (empty($descriptionData)) {
-            throw new \Exception("Invalid description id", 406);
+        if (empty($categoryData)) {
+            throw new \Exception("Invalid category id", 406);
         }
-        $descriptionData->id = $id;
-        $descriptionData->description = $data['description'];
-        $descriptionData->updated_at = $timeNow;
-        $descriptionData->updated_by = $data['updated_by'];
+        $categoryData->id = $id;
+        $categoryData->category = $data['category'];
+        $categoryData->updated_at = $timeNow;
+        $categoryData->updated_by = $data['updated_by'];
         //Save
-        $descriptionData->save();
+        $categoryData->save();
 
-        return $descriptionData;
+        return $categoryData;
     }
 
     /**
@@ -202,7 +202,7 @@ class DescriptionController extends Controller
             DB::commit();
 
             // return.
-            $single = new DescriptionResource($data);
+            $single = new CategoryResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -222,8 +222,37 @@ class DescriptionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    protected function delete($id)
+    {
+
+        $category = Category::find($id);
+        if ($category == null) {
+            throw new \Exception("Kategori tidak ada", 404);
+        }
+        $category->delete();
+
+        return $category;
+    }
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $this->delete($id);
+            DB::commit();
+            // return
+            return ResponseStd::okNoOutput("Kategori berhasil dihapus.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage());
+                }
+            }
+        }
     }
 }

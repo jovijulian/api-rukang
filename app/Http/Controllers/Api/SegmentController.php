@@ -138,7 +138,7 @@ class SegmentController extends Controller
         try {
             $model = Segment::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Segment not Found");
+                throw new BadRequestHttpException("Segmen tidak ada");
             }
             $single = new SegmentResource($model);
             return ResponseStd::okSingle($single);
