@@ -72,4 +72,45 @@ class UserController extends Controller
             }
         }
     }
+
+    public function getUserInactive(Request $request)
+    {
+        try {
+            $search_term = $request->input('search');
+            $limit = $request->has('limit') ? $request->input('limit') : 50;
+            $sort = $request->has('sort') ? $request->input('sort') : 'users.created_at';
+            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $conditions = '1 = 1';
+            // Jika dari frontend memaksa limit besar.
+            if ($limit > 50) {
+                $limit = 50;
+            }
+            if (!empty($search_term)) {
+                $conditions .= " AND email LIKE '%$search_term%'";
+            }
+            $paginate = User::query()->where('isActive', 0)
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+
+            $countAll = User::query()
+                ->count();
+
+            // paging response.
+            $response = UserResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), 400);
+                }
+            }
+        }
+    }
 }

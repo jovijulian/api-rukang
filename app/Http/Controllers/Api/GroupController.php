@@ -84,7 +84,7 @@ class GroupController extends Controller
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             if (!empty($search_term)) {
-                $conditions .= " AND group_name ILIKE '%$search_term%'";
+                $conditions .= " AND group_name LIKE '%$search_term%'";
             }
             $paginate = Group::query()->whereRaw($conditions)
                 ->orderBy($sort, $order)

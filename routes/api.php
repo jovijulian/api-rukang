@@ -34,6 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::post('/reset-password', 'resetPassword');
+            Route::get('/user-inactive', 'getUserInactive')->middleware(['auth:api', 'check_admin']);
         });
     });
     Route::prefix('group')->group(function () {
