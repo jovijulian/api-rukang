@@ -71,7 +71,6 @@ class DescriptionController extends Controller
     {
         $arrayValidator = [
             'description' => ['required', 'string'],
-            'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -86,7 +85,7 @@ class DescriptionController extends Controller
         $descriptionData->description = $data['description'];
         $descriptionData->created_at = $timeNow;
         $descriptionData->updated_at = $timeNow;
-        $descriptionData->created_by = $data['created_by'];
+        $descriptionData->created_by = auth()->user()->fullname;
         $descriptionData->updated_by = null;
 
         // save description
@@ -161,7 +160,6 @@ class DescriptionController extends Controller
     {
         $arrayValidator = [
             'description' => ['required', 'string'],
-            'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -179,7 +177,7 @@ class DescriptionController extends Controller
         $descriptionData->id = $id;
         $descriptionData->description = $data['description'];
         $descriptionData->updated_at = $timeNow;
-        $descriptionData->updated_by = $data['updated_by'];
+        $descriptionData->updated_by = auth()->user()->fullname;
         //Save
         $descriptionData->save();
 
