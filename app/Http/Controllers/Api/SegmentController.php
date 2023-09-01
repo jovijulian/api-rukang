@@ -72,7 +72,6 @@ class SegmentController extends Controller
         $arrayValidator = [
             'segment_name' => ['required', 'string', 'min:1', 'max:50'],
             'segment_place' => ['required', 'string', 'min:1', 'max:50'],
-            'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -89,7 +88,7 @@ class SegmentController extends Controller
         $segment->barcode_color = $data['barcode_color'];
         $segment->created_at = $timeNow;
         $segment->updated_at = $timeNow;
-        $segment->created_by = $data['created_by'];
+        $segment->created_by = auth()->user()->fullname;
         $segment->updated_by = null;
 
         // save segment
@@ -165,7 +164,6 @@ class SegmentController extends Controller
         $arrayValidator = [
             'segment_name' => ['required', 'string', 'min:1', 'max:50'],
             'segment_place' => ['required', 'string', 'min:1', 'max:50'],
-            'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -185,7 +183,7 @@ class SegmentController extends Controller
         $segment->segment_place = $data['segment_place'];
         $segment->barcode_color = $data['barcode_color'];
         $segment->updated_at = $timeNow;
-        $segment->updated_by = $data['updated_by'];
+        $segment->updated_by = auth()->user()->fullname;
         //Save
         $segment->save();
 
