@@ -153,7 +153,7 @@ class UserController extends Controller
         $user->id = $id;
         $user->isActive = $data['isActive'];
         $user->updated_at = $timeNow;
-        $user->updated_by = $data['updated_by'];
+        $user->updated_by = auth()->user()->fullname;
 
         //Save
         $user->save();
