@@ -71,7 +71,6 @@ class CategoryController extends Controller
     {
         $arrayValidator = [
             'category' => ['required', 'string', 'min:1', 'max:20'],
-            'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -86,7 +85,7 @@ class CategoryController extends Controller
         $categoryData->category = $data['category'];
         $categoryData->created_at = $timeNow;
         $categoryData->updated_at = $timeNow;
-        $categoryData->created_by = $data['created_by'];
+        $categoryData->created_by = auth()->user()->fullname;
         $categoryData->updated_by = null;
 
         // save category
@@ -161,7 +160,6 @@ class CategoryController extends Controller
     {
         $arrayValidator = [
             'category' => ['required', 'string', 'min:1', 'max:20'],
-            'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -179,7 +177,7 @@ class CategoryController extends Controller
         $categoryData->id = $id;
         $categoryData->category = $data['category'];
         $categoryData->updated_at = $timeNow;
-        $categoryData->updated_by = $data['updated_by'];
+        $categoryData->updated_by = auth()->user()->fullname;
         //Save
         $categoryData->save();
 
