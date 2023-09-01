@@ -71,7 +71,6 @@ class ProcessController extends Controller
     {
         $arrayValidator = [
             'process_name' => ['required', 'string', 'min:1', 'max:20'],
-            'created_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -86,7 +85,7 @@ class ProcessController extends Controller
         $processData->process_name = $data['process_name'];
         $processData->created_at = $timeNow;
         $processData->updated_at = $timeNow;
-        $processData->created_by = $data['created_by'];
+        $processData->created_by = auth()->user()->fullname;
         $processData->updated_by = null;
 
         // save process
@@ -161,7 +160,6 @@ class ProcessController extends Controller
     {
         $arrayValidator = [
             'process_name' => ['required', 'string', 'min:1', 'max:20'],
-            'updated_by' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -179,7 +177,7 @@ class ProcessController extends Controller
         $processData->id = $id;
         $processData->process_name = $data['process_name'];
         $processData->updated_at = $timeNow;
-        $processData->updated_by = $data['updated_by'];
+        $processData->updated_by = auth()->user()->fullname;
         //Save
         $processData->save();
 
