@@ -227,6 +227,9 @@ class DescriptionController extends Controller
         if ($description == null) {
             throw new \Exception("Deskripsi tidak ada", 404);
         }
+        $description->deleted_by = auth()->user()->fullname;
+        $description->save();
+
         $description->delete();
 
         return $description;
