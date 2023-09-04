@@ -20,7 +20,7 @@ class Category extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'description',
+        'category',
         'created_by',
         'updated_by',
         'deleted_by',
