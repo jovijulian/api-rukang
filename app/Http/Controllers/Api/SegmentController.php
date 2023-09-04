@@ -233,6 +233,10 @@ class SegmentController extends Controller
         if ($segment == null) {
             throw new \Exception("Segmen tidak ada", 404);
         }
+        $segment->deleted_by = auth()->user()->fullname;
+        $segment->save();
+
+        // Soft delete data.
         $segment->delete();
 
         return $segment;
