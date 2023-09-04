@@ -13,7 +13,7 @@ return new class extends Migration
     {
         \Illuminate\Support\Facades\DB::statement('SET SESSION sql_require_primary_key=0');
         Schema::create('groups', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
+            $table->id();
             $table->string('group_name', 100)->comment("Nama Kelompok");
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
