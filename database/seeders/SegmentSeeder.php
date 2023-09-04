@@ -25,7 +25,8 @@ class SegmentSeeder extends Seeder
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'updated_by' => "",
+            'deleted_by' => "",
         ]);
 
         Segment::query()->create([
@@ -36,7 +37,8 @@ class SegmentSeeder extends Seeder
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'updated_by' => "",
+            'deleted_by' => "",
         ]);
 
         Segment::query()->create([
@@ -47,7 +49,7 @@ class SegmentSeeder extends Seeder
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'updated_by' => "",
         ]);
     }
 }
