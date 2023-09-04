@@ -227,6 +227,9 @@ class CategoryController extends Controller
         if ($category == null) {
             throw new \Exception("Kategori tidak ada", 404);
         }
+        $category->deleted_by = auth()->user()->fullname;
+        $category->save();
+
         $category->delete();
 
         return $category;
