@@ -227,6 +227,9 @@ class ProcessController extends Controller
         if ($process == null) {
             throw new \Exception("Proses tidak ada", 404);
         }
+        $process->deleted_by = auth()->user()->fullname;
+        $process->save();
+
         $process->delete();
 
         return $process;

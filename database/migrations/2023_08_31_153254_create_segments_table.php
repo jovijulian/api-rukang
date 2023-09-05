@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('segment_name', 50);
             $table->string('segment_place', 50);
-            $table->string('barcode_color', 50);
+            $table->string('barcode_color', 50)->nullable();
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
             $table->string('updated_by', 40)->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->string('deleted_by', 40)->nullable();
         });
     }
 

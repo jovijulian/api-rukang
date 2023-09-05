@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call([
-            OauthKeySeeder::class,
             GroupSeeder::class,
             SegmentSeeder::class,
             DescriptionSeeder::class,

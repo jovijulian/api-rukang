@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
             $table->string('updated_by', 40)->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->string('deleted_by', 40)->nullable();
         });
     }
 

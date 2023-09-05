@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_clients', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
+            $table->bigIncrements('id');
             $table->string('user_id', 40)->nullable()->index();
             $table->string('name');
             $table->string('secret', 100)->nullable();

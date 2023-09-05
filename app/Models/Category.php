@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The primary key for the model.
@@ -15,4 +16,13 @@ class Category extends Model
      * @var string
      */
     protected $primaryKey = 'id';
+
+    protected $dates = ['deleted_at'];
+
+    protected $fillable = [
+        'category',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 }

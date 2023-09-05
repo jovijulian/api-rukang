@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_personal_access_clients', function (Blueprint $table) {
-            $table->string('id', 40);
-            $table->string('client_id', 40);
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('client_id');
             $table->timestamps();
         });
     }
