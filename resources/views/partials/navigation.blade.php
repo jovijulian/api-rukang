@@ -492,8 +492,10 @@
   $(document).ready(function() {
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
 
+    !currentUser.isAdmin && $('.is-admin').hide()
+
     $('.fullname').text(currentUser.fullname)
-    // $('.is-admin').hide()
+    $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')
 
     $('.logout-account').on('click', function() {
       const tokenType = localStorage.getItem('token_type')
