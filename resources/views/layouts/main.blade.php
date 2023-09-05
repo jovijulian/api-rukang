@@ -10,6 +10,7 @@
   @yield('title')
 
   @include('partials.head')
+  @include('partials.footer-script')
 
 </head>
 
@@ -20,7 +21,6 @@
 
   @yield('main')
 
-  @include('partials.footer-script')
 </body>
 
 </html>

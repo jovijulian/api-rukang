@@ -148,7 +148,7 @@
           Swal.fire({
             icon: 'warning',
             title: 'Oops...',
-            text: 'Toloh pilih kelompok anda'
+            text: 'Tolong pilih kelompok anda'
           })
           return
         }
