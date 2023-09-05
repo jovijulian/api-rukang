@@ -58,10 +58,17 @@
 
       $('#reset-password-form').on('submit', function() {
         event.preventDefault()
-
         $('#global-loader').show()
 
+        const data = {
+          email: getEmail,
+          token: getToken,
+          password: $('#reset-password').val()
+        }
+
         if ($('#reset-password-confirm').val() != $('#reset-password').val()) {
+          $('#global-loader').hide()
+
           Swal.fire({
             icon: 'warning',
             title: 'Oops...',
@@ -70,11 +77,6 @@
           return
         }
 
-        const data = {
-          email: getEmail,
-          token: getToken,
-          password: $('#reset-password').val()
-        }
 
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         let config = {
@@ -103,73 +105,3 @@
     })
   </script>
 @endsection
-
-
-{{-- <script>
-        $(document).ready(function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const getToken = urlParams.get('token');
-            const getEmail = urlParams.get('email');
-
-            $('#formAuthentication').on('submit', function(event) {
-                const getPassword = $("#password").val()
-                const getConfirmPassword = $("#confirm_password").val()
-                event.preventDefault();
-                $('#loader').show();
-
-                if (!getPassword || !getConfirmPassword) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Password dan konfirmasi password harus diisi.',
-                        icon: 'error',
-                    })
-                    $('#loader').hide();
-                    return;
-                }
-
-                if (getPassword !== getConfirmPassword) {
-                    $('#loader').hide();
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Password dan konfirmasi password tidak sesuai.',
-                        icon: 'error',
-                    })
-                    return;
-                }
-                let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                let postData = {
-                    email: getEmail,
-                    token: getToken,
-                    password: getPassword,
-                    password_confirmation: getConfirmPassword,
-                };
-                let config = {
-                    headers: {
-                        'X-CSRF-TOKEN': token,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                };
-                axios.post('{{ url('/api/v1/user/reset-password') }}', postData, config)
-                    .then(function(response) {
-                        $('#loader').hide();
-                        Swal.fire({
-                            title: 'Sukses',
-                            text: 'Password berhasil direset.',
-                            icon: 'success',
-                        })
-                        window.location.href = '{{ url('/users/login') }}';
-                    })
-                    .catch(function(error) {
-                        $('#loader').hide();
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Internal Server Error',
-                            icon: 'error',
-                        })
-
-                        event.preventDefault();
-                    });
-            })
-        })
-    </script> --}}
