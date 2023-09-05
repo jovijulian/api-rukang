@@ -92,7 +92,7 @@ class RegisterController extends BaseApiController
                 'max:15',
                 'unique:users,phone_number,NULL,id'
             ],
-            'group_id' => ['required', 'string'],
+            'group_id' => ['required'],
             'group_name' => ['required', 'string', 'between:1,100'],
         ];
 
