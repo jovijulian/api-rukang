@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\StatusLog;
 use Carbon\Carbon;
-use App\Models\Category;
+use Ramsey\Uuid\Uuid;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,19 +36,19 @@ class CategoryController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND categories.category LIKE '%$search_term%'";
+                $conditions .= " AND products.barcode LIKE '%$search_term%'";
             }
 
-            $paginate = Category::query()->select(['categories.*'])
+            $paginate = Product::query()->select(['products.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Category::query()
+            $countAll = Product::query()
                 ->count();
 
             // paging response.
-            $response = CategoryResource::collection($paginate);
+            $response = ProductResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,7 +72,8 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category' => ['required', 'string', 'min:1', 'max:20'],
+            'barcode' => ['required', 'min:1', 'max:100'],
+            // '"1/0"' => ['required', 'min:1', 'max:100'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -79,18 +82,49 @@ class CategoryController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $categoryData = new Category();
-
-        // input data category
-        $categoryData->category = $data['category'];
-        $categoryData->created_at = $timeNow;
-        $categoryData->created_by = auth()->user()->fullname;
-        $categoryData->updated_by = null;
+        $productData = new Product();
+        // $imagePath = $request->file('image')->store('images', 'digitalocean');
+        $productId = Uuid::uuid4()->toString();
+        $productData->id = $productId;
+        $productData->segment_id = $data['segment_id'];
+        $productData->segment_name = $data['segment_name'];
+        $productData->barcode = $data['barcode'];
+        $productData->module_number = $data['module_number'];
+        $productData->bilah_number = $data['bilah_number'];
+        $productData->production_date = $data['production_date'];
+        $productData->shelf_number = $data['shelf_number'];
+        $productData->{'"1/0"'} = $data['1/0'];
+        $productData->nut_bolt = $data['nut_bolt'];
+        $productData->description_id = $data['description_id'];
+        $productData->description = $data['description'];
+        $productData->delivery_date = $data['delivery_date'];
+        $productData->image = $data['image'];
+        $productData->category_id = $data['category_id'];
+        $productData->category = $data['category'];
+        $productData->created_at = $timeNow;
+        $productData->updated_at = $timeNow;
+        $productData->created_by = auth()->user()->fullname;
+        $productData->updated_by = null;
 
         // save category
-        $categoryData->save();
+        $productData->save();
 
-        return $categoryData;
+        $statusLogData = new StatusLog();
+        $statusLogId = Uuid::uuid4()->toString();
+        $statusLogData->id = $statusLogId;
+        $statusLogData->product_id = $productData->id;;
+        $statusLogData->process_id = 1;
+        $statusLogData->process_name = 'Selesai Produksi';
+        $statusLogData->status_date = $timeNow;
+        $statusLogData->process_attachment = null;
+        $statusLogData->created_at = $timeNow;
+        $statusLogData->updated_at = $timeNow;
+        $statusLogData->created_by = auth()->user()->fullname;
+        $statusLogData->updated_by = null;
+        $statusLogData->save();
+
+
+        return $productData;
     }
 
     /**
@@ -108,7 +142,7 @@ class CategoryController extends Controller
             DB::commit();
 
             // return
-            $single = new CategoryResource($model);
+            $single = new ProductResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -131,11 +165,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Category::query()->find($id);
+            $model = Product::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Kategori tidak ada");
+                throw new BadRequestHttpException("Produk tidak ada");
             }
-            $single = new CategoryResource($model);
+            $single = new ProductResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -158,7 +192,7 @@ class CategoryController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'category' => ['required', 'string', 'min:1', 'max:20'],
+            'barcode' => ['required', 'min:1', 'max:100'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -167,20 +201,34 @@ class CategoryController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find category by id
-        $categoryData = Category::find($id);
+        // Find product by id
+        $productData = Product::find($id);
 
-        if (empty($categoryData)) {
-            throw new \Exception("Invalid category id", 406);
+        if (empty($productData)) {
+            throw new \Exception("Invalid product id", 406);
         }
-        $categoryData->id = $id;
-        $categoryData->category = $data['category'];
-        $categoryData->updated_at = $timeNow;
-        $categoryData->updated_by = auth()->user()->fullname;
+        $productData->id = $id;
+        $productData->segment_id = $data['segment_id'];
+        $productData->segment_name = $data['segment_name'];
+        $productData->barcode = $data['barcode'];
+        $productData->module_number = $data['module_number'];
+        $productData->bilah_number = $data['bilah_number'];
+        $productData->production_date = $data['production_date'];
+        $productData->shelf_number = $data['shelf_number'];
+        $productData->{'"1/0"'} = $data['1/0'];
+        $productData->nut_bolt = $data['nut_bolt'];
+        $productData->description_id = $data['description_id'];
+        $productData->description = $data['description'];
+        $productData->delivery_date = $data['delivery_date'];
+        $productData->image = $data['image'];
+        $productData->category_id = $data['category_id'];
+        $productData->category = $data['category'];
+        $productData->updated_at = $timeNow;
+        $productData->updated_by = auth()->user()->fullname;
         //Save
-        $categoryData->save();
+        $productData->save();
 
-        return $categoryData;
+        return $productData;
     }
 
     /**
@@ -199,7 +247,7 @@ class CategoryController extends Controller
             DB::commit();
 
             // return.
-            $single = new CategoryResource($data);
+            $single = new ProductResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -222,16 +270,23 @@ class CategoryController extends Controller
     protected function delete($id)
     {
 
-        $category = Category::find($id);
-        if ($category == null) {
-            throw new \Exception("Kategori tidak ada", 404);
+        $product = Product::find($id);
+
+        if ($product == null) {
+            throw new \Exception("Produk tidak ada", 404);
         }
-        $category->deleted_by = auth()->user()->fullname;
-        $category->save();
 
-        $category->delete();
+        $statusLog = StatusLog::where('product_id', $id)->first();
+        $statusLog->deleted_by = auth()->user()->fullname;
+        $statusLog->save();
+        $statusLog->delete();
 
-        return $category;
+        $product->deleted_by = auth()->user()->fullname;
+        $product->deleted_flag = 1;
+        $product->save();
+        $product->delete();
+
+        return $product;
     }
     public function destroy(string $id)
     {
@@ -240,7 +295,7 @@ class CategoryController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Kategori berhasil dihapus.");
+            return ResponseStd::okNoOutput("Produk berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e instanceof ValidationException) {
