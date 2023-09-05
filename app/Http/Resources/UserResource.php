@@ -28,6 +28,7 @@ class UserResource extends JsonResource
             'group_name' => $this->group_name,
             'group' => new GroupResource(Group::find($this->group_id)),
             'isActive' => $this->isActive,
+            'isAdmin' => $this->isAdmin,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
