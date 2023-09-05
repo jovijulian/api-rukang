@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="content">
+  <div class="content">
     <div class="page-header">
       <div class="page-title">
         <h4>User</h4>
@@ -34,16 +34,16 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="{{ url('assets/img/icons/pdf.svg') }}"
-                    alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
+                    src="{{ url('assets/img/icons/pdf.svg') }}" alt="img"></a>
               </li>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="{{ url('assets/img/icons/excel.svg') }}"
-                    alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
+                    src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="{{ url('assets/img/icons/printer.svg') }}"
-                    alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
+                    src="{{ url('assets/img/icons/printer.svg') }}" alt="img"></a>
               </li>
             </ul>
           </div>
@@ -147,48 +147,71 @@
         }
       }
 
+      getData()
+
       // GET USER NOT VERIFY
-      axios.get("{{ url('api/v1/user/user-inactive') }}", config)
-        .then(function(res) {
-          const users = res.data.data.items
-
-          users.map((user, i) => {
-            const formattedCreatedAt = new Date(user.created_at).toISOString().split('T')[0];
-
-            table.row.add([
-              user.fullname,
-              user.phone_number,
-              user.email,
-              user.birthdate,
-              user.group_name,
-              user.address,
-              formattedCreatedAt,
-              '<button class="p-2 btn btn-submit">Verifikasi Akun Sekarang</button>',
-            ]).draw(false);
-
-
-            // const row = `
-            //   <tr>
-            //     <td>${user.fullname}</td>
-            //     <td>${user.phone_number}</td>
-            //     <td>${user.email}</td>
-            //     <td>${user.birthdate}</td>
-            //     <td>${user.group_name}</td>
-            //     <td>${user.address}</td>
-            //     <td>${user.created_at}</td>
-            //     <td>
-            //       <button class="p-2 btn btn-submit">
-            //         Verifikasi Akun Sekarang
-            //       </button>
-            //     </td>
-            //   </tr>
-            // `
-            // $('#data-user-inactive').append(row)
+      function getData() {
+        axios.get("{{ url('api/v1/user/user-inactive') }}", config)
+          .then(function(res) {
+            const users = res.data.data.items
+  
+            users.map((user, i) => {
+              const formattedCreatedAt = new Date(user.created_at).toISOString().split('T')[0];
+  
+              table.row.add([
+                user.fullname,
+                user.phone_number,
+                user.email,
+                user.birthdate,
+                user.group_name,
+                user.address,
+                formattedCreatedAt,
+                `<button class="p-2 btn btn-submit btn-verify" id="${user.id}" >Verifikasi Akun</button>`,
+              ]).draw(false)
+            })
+  
+            $('.btn-verify').on('click', (e) => {
+              updateUserActive(e.target.id)
+            })
           })
+          .catch(function(err) {
+            console.log(err)
+          })
+      }
+
+
+      function updateUserActive(id) {
+        Swal.fire({
+          title: 'Yakin ingin memverifikasi user?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Ya',
+          cancelButtonText: 'Kembali'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title:'Mohon tunggu',
+              allowOutsideClick: false,
+              showConfirmButton: false,
+              willOpen: () => {
+                Swal.showLoading()
+              }
+            })
+
+            axios.put(`{{ url('api/v1/user/update-status-user/${id}') }}`, { isActive: 1 }, config)
+              .then(res => {
+                table.clear()
+                getData()
+                Swal.fire('User Berhasil Terverifikasi!', '', 'success')
+              })
+              .catch(err => {
+                Swal.fire('User Gagal Terverifikasi!', '', 'error')
+                console.log(err)
+              })
+          }
         })
-        .catch(function(err) {
-          console.log(err)
-        })
+      }
+
     })
   </script>
 @endsection

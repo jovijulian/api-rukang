@@ -38,9 +38,7 @@ Route::get('dashboard', function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('user/user-not-verify', function() {
-        return view('pages.user.index');
-    });
+    Route::get('user/inactive-user', 'inactiveUser');
 });
 
 

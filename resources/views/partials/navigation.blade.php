@@ -186,7 +186,7 @@
           </span>
           <span class="user-detail">
             <span class="user-name fullname">John Smilga</span>
-            <span class="user-role">Super Admin</span>
+            <span class="user-role role">Super Admin</span>
           </span>
         </span>
       </a>
@@ -197,7 +197,7 @@
               <span class="status online"></span></span>
             <div class="profilesets">
               <h6 class="fullname">John Smilga</h6>
-              <h5>Super Admin</h5>
+              <h5 class="role">Super Admin</h5>
             </div>
           </div>
           <hr class="m-0">
@@ -258,6 +258,20 @@
             <li><a href="subcategorylist.html"><i data-feather="speaker"></i><span>Sub Category</span></a></li>
             <li><a href="barcode.html"><i data-feather="align-justify"></i><span>Print Barcode</span></a></li>
             <li><a href="importproduct.html"><i data-feather="minimize-2"></i><span>Import Products</span></a></li>
+          </ul>
+        </li>
+        <li class="submenu-open is-admin">
+          <h6 class="submenu-hdr">Manajemen User</h6>
+          <ul>
+            <li><a href="user/inactive-user" class="{{ (request()->is('user/inactive-user')) ? 'active' : '' }}"><i data-feather="users"></i><span>Verifikasi User</span></a></li>
+            <li class="submenu">
+              <a href="javascript:void(0);" class="{{ (request()->is('user*')) ? 'active subdrop' : '' }}"><i data-feather="users"></i><span>User</span><span
+                  class="menu-arrow"></span></a>
+              <ul>
+                <li><a href="user/inactive-user" class="{{ (request()->is('user/inactive-user')) ? 'active' : '' }}">Verifikasi User</a></li>
+                <li><a href="userlists.html">Users List</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -332,19 +346,6 @@
             <li><a href="purchasereport.html"><i data-feather="bar-chart"></i><span>Purchase Report</span></a></li>
             <li><a href="supplierreport.html"><i data-feather="database"></i><span>Supplier Report</span></a></li>
             <li><a href="customerreport.html"><i data-feather="pie-chart"></i><span>Customer Report</span></a></li>
-          </ul>
-        </li>
-        <li class="submenu-open">
-          <h6 class="submenu-hdr">Manajemen User</h6>
-          <ul>
-            <li class="submenu">
-              <a href="javascript:void(0);" class="{{ (request()->is('user*')) ? 'active subdrop' : '' }}"><i data-feather="users"></i><span>User</span><span
-                  class="menu-arrow"></span></a>
-              <ul>
-                <li><a href="user/user-not-verify" class="{{ (request()->is('user/user-not-verify')) ? 'active' : '' }}">Verifikasi User</a></li>
-                <li><a href="userlists.html">Users List</a></li>
-              </ul>
-            </li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -491,7 +492,10 @@
   $(document).ready(function() {
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
 
+    !currentUser.isAdmin && $('.is-admin').hide()
+
     $('.fullname').text(currentUser.fullname)
+    $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')
 
     $('.logout-account').on('click', function() {
       const tokenType = localStorage.getItem('token_type')
