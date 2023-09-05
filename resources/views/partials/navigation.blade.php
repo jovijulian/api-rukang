@@ -4,13 +4,13 @@
   <!-- Logo -->
   <div class="header-left active">
     <a href="index.html" class="logo logo-normal">
-      <img src="assets/img/logo.png" alt="">
+      <img src="{{ url('assets/img/logo.png') }}" alt="">
     </a>
     <a href="index.html" class="logo logo-white">
-      <img src="assets/img/logo-white.png" alt="">
+      <img src="{{ url('assets/img/logo-white.png') }}" alt="">
     </a>
     <a href="index.html" class="logo-small">
-      <img src="assets/img/logo-small.png" alt="">
+      <img src="{{ url('assets/img/logo-small.png') }}" alt="">
     </a>
     <a id="toggle_btn" href="javascript:void(0);">
       <i data-feather="chevrons-left" class="feather-16"></i>
@@ -56,16 +56,16 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right">
         <a href="javascript:void(0);" class="dropdown-item active">
-          <img src="assets/img/flags/us.png" alt="" height="16"> English
+          <img src="{{ url('assets/img/flags/us.png') }}" alt="" height="16"> English
         </a>
         <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/flags/fr.png" alt="" height="16"> French
+          <img src="{{ url('assets/img/flags/fr.png') }}" alt="" height="16"> French
         </a>
         <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/flags/es.png" alt="" height="16"> Spanish
+          <img src="{{ url('assets/img/flags/es.png') }}" alt="" height="16"> Spanish
         </a>
         <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/flags/de.png" alt="" height="16"> German
+          <img src="{{ url('assets/img/flags/de.png') }}" alt="" height="16"> German
         </a>
       </div>
     </li>
@@ -83,7 +83,7 @@
       </a>
     </li>
     <!-- Notifications -->
-    <li class="nav-item dropdown nav-item-box">
+    {{-- <li class="nav-item dropdown nav-item-box">
       <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
         <i data-feather="bell"></i><span class="badge rounded-pill">2</span>
       </a>
@@ -172,7 +172,7 @@
           <a href="activities.html">View all Notifications</a>
         </div>
       </div>
-    </li>
+    </li> --}}
     <!-- /Notifications -->
 
     <li class="nav-item nav-item-box">
@@ -182,7 +182,7 @@
       <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
         <span class="user-info">
           <span class="user-letter">
-            <img src="assets/img/profiles/avator1.jpg" alt="" class="img-fluid">
+            <img src="{{ url('assets/img/profiles/avator1.jpg') }}" alt="" class="img-fluid">
           </span>
           <span class="user-detail">
             <span class="user-name fullname">John Smilga</span>
@@ -193,7 +193,7 @@
       <div class="dropdown-menu menu-drop-user">
         <div class="profilename">
           <div class="profileset">
-            <span class="user-img"><img src="assets/img/profiles/avator1.jpg" alt="">
+            <span class="user-img"><img src="{{ url('assets/img/profiles/avator1.jpg') }}" alt="">
               <span class="status online"></span></span>
             <div class="profilesets">
               <h6 class="fullname">John Smilga</h6>
@@ -205,7 +205,7 @@
           <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
               data-feather="settings"></i>Settings</a>
           <hr class="m-0">
-          <button class="dropdown-item logout pb-0 logout-account"><img src="assets/img/icons/log-out.svg"
+          <button class="dropdown-item logout pb-0 logout-account"><img src="{{ url('assets/img/icons/log-out.svg') }}"
               class="me-2" alt="img">Logout</button>
         </div>
       </div>
@@ -234,8 +234,8 @@
         <li class="submenu-open">
           <h6 class="submenu-hdr">Main</h6>
           <ul>
-            <li class="active">
-              <a href="index.html"><i data-feather="grid"></i><span>Dashboard</span></a>
+            <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}">
+              <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
             </li>
             <li class="submenu">
               <a href="javascript:void(0);"><i data-feather="smartphone"></i><span>Application</span><span
@@ -335,13 +335,13 @@
           </ul>
         </li>
         <li class="submenu-open">
-          <h6 class="submenu-hdr">User Management</h6>
+          <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
             <li class="submenu">
-              <a href="javascript:void(0);"><i data-feather="users"></i><span>Manage Users</span><span
+              <a href="javascript:void(0);" class="{{ (request()->is('user*')) ? 'active subdrop' : '' }}"><i data-feather="users"></i><span>User</span><span
                   class="menu-arrow"></span></a>
               <ul>
-                <li><a href="newuser.html">New User </a></li>
+                <li><a href="user/user-not-verify" class="{{ (request()->is('user/user-not-verify')) ? 'active' : '' }}">Verifikasi User</a></li>
                 <li><a href="userlists.html">Users List</a></li>
               </ul>
             </li>

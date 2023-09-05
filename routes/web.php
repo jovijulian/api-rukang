@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,11 +33,18 @@ Route::get('/change-password-success', [ForgetPasswordController::class, 'change
 
 
 
-Route::get('/dashboard', function () {
+Route::get('dashboard', function () {
     return view('pages.dashboard.index');
 });
 
-Route::get('/product', function () {
+Route::controller(UserController::class)->group(function () {
+    Route::get('user/user-not-verify', function() {
+        return view('pages.user.index');
+    });
+});
+
+
+Route::get('product', function () {
     return view('pages.product.index');
 });
 
