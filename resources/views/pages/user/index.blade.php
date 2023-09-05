@@ -163,7 +163,7 @@
               user.group_name,
               user.address,
               formattedCreatedAt,
-              '<button class="p-2 btn btn-submit">Verifikasi Akun Sekarang</button>',
+              '<button class="p-2 btn btn-submit">Verifikasi Akun</button>',
             ]).draw(false);
 
 

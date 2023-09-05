@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function userNotVerify() {
+    public function inactiveUser() {
         return view('pages.user.index');
     }
 }
