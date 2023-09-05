@@ -52,4 +52,29 @@ class Product extends Model
         'deleted_by',
         'deleted_flag',
     ];
+
+    public function segment()
+    {
+        return $this->belongsTo(Segment::class);
+    }
+
+    public function description()
+    {
+        return $this->belongsTo(Description::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function process()
+    {
+        return $this->belongsTo(Process::class);
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Status::class);
+    }
 }

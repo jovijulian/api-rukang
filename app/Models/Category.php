@@ -25,4 +25,9 @@ class Category extends Model
         'updated_by',
         'deleted_by',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
