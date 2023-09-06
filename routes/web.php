@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -39,6 +40,12 @@ Route::get('dashboard', function () {
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user/inactive-user', 'inactiveUser');
+});
+
+Route::controller(SegmentController::class)->group(function () {
+    Route::get('segment/', 'index');
+    Route::get('segment/insert', 'insert');
+    Route::get('segment/edit/{id}', 'edit');
 });
 
 
