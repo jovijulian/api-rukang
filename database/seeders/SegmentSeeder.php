@@ -20,8 +20,8 @@ class SegmentSeeder extends Seeder
         Segment::query()->create([
             'id' =>  "1",
             'segment_name' => "Segmen 6",
-            'segment_place' => "tes",
-            'barcode_color' => "tes",
+            'segment_place' => "Rak Segmen 6",
+            'barcode_color' => "",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",

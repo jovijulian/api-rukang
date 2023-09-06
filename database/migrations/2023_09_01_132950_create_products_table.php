@@ -14,6 +14,8 @@ return new class extends Migration
         \Illuminate\Support\Facades\DB::statement('SET SESSION sql_require_primary_key=0');
         Schema::create('products', function (Blueprint $table) {
             $table->string('id', 40)->primary();
+            $table->bigInteger('category_id')->unsigned()->nullable();
+            $table->text('category')->comment("Kategori")->nullable();
             $table->bigInteger('segment_id')->unsigned()->nullable();
             $table->string('segment_name', 50)->comment("Nama Segmen")->nullable();
             $table->string('barcode', 100)->unique();
@@ -26,9 +28,12 @@ return new class extends Migration
             $table->bigInteger('description_id')->unsigned()->nullable();
             $table->text('description')->comment("Keterangan")->nullable();
             $table->date('delivery_date')->nullable();
-            $table->string('image', 100)->nullable();
-            $table->bigInteger('category_id')->unsigned()->nullable();
-            $table->text('category')->comment("Kategori")->nullable();
+            $table->bigInteger('status_id')->unsigned()->nullable();
+            $table->text('status')->comment("Kategori")->nullable();
+            $table->timestamp('status_date');
+            $table->string('process_photo', 255);
+            $table->text('note')->nullable();
+
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
             $table->string('updated_by', 40)->nullable();
@@ -36,9 +41,10 @@ return new class extends Migration
             $table->string('deleted_by', 40)->nullable();
             $table->boolean('deleted_flag')->default(false)->nullable();
 
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('segment_id')->references('id')->on('segments');
             $table->foreign('description_id')->references('id')->on('descriptions');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('status_id')->references('id')->on('statuses');
         });
     }
 
