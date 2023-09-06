@@ -8,14 +8,14 @@ use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProcessResource;
-use App\Models\Process;
+use App\Http\Resources\StatusResource;
+use App\Models\Status;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ProcessController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,19 +34,19 @@ class ProcessController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND processes.process_name LIKE '%$search_term%'";
+                $conditions .= " AND statuses.status LIKE '%$search_term%'";
             }
 
-            $paginate = Process::query()->select(['processes.*'])
+            $paginate = Status::query()->select(['statuses.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Process::query()
+            $countAll = Status::query()
                 ->count();
 
             // paging response.
-            $response = ProcessResource::collection($paginate);
+            $response = StatusResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,7 +70,7 @@ class ProcessController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'process_name' => ['required', 'string', 'min:1', 'max:20'],
+            'status' => ['required', 'string', 'min:1', 'max:40'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -79,19 +79,19 @@ class ProcessController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $processData = new Process();
+        $statusData = new Status();
 
         // input data process
-        $processData->process_name = $data['process_name'];
-        $processData->created_at = $timeNow;
-        $processData->updated_at = $timeNow;
-        $processData->created_by = auth()->user()->fullname;
-        $processData->updated_by = null;
+        $statusData->status = $data['status'];
+        $statusData->created_at = $timeNow;
+        $statusData->updated_at = $timeNow;
+        $statusData->created_by = auth()->user()->fullname;
+        $statusData->updated_by = null;
 
         // save process
-        $processData->save();
+        $statusData->save();
 
-        return $processData;
+        return $statusData;
     }
 
     /**
@@ -109,7 +109,7 @@ class ProcessController extends Controller
             DB::commit();
 
             // return
-            $single = new ProcessResource($model);
+            $single = new StatusResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -132,11 +132,11 @@ class ProcessController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Process::query()->find($id);
+            $model = Status::query()->find($id);
             if (empty($model)) {
                 throw new BadRequestHttpException("Proses tidak ada");
             }
-            $single = new ProcessResource($model);
+            $single = new StatusResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -159,7 +159,7 @@ class ProcessController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'process_name' => ['required', 'string', 'min:1', 'max:20'],
+            'status' => ['required', 'string', 'min:1', 'max:40'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -168,20 +168,20 @@ class ProcessController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find process by id
-        $processData = Process::find($id);
+        // Find status by id
+        $statusData = Status::find($id);
 
-        if (empty($processData)) {
+        if (empty($statusData)) {
             throw new \Exception("Invalid process id", 406);
         }
-        $processData->id = $id;
-        $processData->process_name = $data['process_name'];
-        $processData->updated_at = $timeNow;
-        $processData->updated_by = auth()->user()->fullname;
+        $statusData->id = $id;
+        $statusData->status = $data['status'];
+        $statusData->updated_at = $timeNow;
+        $statusData->updated_by = auth()->user()->fullname;
         //Save
-        $processData->save();
+        $statusData->save();
 
-        return $processData;
+        return $statusData;
     }
 
     /**
@@ -200,7 +200,7 @@ class ProcessController extends Controller
             DB::commit();
 
             // return.
-            $single = new ProcessResource($data);
+            $single = new StatusResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -223,16 +223,16 @@ class ProcessController extends Controller
     protected function delete($id)
     {
 
-        $process = Process::find($id);
-        if ($process == null) {
-            throw new \Exception("Proses tidak ada", 404);
+        $status = Status::find($id);
+        if ($status == null) {
+            throw new \Exception("Status tidak ada", 404);
         }
-        $process->deleted_by = auth()->user()->fullname;
-        $process->save();
+        $status->deleted_by = auth()->user()->fullname;
+        $status->save();
 
-        $process->delete();
+        $status->delete();
 
-        return $process;
+        return $status;
     }
     public function destroy(string $id)
     {
@@ -241,7 +241,7 @@ class ProcessController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Proses berhasil dihapus.");
+            return ResponseStd::okNoOutput("Status berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e instanceof ValidationException) {

@@ -68,11 +68,6 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function process()
-    {
-        return $this->belongsTo(Process::class);
-    }
-
     public function status()
     {
         return $this->belongsTo(Status::class);
