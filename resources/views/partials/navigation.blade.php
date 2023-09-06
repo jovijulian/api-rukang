@@ -205,8 +205,8 @@
           <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
               data-feather="settings"></i>Settings</a>
           <hr class="m-0">
-          <button class="dropdown-item logout pb-0 logout-account"><img src="{{ url('assets/img/icons/log-out.svg') }}"
-              class="me-2" alt="img">Logout</button>
+          <button class="dropdown-item logout pb-0 logout-account"><img
+              src="{{ url('assets/img/icons/log-out.svg') }}" class="me-2" alt="img">Logout</button>
         </div>
       </div>
     </li>
@@ -234,7 +234,7 @@
         <li class="submenu-open">
           <h6 class="submenu-hdr">Main</h6>
           <ul>
-            <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}">
+            <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
               <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
             </li>
             <li class="submenu">
@@ -246,6 +246,16 @@
                 <li><a href="email.html">Email</a></li>
               </ul>
             </li>
+          </ul>
+        </li>
+        <li class="submenu-open">
+          <h6 class="submenu-hdr">Manajemen Master</h6>
+          <ul>
+            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i
+                  data-feather="pie-chart"></i><span>Segmen</span></a></li>
+            <li><a href="/"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
+            <li><a href="/"><i data-feather="codepen"></i><span>Kategori</span></a></li>
+            <li><a href="/"><i data-feather="package"></i><span>Status</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -263,12 +273,14 @@
         <li class="submenu-open is-admin">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="user/inactive-user" class="{{ (request()->is('user/inactive-user')) ? 'active' : '' }}"><i data-feather="users"></i><span>Verifikasi User</span></a></li>
+            <li><a href="user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i
+                  data-feather="users"></i><span>Verifikasi User</span></a></li>
             <li class="submenu">
-              <a href="javascript:void(0);" class="{{ (request()->is('user*')) ? 'active subdrop' : '' }}"><i data-feather="users"></i><span>User</span><span
-                  class="menu-arrow"></span></a>
+              <a href="javascript:void(0);" class="{{ request()->is('user*') ? 'active subdrop' : '' }}"><i
+                  data-feather="users"></i><span>User</span><span class="menu-arrow"></span></a>
               <ul>
-                <li><a href="user/inactive-user" class="{{ (request()->is('user/inactive-user')) ? 'active' : '' }}">Verifikasi User</a></li>
+                <li><a href="user/inactive-user"
+                    class="{{ request()->is('user/inactive-user') ? 'active' : '' }}">Verifikasi User</a></li>
                 <li><a href="userlists.html">Users List</a></li>
               </ul>
             </li>
@@ -491,6 +503,8 @@
 <script>
   $(document).ready(function() {
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
 
     !currentUser.isAdmin && $('.is-admin').hide()
 
@@ -498,8 +512,7 @@
     $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')
 
     $('.logout-account').on('click', function() {
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+      $('#global-loader').show()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -513,14 +526,15 @@
 
       axios.delete("{{ url('api/v1/auth/logout') }}", config)
         .then(function(res) {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: res.data.meta.message,
-            showConfirmButton: false,
-            timer: 3000
-          })
-          
+
+          // Swal.fire({
+          //   position: 'center',
+          //   icon: 'success',
+          //   title: res.data.meta.message,
+          //   showConfirmButton: false,
+          //   timer: 3000
+          // })
+
           localStorage.clear()
 
           window.location.href = "{{ url('/') }}"
