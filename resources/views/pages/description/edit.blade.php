@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Segmen</title>
+  <title>Edit Deskripsi</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Segmen</h3>
+            <h3 class="page-title">Edit Data Deskripsi</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/segment') }}">Segmen</a></li>
-              <li class="breadcrumb-item active">Edit Segmen</li>
+              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Deskripsi</a></li>
+              <li class="breadcrumb-item active">Edit Deskripsi</li>
             </ul>
           </div>
         </div>
@@ -29,23 +29,11 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="update-segment-form">
+              <form id="update-description-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama</label>
+                  <label class="col-lg-2 col-form-label">Deskripsi</label>
                   <div class="col-lg-10">
-                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tempat</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Warna Barcode</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
+                    <input type="text" id="description" class="form-control" placeholder="Masukan deskripsi" required>
                   </div>
                 </div>
                 <div class="text-end">
@@ -82,38 +70,34 @@
       
       getData()
 
-      $('#update-segment-form').on('submit', () => {
+      $('#update-description-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
         const data = {
-          segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
-          barcode_color: $('#barcode-color').val(),
+          description: $('#description').val(),
         }
 
 
-        axios.put("{{ url('api/v1/segment/update/' . $id) }}", data, config)
+        axios.put("{{ url('api/v1/description/update/' . $id) }}", data, config)
           .then(res => {
-            const segmen = res.data.data.item
-            sessionStorage.setItem("success", `${segmen.segment_name} berhasil diedit`)
-            window.location.href = "{{ url('/segment') }}"
+            const description = res.data.data.item
+            sessionStorage.setItem("success", `${description.description} berhasil diedit`)
+            window.location.href = "{{ url('/description') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Segmen gagal diedit', '', 'error')
+            Swal.fire('Deskripsi gagal diedit', '', 'error')
             console.log(err)
           })
 
       })
 
       function getData() {
-        axios.get("{{ url('api/v1/segment/detail/' . $id) }}", config)
+        axios.get("{{ url('api/v1/description/detail/' . $id) }}", config)
           .then(res => {
             const data = res.data.data.item
-            $('#segment-name').val(data.segment_name)
-            $('#segment-place').val(data.segment_place)
-            $('#barcode-color').val(data.barcode_color)
+            $('#description').val(data.description)
           })
           .catch(err => {
             console.log(err)
