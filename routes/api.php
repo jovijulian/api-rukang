@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DescriptionController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\ShippingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
@@ -92,6 +93,15 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
             Route::put('/update-status/{id}', 'setStatusProduct')->middleware('auth:api');
+        });
+    });
+    Route::prefix('shipping')->group(function () {
+        Route::controller(ShippingController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
         });
     });
 });
