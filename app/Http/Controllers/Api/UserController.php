@@ -88,7 +88,7 @@ class UserController extends Controller
             if (!empty($search_term)) {
                 $conditions .= " AND email LIKE '%$search_term%'";
             }
-            $paginate = User::query()->where('isActive', 0)
+            $paginate = User::query()->where('isActive', 0)->whereNotNull('email_verified_at')
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);

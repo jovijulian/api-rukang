@@ -48,13 +48,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'address',
         'birthdate',
         'isActive',
+        'isAdmin',
         'group_id',
         'group_name',
         'created_by',
         'updated_by',
         'reset_password_token',
         'token_expire',
-        'isAdmin'
     ];
 
     /**
