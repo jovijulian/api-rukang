@@ -80,7 +80,7 @@ class ProductController extends Controller
                     $query->whereNotNull('deleted_at');
                 }),
             ],
-            // '"1/0"' => ['required', 'min:1', 'max:100'],
+            'process_photo' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -93,6 +93,8 @@ class ProductController extends Controller
         // $imagePath = $request->file('image')->store('images', 'digitalocean');
         $productId = Uuid::uuid4()->toString();
         $productData->id = $productId;
+        $productData->category_id = $data['category_id'];
+        $productData->category = $data['category'];
         $productData->segment_id = $data['segment_id'];
         $productData->segment_name = $data['segment_name'];
         $productData->barcode = $data['barcode'];
@@ -105,25 +107,29 @@ class ProductController extends Controller
         $productData->description_id = $data['description_id'];
         $productData->description = $data['description'];
         $productData->delivery_date = $data['delivery_date'];
-        $productData->image = $data['image'];
-        $productData->category_id = $data['category_id'];
-        $productData->category = $data['category'];
+        $productData->status_id = $data['status_id'];
+        $productData->status = $data['status'];
+        $productData->status_date = $timeNow;
+        $productData->process_photo = $data['process_photo'];
+        $productData->note = $data['note'];
+
         $productData->created_at = $timeNow;
         $productData->updated_at = $timeNow;
         $productData->created_by = auth()->user()->fullname;
         $productData->updated_by = null;
 
-        // save category
+        // save status
         $productData->save();
 
         $statusLogData = new StatusLog();
         $statusLogId = Uuid::uuid4()->toString();
         $statusLogData->id = $statusLogId;
         $statusLogData->product_id = $productData->id;;
-        $statusLogData->process_id = 1;
-        $statusLogData->process_name = 'Selesai Produksi';
-        $statusLogData->status_date = $timeNow;
-        $statusLogData->process_attachment = null;
+        $statusLogData->status_id = $productData->status_id;
+        $statusLogData->status_name = $productData->status;
+        $statusLogData->status_date = $productData->status_date;
+        $statusLogData->status_photo = $productData->process_photo;
+        $statusLogData->note = $productData->note;
         $statusLogData->created_at = $timeNow;
         $statusLogData->updated_at = $timeNow;
         $statusLogData->created_by = auth()->user()->fullname;
@@ -199,7 +205,13 @@ class ProductController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'barcode' => ['required', 'min:1', 'max:100'],
+            'barcode' => [
+                'required', 'min:1', 'max:100',
+                Rule::unique('products')->where(function ($query) {
+                    $query->whereNotNull('deleted_at');
+                }),
+            ],
+            'process_photo' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -215,6 +227,8 @@ class ProductController extends Controller
             throw new \Exception("Invalid product id", 406);
         }
         $productData->id = $id;
+        $productData->category_id = $data['category_id'];
+        $productData->category = $data['category'];
         $productData->segment_id = $data['segment_id'];
         $productData->segment_name = $data['segment_name'];
         $productData->barcode = $data['barcode'];
@@ -227,9 +241,11 @@ class ProductController extends Controller
         $productData->description_id = $data['description_id'];
         $productData->description = $data['description'];
         $productData->delivery_date = $data['delivery_date'];
-        $productData->image = $data['image'];
-        $productData->category_id = $data['category_id'];
-        $productData->category = $data['category'];
+        $productData->status_id = $data['status_id'];
+        $productData->status = $data['status'];
+        $productData->status_date;
+        $productData->process_photo = $data['process_photo'];
+        $productData->note = $data['note'];
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save
@@ -356,10 +372,11 @@ class ProductController extends Controller
         }
         $statusLog->id = $id;
         $statusLog->product_id = $data['product_id'];
-        $statusLog->process_id = $data['process_id'];
-        $statusLog->process_name = $data['process_name'];
+        $statusLog->status_id = $data['status_id'];
+        $statusLog->status_name = $data['status_name'];
         $statusLog->status_date = $timeNow;
-        $statusLog->process_attachment = $data['process_attachment'];
+        $statusLog->status_photo = $data['status_photo'];
+        $statusLog->note = $data['note'];
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
 

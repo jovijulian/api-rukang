@@ -17,6 +17,8 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'category_id' => $this->category_id,
+            'category' => $this->category,
             'segment_id' => $this->segment_id,
             'segment_name' => $this->segment_name,
             'barcode' => $this->barcode,
@@ -29,14 +31,12 @@ class ProductResource extends JsonResource
             'description_id' => $this->description_id,
             'description' => $this->description,
             'delivery_date' => $this->delivery_date,
-            'image' => $this->image,
-            'category_id' => $this->category_id,
-            'category' => $this->module_number,
+            'status_log' => new StatusLogResource(StatusLog::where('product_id', $this->id)->first()),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
-            'status' => new StatusLogResource(StatusLog::where('product_id', $this->id)->first()),
+
         ];
     }
 }

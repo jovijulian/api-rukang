@@ -32,6 +32,8 @@ class Product extends Model
     ];
 
     protected $fillable = [
+        'category_id',
+        'category',
         'segment_id',
         'segment_name',
         'barcode',
@@ -44,9 +46,11 @@ class Product extends Model
         'description_id',
         'description',
         'delivery_date',
-        'image',
-        'category_id',
-        'category',
+        'status_id',
+        'status',
+        'status_date',
+        'process_photo',
+        'note',
         'created_by',
         'updated_by',
         'deleted_by',
