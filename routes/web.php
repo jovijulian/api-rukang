@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DescriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
@@ -53,6 +54,12 @@ Route::controller(DescriptionController::class)->group(function () {
     Route::get('description/', 'index');
     Route::get('description/insert', 'insert');
     Route::get('description/edit/{id}', 'edit');
+});
+
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('category/', 'index');
+    Route::get('category/insert', 'insert');
+    Route::get('category/edit/{id}', 'edit');
 });
 
 Route::get('product', function () {
