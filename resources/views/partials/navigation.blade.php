@@ -254,6 +254,7 @@
             <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
             <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
             <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
+            <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
             <li><a href="/"><i data-feather="package"></i><span>Status</span></a></li>
           </ul>
         </li>

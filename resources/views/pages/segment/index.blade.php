@@ -107,7 +107,7 @@
         </div>
         <!-- /Filter -->
         <div class="table-responsive">
-          <table id="data-user-inactive" class="table datanew">
+          <table id="segment-table" class="table datanew">
             <thead>
               <tr>
                 <th>No</th>
@@ -148,7 +148,7 @@
       }
 
       // GET DATA
-      const table = $('#data-user-inactive').DataTable()
+      const table = $('#segment-table').DataTable()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
