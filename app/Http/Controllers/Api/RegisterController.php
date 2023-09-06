@@ -69,6 +69,7 @@ class RegisterController extends BaseApiController
             'group_id' => $data['group_id'],
             'group_name' => $data['group_name'],
             'created_by' => $data['email'],
+            'isAdmin' => 0,
         ]);
         return $user;
     }
