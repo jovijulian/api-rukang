@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\SegmentController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -60,6 +61,12 @@ Route::controller(CategoryController::class)->group(function () {
     Route::get('category/', 'index');
     Route::get('category/insert', 'insert');
     Route::get('category/edit/{id}', 'edit');
+});
+
+Route::controller(StatusController::class)->group(function () {
+    Route::get('status/', 'index');
+    Route::get('status/insert', 'insert');
+    Route::get('status/edit/{id}', 'edit');
 });
 
 Route::get('product', function () {

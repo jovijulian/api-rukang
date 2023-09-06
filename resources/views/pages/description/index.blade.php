@@ -107,7 +107,7 @@
         </div>
         <!-- /Filter -->
         <div class="table-responsive">
-          <table id="data-user-inactive" class="table datanew">
+          <table id="description-table" class="table datanew">
             <thead>
               <tr>
                 <th>No</th>
@@ -146,7 +146,7 @@
       }
 
       // GET DATA
-      const table = $('#data-user-inactive').DataTable()
+      const table = $('#description-table').DataTable()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -160,7 +160,7 @@
 
       getData()
 
-      // GET SEGMENT
+      // GET DESCRIPTION
       function getData() {
         axios.get("{{ url('api/v1/description/index') }}", config)
           .then(function(res) {

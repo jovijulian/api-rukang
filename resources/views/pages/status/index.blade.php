@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Kategori</title>
+  <title>Status</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>Kategori</h4>
-        <h6>Manajemen Data Kategori</h6>
+        <h4>Status</h4>
+        <h6>Manajemen Data Status</h6>
       </div>
       <div class="page-btn">
-        <a href="/category/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Kategori Baru</a>
+        <a href="/status/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Status Baru</a>
       </div>
     </div>
 
@@ -107,11 +107,11 @@
         </div>
         <!-- /Filter -->
         <div class="table-responsive">
-          <table id="category-table" class="table datanew">
+          <table id="status-table" class="table datanew">
             <thead>
               <tr>
                 <th>No</th>
-                <th>Nama</th>
+                <th>Status</th>
                 <th>Dibuat</th>
                 <th>Diubah</th>
                 <th>Dibuat Oleh</th>
@@ -146,7 +146,7 @@
       }
 
       // GET DATA
-      const table = $('#category-table').DataTable()
+      const table = $('#status-table').DataTable()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -160,25 +160,25 @@
 
       getData()
 
-      // GET CATEGORY
+      // GET STATUS
       function getData() {
-        axios.get("{{ url('api/v1/category/index') }}", config)
+        axios.get("{{ url('api/v1/status/index') }}", config)
           .then(function(res) {
-            const categories = res.data.data.items
+            const statuses = res.data.data.items
 
-            categories.map((category, i) => {
-              const formattedCreatedAt = new Date(category.created_at).toISOString().split('T')[0];
-              const formattedUpdatedAt = new Date(category.updated_at).toISOString().split('T')[0];
+            statuses.map((status, i) => {
+              const formattedCreatedAt = new Date(status.created_at).toISOString().split('T')[0];
+              const formattedUpdatedAt = new Date(status.updated_at).toISOString().split('T')[0];
 
               table.row.add([
                 i + 1,
-                category.category,
+                status.status,
                 formattedCreatedAt,
                 formattedUpdatedAt,
-                category.created_by,
-                category.updated_by,
+                status.created_by,
+                status.updated_by,
                 `
-                  <a class="me-3" href="/category/edit/${category.id}">
+                  <a class="me-3" href="/status/edit/${status.id}">
                     <img src="assets/img/icons/edit.svg" alt="img">
                   </a>
                 `,
