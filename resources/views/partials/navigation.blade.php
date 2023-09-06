@@ -253,20 +253,8 @@
           <ul>
             <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
             <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
-            <li><a href="/"><i data-feather="codepen"></i><span>Kategori</span></a></li>
+            <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
             <li><a href="/"><i data-feather="package"></i><span>Status</span></a></li>
-          </ul>
-        </li>
-        <li class="submenu-open">
-          <h6 class="submenu-hdr">Products</h6>
-          <ul>
-            <li><a href="/product"><i data-feather="box"></i><span>Products</span></a></li>
-            <li><a href="addproduct.html"><i data-feather="plus-square"></i><span>Create Product</span></a></li>
-            <li><a href="categorylist.html"><i data-feather="codepen"></i><span>Category</span></a></li>
-            <li><a href="brandlist.html"><i data-feather="tag"></i><span>Brands</span></a></li>
-            <li><a href="subcategorylist.html"><i data-feather="speaker"></i><span>Sub Category</span></a></li>
-            <li><a href="barcode.html"><i data-feather="align-justify"></i><span>Print Barcode</span></a></li>
-            <li><a href="importproduct.html"><i data-feather="minimize-2"></i><span>Import Products</span></a></li>
           </ul>
         </li>
         <li class="submenu-open is-admin">
@@ -284,6 +272,20 @@
             </li> --}}
           </ul>
         </li>
+
+
+        <li class="submenu-open">
+          <h6 class="submenu-hdr">Products</h6>
+          <ul>
+            <li><a href="/product"><i data-feather="box"></i><span>Products</span></a></li>
+            <li><a href="addproduct.html"><i data-feather="plus-square"></i><span>Create Product</span></a></li>
+            <li><a href="categorylist.html"><i data-feather="codepen"></i><span>Category</span></a></li>
+            <li><a href="brandlist.html"><i data-feather="tag"></i><span>Brands</span></a></li>
+            <li><a href="subcategorylist.html"><i data-feather="speaker"></i><span>Sub Category</span></a></li>
+            <li><a href="barcode.html"><i data-feather="align-justify"></i><span>Print Barcode</span></a></li>
+            <li><a href="importproduct.html"><i data-feather="minimize-2"></i><span>Import Products</span></a></li>
+          </ul>
+        </li>        
         <li class="submenu-open">
           <h6 class="submenu-hdr">Sales</h6>
           <ul>
