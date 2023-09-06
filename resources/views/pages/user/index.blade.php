@@ -135,6 +135,19 @@
       const tokenType = localStorage.getItem('token_type')
       const accessToken = localStorage.getItem('access_token')
 
+      // NOTIF VERIFY USER
+      const success = sessionStorage.getItem("success")
+      if (success) {
+        Swal.fire('User Berhasil Terverifikasi!', '', 'success')
+        sessionStorage.removeItem("success")
+      }
+
+      // REDIRECT IF NOT ADMIN
+      if(!currentUser.isAdmin) {
+        window.location.href = "{{ url('/dashboard') }}"
+      }
+
+      // GET DATA
       const table = $('#data-user-inactive').DataTable()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -154,10 +167,10 @@
         axios.get("{{ url('api/v1/user/user-inactive') }}", config)
           .then(function(res) {
             const users = res.data.data.items
-  
+
             users.map((user, i) => {
               const formattedCreatedAt = new Date(user.created_at).toISOString().split('T')[0];
-  
+
               table.row.add([
                 user.fullname,
                 user.phone_number,
@@ -169,7 +182,7 @@
                 `<button class="p-2 btn btn-submit btn-verify" id="${user.id}" >Verifikasi Akun</button>`,
               ]).draw(false)
             })
-  
+
             $('.btn-verify').on('click', (e) => {
               updateUserActive(e.target.id)
             })
@@ -189,20 +202,14 @@
           cancelButtonText: 'Kembali'
         }).then((result) => {
           if (result.isConfirmed) {
-            Swal.fire({
-              title:'Mohon tunggu',
-              allowOutsideClick: false,
-              showConfirmButton: false,
-              willOpen: () => {
-                Swal.showLoading()
-              }
-            })
+            $('#global-loader').show()
 
-            axios.put(`{{ url('api/v1/user/update-status-user/${id}') }}`, { isActive: 1 }, config)
+            axios.put(`{{ url('api/v1/user/update-status-user/${id}') }}`, {
+                isActive: 1
+              }, config)
               .then(res => {
-                table.clear()
-                getData()
-                Swal.fire('User Berhasil Terverifikasi!', '', 'success')
+                sessionStorage.setItem("success", "User Berhasil Terverifikasi!")
+                location.reload()
               })
               .catch(err => {
                 Swal.fire('User Gagal Terverifikasi!', '', 'error')
