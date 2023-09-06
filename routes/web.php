@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DescriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
@@ -48,6 +49,11 @@ Route::controller(SegmentController::class)->group(function () {
     Route::get('segment/edit/{id}', 'edit');
 });
 
+Route::controller(DescriptionController::class)->group(function () {
+    Route::get('description/', 'index');
+    Route::get('description/insert', 'insert');
+    Route::get('description/edit/{id}', 'edit');
+});
 
 Route::get('product', function () {
     return view('pages.product.index');

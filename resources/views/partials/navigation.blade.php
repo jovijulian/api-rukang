@@ -251,9 +251,8 @@
         <li class="submenu-open">
           <h6 class="submenu-hdr">Manajemen Master</h6>
           <ul>
-            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i
-                  data-feather="pie-chart"></i><span>Segmen</span></a></li>
-            <li><a href="/"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
+            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
+            <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
             <li><a href="/"><i data-feather="codepen"></i><span>Kategori</span></a></li>
             <li><a href="/"><i data-feather="package"></i><span>Status</span></a></li>
           </ul>
@@ -273,9 +272,8 @@
         <li class="submenu-open is-admin">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i
-                  data-feather="users"></i><span>Verifikasi User</span></a></li>
-            <li class="submenu">
+            <li><a href="user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>Verifikasi User</span></a></li>
+            {{-- <li class="submenu">
               <a href="javascript:void(0);" class="{{ request()->is('user*') ? 'active subdrop' : '' }}"><i
                   data-feather="users"></i><span>User</span><span class="menu-arrow"></span></a>
               <ul>
@@ -283,7 +281,7 @@
                     class="{{ request()->is('user/inactive-user') ? 'active' : '' }}">Verifikasi User</a></li>
                 <li><a href="userlists.html">Users List</a></li>
               </ul>
-            </li>
+            </li> --}}
           </ul>
         </li>
         <li class="submenu-open">

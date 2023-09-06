@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Tambah Segmen</title>
+  <title>Tambah Deskripsi</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Tambah Data Segmen</h3>
+            <h3 class="page-title">Tambah Data Deskripsi</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/segment') }}">Segmen</a></li>
-              <li class="breadcrumb-item active">Tambah Segmen</li>
+              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Deskripsi</a></li>
+              <li class="breadcrumb-item active">Tambah Deskripsi</li>
             </ul>
           </div>
         </div>
@@ -29,23 +29,11 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="insert-segment-form">
+              <form id="insert-description-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama</label>
+                  <label class="col-lg-2 col-form-label">Deskripsi</label>
                   <div class="col-lg-10">
-                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tempat</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Warna Barcode</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
+                    <input type="text" id="description" class="form-control" placeholder="Masukan deskripsi" required>
                   </div>
                 </div>
                 <div class="text-end">
@@ -71,14 +59,12 @@
       }
 
 
-      $('#insert-segment-form').on('submit', () => {
+      $('#insert-description-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
         const data = {
-          segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
-          barcode_color: $('#barcode-color').val(),
+          description: $('#description').val(),
         }
 
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -91,15 +77,15 @@
           }
         }
 
-        axios.post("{{ url('api/v1/segment/create') }}", data, config)
+        axios.post("{{ url('api/v1/description/create') }}", data, config)
           .then(res => {
-            const segmen = res.data.data.item
-            sessionStorage.setItem("success", `Segmen ${segmen.segment_name} berhasil ditambahkan`)
-            window.location.href = "{{ url('/segment') }}"
+            const description = res.data.data.item
+            sessionStorage.setItem("success", `${description.description} berhasil ditambahkan`)
+            window.location.href = "{{ url('/description') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Segmen gagal ditambahkan', '', 'error')
+            Swal.fire('Deskripsi gagal ditambahkan', '', 'error')
             console.log(err)
           })
 
