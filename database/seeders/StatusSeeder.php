@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Process;
+use App\Models\Status;
 use Illuminate\Database\Seeder;
 
-class ProcessSeeder extends Seeder
+class StatusSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,9 @@ class ProcessSeeder extends Seeder
     public function run()
     {
         $timeNow = \Carbon\Carbon::now();
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "1",
-            'process_name' => "Selesai Produksi",
+            'status' => "Selesai Produksi",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -25,9 +25,9 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "2",
-            'process_name' => "Siap dikirim",
+            'status' => "Siap dikirim",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -35,9 +35,9 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "3",
-            'process_name' => "Sedang dikirim",
+            'status' => "Siap dikirim (cat di IKN)",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -45,9 +45,9 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "4",
-            'process_name' => "Diterima",
+            'status' => "Sedang dikirim",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -55,9 +55,9 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "5",
-            'process_name' => "Disimpan",
+            'status' => "Diterima",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -65,9 +65,9 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "6",
-            'process_name' => "Perakitan",
+            'status' => "Disimpan",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",
@@ -75,9 +75,19 @@ class ProcessSeeder extends Seeder
             'deleted_by' => "",
         ]);
 
-        Process::query()->create([
+        Status::query()->create([
             'id' =>  "7",
-            'process_name' => "Instalasi",
+            'status' => "Perakitan",
+            'created_at' => $timeNow,
+            'updated_at' => $timeNow,
+            'created_by' => "admin@admin.com",
+            'updated_by' => "",
+            'deleted_by' => "",
+        ]);
+
+        Status::query()->create([
+            'id' =>  "8",
+            'status' => "Instalasi",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
             'created_by' => "admin@admin.com",

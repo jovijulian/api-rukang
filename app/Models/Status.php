@@ -6,17 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StatusLog extends Model
+class Status extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The primary key for the model.
-     *
-     * @var string
-     */
-
-    protected $table = 'status_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -32,27 +25,23 @@ class StatusLog extends Model
      * @var string
      */
     protected $keyType = 'string';
+
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'product_id',
-        'status_id',
         'status',
-        'status_date',
-        'photo_status',
-        'note',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    public function product()
+    public function logStatus()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(StatusLog::class);
     }
 
-    public function statuses()
+    public function products()
     {
-        return $this->hasMany(Status::class);
+        return $this->hasMany(Product::class);
     }
 }
