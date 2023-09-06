@@ -510,8 +510,16 @@
 
     $('.fullname').text(currentUser.fullname)
     $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')
+    $('#btnFullscreen').on('click', () => {
+      toggleFullScreen()
+    })
 
     $('.logout-account').on('click', function() {
+      logout()
+    })
+
+
+    function logout() {
       $('#global-loader').show()
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -542,8 +550,28 @@
         .catch(function(err) {
           console.log(err)
         })
+    }
 
-    })
+    function toggleFullScreen() {
+      if (!document.fullscreenElement && // alternative standard method
+        !document.mozFullScreenElement && !document.webkitFullscreenElement) { // current working methods
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+          document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+      } else {
+        if (document.cancelFullScreen) {
+          document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        }
+      }
+    }
   })
 </script>
 <!-- /Sidebar -->
