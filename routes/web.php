@@ -5,6 +5,7 @@ use App\Http\Controllers\DescriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
@@ -69,8 +70,10 @@ Route::controller(StatusController::class)->group(function () {
     Route::get('status/edit/{id}', 'edit');
 });
 
-Route::get('product', function () {
-    return view('pages.product.index');
+Route::controller(ProductController::class)->group(function () {
+    Route::get('product/', 'index');
+    Route::get('product/insert', 'insert');
+    Route::get('product/edit/{id}', 'edit');
 });
 
 
