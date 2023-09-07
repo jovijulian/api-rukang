@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\StatusLogResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -90,7 +91,13 @@ class ProductController extends Controller
 
         $timeNow = Carbon::now();
         $productData = new Product();
-        // $imagePath = $request->file('image')->store('images', 'digitalocean');
+        $image_url = null;
+        Storage::exists('product') or Storage::makeDirectory('product');
+        if ($data['process_photo']) {
+            $image = Storage::putFile('product', $data['process_photo'], 'public');
+            $image_url = Storage::url($image);
+        }
+
         $productId = Uuid::uuid4()->toString();
         $productData->id = $productId;
         $productData->category_id = $data['category_id'];
@@ -110,7 +117,7 @@ class ProductController extends Controller
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
         $productData->status_date = $timeNow;
-        $productData->process_photo = $data['process_photo'];
+        $productData->process_photo = $image_url;
         $productData->note = $data['note'];
 
         $productData->created_at = $timeNow;
@@ -124,7 +131,7 @@ class ProductController extends Controller
         $statusLogData = new StatusLog();
         $statusLogId = Uuid::uuid4()->toString();
         $statusLogData->id = $statusLogId;
-        $statusLogData->product_id = $productData->id;;
+        $statusLogData->product_id = $productData->id;
         $statusLogData->status_id = $productData->status_id;
         $statusLogData->status_name = $productData->status;
         $statusLogData->status_date = $productData->status_date;
@@ -211,7 +218,7 @@ class ProductController extends Controller
                     $query->whereNotNull('deleted_at');
                 }),
             ],
-            'process_photo' => ['required'],
+            'process_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -226,6 +233,20 @@ class ProductController extends Controller
         if (empty($productData)) {
             throw new \Exception("Invalid product id", 406);
         }
+
+        $image_url = $data['process_photo'];
+        if ($data['process_photo']) {
+            $image = Storage::putFile('product', $data['process_photo'], 'public');
+            $image_url = Storage::url($image);
+            //hapus picture sebelumnya
+            if (isset($productData->process_photo)) {
+                $old = parse_url($productData->process_photo);
+                if (Storage::exists($old['path'])) {
+                    Storage::delete($old['path']);
+                }
+            }
+        }
+
         $productData->id = $id;
         $productData->category_id = $data['category_id'];
         $productData->category = $data['category'];
@@ -244,12 +265,25 @@ class ProductController extends Controller
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
         $productData->status_date;
-        $productData->process_photo = $data['process_photo'];
+        $productData->process_photo = $image_url;
         $productData->note = $data['note'];
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save
         $productData->save();
+
+        $statusLogData = StatusLog::where('product_id', $id)->first();
+        $statusId = $statusLogData->id;
+        $statusLogData->id = $statusId;
+        $statusLogData->product_id;
+        $statusLogData->status_id = $productData->status_id;
+        $statusLogData->status_name = $productData->status;
+        $statusLogData->status_date = $productData->status_date;
+        $statusLogData->status_photo = $productData->process_photo;
+        $statusLogData->note = $productData->note;
+        $statusLogData->updated_at = $productData->updated_at;
+        $statusLogData->updated_by = $productData->updated_by;
+        $statusLogData->save();
 
         return $productData;
     }
@@ -299,6 +333,13 @@ class ProductController extends Controller
             throw new \Exception("Produk tidak ada", 404);
         }
 
+        if (isset($product->process_photo)) {
+            $old = parse_url($product->process_photo);
+            if (Storage::exists($old['path'])) {
+                Storage::delete($old['path']);
+            }
+        }
+
         $statusLog = StatusLog::where('product_id', $id)->first();
         $statusLog->deleted_by = auth()->user()->fullname;
         $statusLog->save();
@@ -334,14 +375,24 @@ class ProductController extends Controller
         }
     }
 
+    protected function validateUpdateStatus(array $data)
+    {
+        $arrayValidator = [
+            'status_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
+        ];
+        return Validator::make($data, $arrayValidator);
+    }
+
     public function setStatusProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $data = $this->updateStatusProduct($id, $request->all(), $request);
-            if (empty($data)) {
-                throw new BadRequestHttpException("Product Not Found.");
+            $validate = $this->validateUpdateStatus($request->all());
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
             }
+            $data = $this->updateStatusProduct($id, $request->all(), $request);
+
             DB::commit();
             $single = new StatusLogResource($data);
             return ResponseStd::okSingle($single);
@@ -370,12 +421,26 @@ class ProductController extends Controller
         if (empty($statusLog)) {
             throw new \Exception("Invalid status log id", 406);
         }
+
+        $image_url = $data['status_photo'];
+        if ($data['status_photo']) {
+            $image = Storage::putFile('product', $data['status_photo'], 'public');
+            $image_url = Storage::url($image);
+            //hapus picture sebelumnya
+            if (isset($statusLog->status_photo)) {
+                $old = parse_url($statusLog->status_photo);
+                if (Storage::exists($old['path'])) {
+                    Storage::delete($old['path']);
+                }
+            }
+        }
+
         $statusLog->id = $id;
         $statusLog->product_id = $data['product_id'];
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
         $statusLog->status_date = $timeNow;
-        $statusLog->status_photo = $data['status_photo'];
+        $statusLog->status_photo = $image_url;
         $statusLog->note = $data['note'];
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
