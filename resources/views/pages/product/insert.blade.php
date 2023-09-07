@@ -34,14 +34,6 @@
                 <h5 class="card-title mb-4">Kategori & Segmen</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
-                    {{-- <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Kategori</label>
-                      <div class="col-lg-9">
-                        <select id="category-product" class="form-control select">
-                          <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
-                        </select>
-                      </div>
-                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Kategori</label>
                       <div class="col-lg-9">
@@ -50,20 +42,20 @@
                         </select>
                       </div>
                     </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Warna Barcode</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="barcode-color" class="form-control" placeholder="Pilih segmen" disabled>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-6">
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Segmen</label>
                       <div class="col-lg-9">
                         <select id="segment-product" class="form-control select">
                           <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
                         </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6">
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Warna Barcode</label>
+                      <div class="col-lg-9">
+                        <input type="text" id="barcode-color" class="form-control" placeholder="Pilih segmen" disabled>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -81,7 +73,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Modul</label>
                       <div class="col-lg-9">
-                        <input type="text" class="form-control" placeholder="Masukan nomor modul">
+                        <input type="text" id="module-number" class="form-control" placeholder="Masukan nomor modul">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -105,27 +97,27 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Rak</label>
                       <div class="col-lg-9">
-                        <input type="text" class="form-control" placeholder="Masukan nomor rak">
+                        <input type="text" id="shelf-number" class="form-control" placeholder="Masukan nomor rak">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tanggal Produksi</label>
                       <div class="col-lg-9">
-                        <input type="date" class="form-control text-sm">
+                        <input type="date" id="production-date" class="form-control text-sm">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">1/0</label>
                       <div class="col-lg-9 my-auto">
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="gender" id="gender_male" value="option1">
-                          <label class="form-check-label" for="gender_male">
+                          <input class="form-check-input io" name="io-radio" type="radio" id="io-yes" value=1>
+                          <label class="form-check-label" for="io-yes">
                             Ya
                           </label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="gender" id="gender_female" value="option2">
-                          <label class="form-check-label" for="gender_female">
+                          <input class="form-check-input io" type="radio" name="io-radio" id="io-no" value=0>
+                          <label class="form-check-label" for="io-no">
                             Tidak
                           </label>
                         </div>
@@ -135,14 +127,14 @@
                       <label class="col-lg-3 col-form-label">Dimur/dibaut?</label>
                       <div class="col-lg-9 my-auto">
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="gender" id="gender_male" value="option1">
-                          <label class="form-check-label" for="gender_male">
+                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-yes" value=1>
+                          <label class="form-check-label" for="bolt-yes">
                             Ya
                           </label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="gender" id="gender_female" value="option2">
-                          <label class="form-check-label" for="gender_female">
+                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-no" value=0>
+                          <label class="form-check-label" for="bolt-no">
                             Tidak
                           </label>
                         </div>
@@ -159,9 +151,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tanggal Produksi</label>
+                      <label class="col-lg-3 col-form-label">Tanggal Pengiriman</label>
                       <div class="col-lg-9">
-                        <input type="date" class="form-control text-sm">
+                        <input type="date" id="delivery-date" class="form-control text-sm">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -188,15 +180,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tanggal Status</label>
-                      <div class="col-lg-9">
-                        <input type="date" class="form-control text-sm">
-                      </div>
-                    </div>
-                    <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Catatan</label>
                       <div class="col-lg-9">
-                        <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan catatan"></textarea>
+                        <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -208,10 +194,6 @@
                   </div>
                   <div class="col-xl-6">
                     <div class="form-group row" id="image-preview">
-                      {{-- <label class="col-lg-3 col-form-label">Upload Foto Proses</label>
-                      <div class="col-lg-9">
-                        <input class="form-control" type="file" id="image-status" accept="image/*">
-                      </div> --}}
                     </div>
                   </div>
                 </div>
@@ -243,7 +225,7 @@
       let config = {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
@@ -257,42 +239,23 @@
       barcode()
 
       $('#image-status').change(function(){
-        const file = this.files[0];
-        console.log(file);
+        const file = this.files[0]
         if (file){
           let reader = new FileReader()
           reader.onload = function(event){
             $('#image-preview img').remove()
             $('#image-preview').append(`<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 300px; width: auto">`)
           }
-          reader.readAsDataURL(file);
+          reader.readAsDataURL(file)
         }
       })
 
 
-      $('#insert-segment-form').on('submit', () => {
+      $('#insert-product-form').on('submit', () => {
         event.preventDefault()
-        $('#global-loader').show()
+        // $('#global-loader').show()
 
-        const data = {
-          segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
-          barcode_color: $('#barcode-color').val(),
-        }
-
-
-        axios.post("{{ url('api/v1/segment/create') }}", data, config)
-          .then(res => {
-            const segmen = res.data.data.item
-            sessionStorage.setItem("success", `Segmen ${segmen.segment_name} berhasil ditambahkan`)
-            window.location.href = "{{ url('/segment') }}"
-          })
-          .catch(err => {
-            $('#global-loader').hide()
-            Swal.fire('Segmen gagal ditambahkan', '', 'error')
-            console.log(err)
-          })
-
+        insertData()
       })
 
 
@@ -301,7 +264,6 @@
           .then(res => {
             const categories = res.data.data.items
             categories.map(category => {
-              console.log(category);
               $('#category-product').append(`<option value=${category.id}>${category.category}</option>`)
             })
 
@@ -370,6 +332,45 @@
         barcode.on('input',() => {
           JsBarcode("#barcode", barcode.val())
         })
+      }
+
+      function insertData() {
+        const data = {
+          category_id: $('#category-product').val(),
+          category: $('#category-product').find("option:selected").text(),
+          segment_id: $('#segment-product').val(),
+          segment_name: $('#segment-product').find("option:selected").text(),
+          barcode: $('#barcode-product').val(),
+          module_number: $('#module-number').val(),
+          bilah_number: $('#no-bilah').val(),
+          production_date: $('#production-date').val(),
+          shelf_number: $('#shelf-number').val(),
+          // 1/0: $(".io:checked").val(),
+          nut_bolt: $('.nut-bolt').val(),
+          description_id: $('#description-product').val(),
+          description: $('#description-product').find("option:selected").text(),
+          delivery_date: $('#delivery-date').val(),
+          status_id:$('#status-product').val(),
+          status: $('#status-product').find("option:selected").text(),
+          note: $('#note').val(),
+          process_photo: $('#image-status')[0].files[0]
+        }
+        data["1/0"] = $(".io:checked").val();
+
+
+
+        axios.post("{{ url('api/v1/product/create') }}", data, config)
+          .then(res => {
+            const product = res.data.data.item
+            console.log(product)
+            // sessionStorage.setItem("success", `Segmen ${segmen.segment_name} berhasil ditambahkan`)
+            // window.location.href = "{{ url('/segment') }}"
+          })
+          .catch(err => {
+            $('#global-loader').hide()
+            Swal.fire('Produk gagal ditambahkan', '', 'error')
+            console.log(err)
+          })
       }
 
     })
