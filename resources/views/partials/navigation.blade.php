@@ -255,7 +255,13 @@
             <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
             <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
             <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
-            <li><a href="/"><i data-feather="package"></i><span>Status</span></a></li>
+          </ul>
+        </li>
+        <li class="submenu-open">
+          <h6 class="submenu-hdr">Manajemen Produk</h6>
+          <ul>
+            <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
+            <li><a href="/product/insert" class="{{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li>
           </ul>
         </li>
         <li class="submenu-open is-admin">

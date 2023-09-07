@@ -19,6 +19,7 @@
 
 <!-- Select2 JS -->
 <script src="{{ url('assets/plugins/select2/js/select2.min.js') }}"></script>
+{{-- <script src="{{ url('assets/plugins/select2/js/custom-select.js') }}"></script> --}}
 
 <!-- Chart JS -->
 <script src="{{ url('assets/plugins/apexchart/apexcharts.min.js') }}"></script>
@@ -28,5 +29,13 @@
 <script src="{{ url('assets/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
 <script src="{{ url('assets/plugins/sweetalert/sweetalerts.min.js') }}"></script>
 
+<!-- Fileupload JS -->
+<script src="{{ url('assets/plugins/fileupload/fileupload.min.js') }}"></script>
+
+{{-- JsBarcode --}}
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
 <!-- Custom JS -->
 <script src="{{ url('assets/js/script.js') }}"></script>
+
+
