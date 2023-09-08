@@ -72,8 +72,7 @@ Route::controller(StatusController::class)->group(function () {
 
 Route::controller(ProductController::class)->group(function () {
     Route::get('product/', 'index');
+    Route::get('product/detail/{id}', 'detail');
     Route::get('product/insert', 'insert');
     Route::get('product/edit/{id}', 'edit');
 });
-
-

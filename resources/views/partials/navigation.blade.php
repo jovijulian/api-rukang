@@ -3,13 +3,13 @@
 
   <!-- Logo -->
   <div class="header-left active">
-    <a href="index.html" class="logo logo-normal">
+    <a href="{{ url('/') }}" class="logo logo-normal">
       <img src="{{ url('assets/img/logo.png') }}" alt="">
     </a>
-    <a href="index.html" class="logo logo-white">
+    <a href="{{ url('/') }}" class="logo logo-white">
       <img src="{{ url('assets/img/logo-white.png') }}" alt="">
     </a>
-    <a href="index.html" class="logo-small">
+    <a href="{{ url('/') }}" class="logo-small">
       <img src="{{ url('assets/img/logo-small.png') }}" alt="">
     </a>
     <a id="toggle_btn" href="javascript:void(0);">

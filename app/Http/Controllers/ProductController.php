@@ -11,6 +11,11 @@ class ProductController extends Controller
         return view('pages.product.index');
     }
 
+    public function detail($id)
+    {
+        return view('pages.product.detail', ['id' => $id]);
+    }
+
     public function insert()
     {
         return view('pages.product.insert');
