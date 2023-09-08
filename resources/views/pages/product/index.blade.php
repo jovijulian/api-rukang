@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Dashboard</title>
+  <title>Produk</title>
 @endsection
 
 
@@ -13,7 +13,8 @@
         <h6>Manajemen data produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/insert" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Tambah produk baru</a>
+        <a href="/product/insert" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img"
+            class="me-1">Tambah produk baru</a>
       </div>
     </div>
 
@@ -108,134 +109,109 @@
         </div>
         <!-- /Filter -->
         <div class="table-responsive">
-          <table class="table  datanew">
+          <table id="product-table" class="table datanew">
             <thead>
               <tr>
                 <th>No</th>
-                <th>Product Name</th>
-                <th>SKU</th>
-                <th>Category </th>
-                <th>Brand</th>
-                <th>price</th>
-                <th>Unit</th>
-                <th>Qty</th>
-                <th>Created By</th>
                 <th>Action</th>
+                <th>Kategori</th>
+                <th>Segmen</th>
+                <th>Nomor Module</th>
+                <th>Nomor Bilah</th>
+                <th>Nomor Rak</th>
+                <th>Tanggal Produksi</th>
+                <th>1/0</th>
+                <th>Dibaut dan dimur</th>
+                <th>Deskripsi</th>
+                <th>Tanggal Pengiriman</th>
+                <th>Status</th>
+                <th>Dibuat</th>
+                <th>Dibuat Oleh</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td class="productimgname">
-                  <a href="javascript:void(0);" class="product-img">
-                    <img src="assets/img/product/product1.jpg" alt="product">
-                  </a>
-                  <a href="javascript:void(0);">Macbook pro</a>
-                </td>
-                <td>PT001</td>
-                <td>Computers</td>
-                <td>N/D</td>
-                <td>1500.00</td>
-                <td>pc</td>
-                <td>100.00</td>
-                <td>Admin</td>
-                <td>
-                  <a class="me-3" href="product-details.html">
-                    <img src="assets/img/icons/eye.svg" alt="img">
-                  </a>
-                  <a class="me-3" href="editproduct.html">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                  <a class="confirm-text" href="javascript:void(0);">
-                    <img src="assets/img/icons/delete.svg" alt="img">
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td class="productimgname">
-                  <a href="javascript:void(0);" class="product-img">
-                    <img src="assets/img/product/product2.jpg" alt="product">
-                  </a>
-                  <a href="javascript:void(0);">Orange</a>
-                </td>
-                <td>PT002</td>
-                <td>Fruits</td>
-                <td>N/D</td>
-                <td>10.00</td>
-                <td>pc</td>
-                <td>100.00</td>
-                <td>Admin</td>
-                <td>
-                  <a class="me-3" href="product-details.html">
-                    <img src="assets/img/icons/eye.svg" alt="img">
-                  </a>
-                  <a class="me-3" href="editproduct.html">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                  <a class="confirm-text" href="javascript:void(0);">
-                    <img src="assets/img/icons/delete.svg" alt="img">
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td class="productimgname">
-                  <a href="javascript:void(0);" class="product-img">
-                    <img src="assets/img/product/product3.jpg" alt="product">
-                  </a>
-                  <a href="javascript:void(0);">Pineapple</a>
-                </td>
-                <td>PT003</td>
-                <td>Fruits</td>
-                <td>N/D</td>
-                <td>10.00</td>
-                <td>pc</td>
-                <td>100.00</td>
-                <td>Admin</td>
-                <td>
-                  <a class="me-3" href="product-details.html">
-                    <img src="assets/img/icons/eye.svg" alt="img">
-                  </a>
-                  <a class="me-3" href="editproduct.html">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                  <a class="confirm-text" href="javascript:void(0);">
-                    <img src="assets/img/icons/delete.svg" alt="img">
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td class="productimgname">
-                  <a href="javascript:void(0);" class="product-img">
-                    <img src="assets/img/product/product4.jpg" alt="product">
-                  </a>
-                  <a href="javascript:void(0);">Strawberry</a>
-                </td>
-                <td>PT004</td>
-                <td>Fruits</td>
-                <td>N/D</td>
-                <td>10.00</td>
-                <td>pc</td>
-                <td>100.00</td>
-                <td>Admin</td>
-                <td>
-                  <a class="me-3" href="product-details.html">
-                    <img src="assets/img/icons/eye.svg" alt="img">
-                  </a>
-                  <a class="me-3" href="editproduct.html">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                  <a class="confirm-text" href="javascript:void(0);">
-                    <img src="assets/img/icons/delete.svg" alt="img">
-                  </a>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(function() {
+      const currentUser = JSON.parse(localStorage.getItem('current_user'))
+      const tokenType = localStorage.getItem('token_type')
+      const accessToken = localStorage.getItem('access_token')
+
+      // NOTIF VERIFY USER
+      const success = sessionStorage.getItem("success")
+      if (success) {
+        Swal.fire(success, '', 'success')
+        sessionStorage.removeItem("success")
+      }
+
+      // REDIRECT IF NOT ADMIN
+      if (!currentUser.isAdmin) {
+        window.location.href = "{{ url('/dashboard') }}"
+      }
+
+      // GET DATA
+      const table = $('#product-table').DataTable()
+
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      let config = {
+        headers: {
+          'X-CSRF-TOKEN': token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `${tokenType} ${accessToken}`
+        }
+      }
+
+
+      getData()
+
+      // GET PRODUCT
+      function getData() {
+        axios.get("{{ url('api/v1/product/index') }}", config)
+          .then(function(res) {
+            const produts = res.data.data.items
+
+            produts.map((product, i) => {
+              const formattedCreatedAt = new Date(product.created_at).toISOString().split('T')[0];
+              const formattedUpdatedAt = new Date(product.updated_at).toISOString().split('T')[0];
+
+              table.row.add([
+                i + 1,
+                `
+                  <a class="me-3" href="product/detail/${product.id}">
+                    <img src="assets/img/icons/eye.svg" alt="img">
+                  </a>
+                  <a class="me-3" href="/product/edit/${product.id}">
+                    <img src="assets/img/icons/edit.svg" alt="img">
+                  </a>
+                `,
+                product.category,
+                product.segment_name,
+                product.module_number,
+                product.bilah_number,
+                product.shelf_number,
+                product.production_date,
+                // product.1/0,
+                'tes',
+                product.nut_bolt ? 'Ya' : 'Tidak',
+                product.description,
+                product.delivery_date,
+                product.status_log.status_name,
+                formattedCreatedAt,
+                product.created_by,
+              ]).draw(false)
+            })
+          })
+          .catch(function(err) {
+            console.log(err)
+          })
+      }
+    })
+  </script>
 @endsection

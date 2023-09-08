@@ -158,9 +158,10 @@
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode</label>
-                      <div class="col-lg-9">
+                      <div class="col-lg-7">
                         <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode">
                       </div>
+                      <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p>
                     </div>
                     <div class="form-group row">
                       <svg id="barcode"></svg>
@@ -238,6 +239,13 @@
 
       barcode()
 
+      $('#generate-barcode').on('click', function() {
+        const randomNumber = Math.random().toString().slice(2,11);
+        
+        $('#barcode-product').val(randomNumber)
+        JsBarcode("#barcode", randomNumber)
+      })
+
       $('#image-status').change(function(){
         const file = this.files[0]
         if (file){
@@ -253,7 +261,7 @@
 
       $('#insert-product-form').on('submit', () => {
         event.preventDefault()
-        // $('#global-loader').show()
+        $('#global-loader').show()
 
         insertData()
       })
@@ -362,9 +370,8 @@
         axios.post("{{ url('api/v1/product/create') }}", data, config)
           .then(res => {
             const product = res.data.data.item
-            console.log(product)
-            // sessionStorage.setItem("success", `Segmen ${segmen.segment_name} berhasil ditambahkan`)
-            // window.location.href = "{{ url('/segment') }}"
+            sessionStorage.setItem("success", `Produk berhasil ditambahkan`)
+            window.location.href = "{{ url('/product') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
