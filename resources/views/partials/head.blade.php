@@ -1,0 +1,27 @@
+<!-- Favicon -->
+<link rel="shortcut icon" type="image/x-icon" href="{{ url('assets/img/favicon.png') }}">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
+
+<!-- Datetimepicker CSS -->
+<link rel="stylesheet" href="{{ url('assets/css/bootstrap-datetimepicker.min.css') }}">
+
+<!-- animation CSS -->
+<link rel="stylesheet" href="{{ url('assets/css/animate.css') }}">
+
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="{{ url('assets/plugins/select2/css/select2.min.css') }}">
+
+<!-- Datatable CSS -->
+<link rel="stylesheet" href="{{ url('assets/css/dataTables.bootstrap4.min.css') }}">
+
+<!-- Fontawesome CSS -->
+<link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+<link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/all.min.css') }}">
+
+<!-- Main CSS -->
+<link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
+
+<!-- jQuery -->
+{{-- <script src="{{ url('assets/js/jquery-3.6.0.min.js') }}"></script> --}}

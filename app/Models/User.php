@@ -3,24 +3,58 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
+use App\Traits\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
 
     /**
-     * The attributes that are mass assignable.
+     * The primary key for the model.
      *
-     * @var array<int, string>
+     * @var string
      */
+    protected $primaryKey = 'id';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
     protected $fillable = [
-        'name',
+        'id',
         'email',
         'password',
+        'fullname',
+        'phone_number',
+        'address',
+        'birthdate',
+        'isActive',
+        'isAdmin',
+        'group_id',
+        'group_name',
+        'created_by',
+        'updated_by',
+        'reset_password_token',
+        'token_expire',
     ];
 
     /**
@@ -42,4 +76,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->isAdmin;
+    }
 }
