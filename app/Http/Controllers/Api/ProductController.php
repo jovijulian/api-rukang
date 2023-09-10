@@ -330,6 +330,12 @@ class ProductController extends Controller
         $statusLogs = StatusLog::where('product_id', $id)->get();
 
         foreach ($statusLogs as $statusLog) {
+            if (isset($statusLog->status_photo)) {
+                $old = parse_url($statusLog->status_photo);
+                if (Storage::exists($old['path'])) {
+                    Storage::delete($old['path']);
+                }
+            }
             $statusLog->deleted_by = auth()->user()->fullname;
             $statusLog->save();
             $statusLog->delete();
