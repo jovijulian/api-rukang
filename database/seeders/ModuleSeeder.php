@@ -20,7 +20,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M1",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -30,7 +30,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M2",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -40,7 +40,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M3",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -50,7 +50,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M4",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -60,7 +60,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M1",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -70,7 +70,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M2",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -80,7 +80,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M3",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -90,7 +90,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M4",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -100,7 +100,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M5",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -110,7 +110,7 @@ class ModuleSeeder extends Seeder
             'module_number' => "M6",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);

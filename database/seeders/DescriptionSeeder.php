@@ -40,7 +40,7 @@ class DescriptionSeeder extends Seeder
             'description' => "PANJANG : 4,44 M",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -50,7 +50,7 @@ class DescriptionSeeder extends Seeder
             'description' => "PANJANG : 3,12 M",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('status_logs', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', 40)->primary();
             $table->string('product_id')->nullable();
             $table->bigInteger('status_id')->unsigned()->nullable();
             $table->string('status_name', 20)->comment("Status Proses")->nullable();
