@@ -24,7 +24,7 @@ class SegmentSeeder extends Seeder
             'barcode_color' => "",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -36,7 +36,7 @@ class SegmentSeeder extends Seeder
             'barcode_color' => "Ungu",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -48,7 +48,7 @@ class SegmentSeeder extends Seeder
             'barcode_color' => "Abu-abu",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
         ]);
     }

@@ -20,7 +20,7 @@ class GroupSeeder extends Seeder
             'group_name' => "Kelompok 1",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -30,8 +30,8 @@ class GroupSeeder extends Seeder
             'group_name' => "Kelompok 2",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'created_by' => "Admin",
+            'updated_by' => "",
         ]);
 
         Group::query()->create([
@@ -39,8 +39,8 @@ class GroupSeeder extends Seeder
             'group_name' => "Kelompok 3",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'created_by' => "Admin",
+            'updated_by' => "",
         ]);
 
         Group::query()->create([
@@ -48,8 +48,8 @@ class GroupSeeder extends Seeder
             'group_name' => "Kelompok 4",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'created_by' => "Admin",
+            'updated_by' => "",
         ]);
 
         Group::query()->create([
@@ -57,8 +57,8 @@ class GroupSeeder extends Seeder
             'group_name' => "Kelompok 5",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
-            'updated_by' => "admin@admin.com",
+            'created_by' => "Admin",
+            'updated_by' => "",
         ]);
     }
 }

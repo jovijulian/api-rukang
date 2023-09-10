@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Module;
+use App\Models\Segment;
 use App\Models\StatusLog;
+use App\Models\Description;
+use App\Http\Resources\ModuleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -20,24 +24,30 @@ class ProductResource extends JsonResource
             'category_id' => $this->category_id,
             'category' => $this->category,
             'segment_id' => $this->segment_id,
-            'segment_name' => $this->segment_name,
+            'segment' => new SegmentResource(Segment::where('id', $this->segment_id)->first()),
             'barcode' => $this->barcode,
-            'module_number' => $this->module_number,
+            'module_id' => $this->module_id,
+            'module' => new ModuleResource(Module::where('id', $this->module_id)->first()),
             'bilah_number' => $this->bilah_number,
             'production_date' => $this->production_date,
             'shelf_number' => $this->shelf_number,
-            '1/0' => $this->{'"1/0"'},
+            'quantity' => $this->quantity,
             'nut_bolt' => $this->nut_bolt,
             'description_id' => $this->description_id,
-            'description' => $this->description,
+            'description' => new DescriptionResource(Description::where('id', $this->description_id)->first()),
             'delivery_date' => $this->delivery_date,
-            'process_photo' => $this->process_photo,
-            'status_log' => new StatusLogResource(StatusLog::where('product_id', $this->id)->first()),
+            'status_id' => $this->status_id,
+            'status' => $this->status,
+            'status_date' => $this->status_date,
+            'status_photo' => $this->status_photo,
+            'note' => $this->note,
+            'status_logs' => StatusLogResource::collection(StatusLog::query()->where('product_id', $this->id)->get()),
+            'shipping_id' => $this->shipping_id,
+            'shipping_name' => $this->shipping_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
-
         ];
     }
 }
