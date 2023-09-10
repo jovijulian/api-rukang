@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SegmentController;
 use App\Http\Controllers\Api\StatusController;
+use App\Http\Controllers\Api\ModuleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +103,15 @@ Route::prefix('v1')->group(function () {
     });
     Route::prefix('shipping')->group(function () {
         Route::controller(ShippingController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+        });
+    });
+    Route::prefix('module')->group(function () {
+        Route::controller(ModuleController::class)->group(function () {
             Route::get('/index', 'index')->middleware('auth:api');
             Route::post('/create', 'store')->middleware('auth:api');
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
