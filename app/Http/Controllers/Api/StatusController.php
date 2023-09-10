@@ -263,4 +263,45 @@ class StatusController extends Controller
             }
         }
     }
+
+    public function datatable(Request $request)
+    {
+        //SETUP
+        $columns = array();
+        // dd($request);
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Status::count();
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Status::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            //QUERI CUSTOM
+            $data =  Status::where('status', 'LIKE', "%{$search}%")
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Status::where('status', 'LIKE', "%{$search}%")->count();
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
+    }
 }
