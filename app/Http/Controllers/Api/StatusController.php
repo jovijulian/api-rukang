@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Status;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
-use App\Models\Status;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -120,7 +121,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -146,7 +147,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -211,7 +212,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -226,6 +227,12 @@ class StatusController extends Controller
         $status = Status::find($id);
         if ($status == null) {
             throw new \Exception("Status tidak ada", 404);
+        }
+
+        $product = Product::query()->where('status_id', $status->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Status digunakan oleh Produk", 409);
         }
         $status->deleted_by = auth()->user()->fullname;
         $status->save();
@@ -251,7 +258,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

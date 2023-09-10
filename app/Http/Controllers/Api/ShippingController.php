@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Product;
 use App\Models\Shipping;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ShippingResource;
 use Illuminate\Database\QueryException;
+use App\Http\Resources\ShippingResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -120,7 +121,7 @@ class ShippingController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -146,7 +147,7 @@ class ShippingController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -211,7 +212,7 @@ class ShippingController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -226,6 +227,11 @@ class ShippingController extends Controller
         $shipping = Shipping::find($id);
         if ($shipping == null) {
             throw new \Exception("Ekspedisi tidak ada", 404);
+        }
+
+        $product = Product::query()->where('shipping_id', $shipping->id)->first();
+        if ($product != null) {
+            return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
         }
         $shipping->deleted_by = auth()->user()->fullname;
         $shipping->save();
@@ -251,7 +257,7 @@ class ShippingController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

@@ -101,7 +101,7 @@ class GroupController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

@@ -88,7 +88,7 @@ class LoginController extends ParentAccessTokenController
                 } else if ($e instanceof BadRequestHttpException) {
                     return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -142,7 +142,7 @@ class LoginController extends ParentAccessTokenController
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
-            return ResponseStd::fail($e->getMessage());
+            return ResponseStd::fail($e->getMessage(), $e->getCode());
         }
     }
 }

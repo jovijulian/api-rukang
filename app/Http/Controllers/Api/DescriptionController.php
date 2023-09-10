@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Product;
 use App\Models\Description;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DescriptionResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\DescriptionResource;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -120,7 +121,7 @@ class DescriptionController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -146,7 +147,7 @@ class DescriptionController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -211,7 +212,7 @@ class DescriptionController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -227,6 +228,13 @@ class DescriptionController extends Controller
         if ($description == null) {
             throw new \Exception("Deskripsi tidak ada", 404);
         }
+
+        $product = Product::query()->where('description_id', $description->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Deskripsi digunakan oleh Produk", 409);
+        }
+
         $description->deleted_by = auth()->user()->fullname;
         $description->save();
 
@@ -251,7 +259,7 @@ class DescriptionController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

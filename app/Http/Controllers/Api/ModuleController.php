@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use App\Models\Module;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +120,7 @@ class ModuleController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -145,7 +146,7 @@ class ModuleController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -210,7 +211,7 @@ class ModuleController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -226,6 +227,13 @@ class ModuleController extends Controller
         if ($module == null) {
             throw new \Exception("Modul tidak ada", 404);
         }
+
+        $product = Product::query()->where('module_id', $module->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Modul digunakan oleh Produk", 409);
+        }
+
         $module->deleted_by = auth()->user()->fullname;
         $module->save();
 
@@ -250,7 +258,7 @@ class ModuleController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

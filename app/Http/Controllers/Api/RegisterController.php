@@ -50,7 +50,7 @@ class RegisterController extends BaseApiController
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -140,7 +140,7 @@ class RegisterController extends BaseApiController
                 } else if ($e instanceof BadRequestHttpException) {
                     return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Database\QueryException;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -119,7 +120,7 @@ class CategoryController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -145,7 +146,7 @@ class CategoryController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -210,7 +211,7 @@ class CategoryController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -226,6 +227,13 @@ class CategoryController extends Controller
         if ($category == null) {
             throw new \Exception("Kategori tidak ada", 404);
         }
+
+        $product = Product::query()->where('category_id', $category->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Kategori digunakan oleh Produk", 409);
+        }
+
         $category->deleted_by = auth()->user()->fullname;
         $category->save();
 
@@ -250,7 +258,7 @@ class CategoryController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
