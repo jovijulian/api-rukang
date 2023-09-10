@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             SegmentSeeder::class,
             DescriptionSeeder::class,
             CategorySeeder::class,
+            ModuleSeeder::class,
             StatusSeeder::class,
             UserSeeder::class,
         ]);

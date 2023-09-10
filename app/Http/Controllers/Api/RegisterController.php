@@ -58,6 +58,7 @@ class RegisterController extends BaseApiController
 
     protected function store(array $data): Model
     {
+        $timeNow = Carbon::now();
         $user = User::query()->create([
             'id' =>  Uuid::uuid4()->toString(),
             'email' => $data['email'],
@@ -70,6 +71,7 @@ class RegisterController extends BaseApiController
             'group_name' => $data['group_name'],
             'created_by' => $data['email'],
             'isAdmin' => 0,
+            'email_verified_at' => $timeNow,
         ]);
         return $user;
     }
