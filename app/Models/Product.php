@@ -84,4 +84,9 @@ class Product extends Model
     {
         return $this->belongsTo(Module::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(StatusLog::class);
+    }
 }

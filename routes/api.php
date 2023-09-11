@@ -110,6 +110,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
             Route::post('/update-status/{id}', 'setStatusLogProduct')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('shipping')->group(function () {
