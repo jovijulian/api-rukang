@@ -298,8 +298,6 @@ class SegmentController extends Controller
                 $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR barcode_color LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR created_at LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR updated_at LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM

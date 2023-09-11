@@ -288,8 +288,6 @@ class CategoryController extends Controller
             if (!empty($search)) {
                 $conditions .= " AND category LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR created_at LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR updated_at LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
