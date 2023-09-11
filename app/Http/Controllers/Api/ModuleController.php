@@ -263,4 +263,52 @@ class ModuleController extends Controller
             }
         }
     }
+
+    public function datatable(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Module::count();
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Module::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND module_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_at LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_at LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Module::whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Module::whereRaw($conditions)->count();
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
+    }
 }

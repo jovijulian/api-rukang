@@ -268,7 +268,6 @@ class StatusController extends Controller
     {
         //SETUP
         $columns = array();
-        // dd($request);
 
         foreach ($request->columns as $columnData) {
             $columns[] = $columnData['data'];
@@ -285,15 +284,23 @@ class StatusController extends Controller
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND status LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_at LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_at LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+            }
             //QUERI CUSTOM
-            $data =  Status::where('status', 'LIKE', "%{$search}%")
+            $data =  Status::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = Status::where('status', 'LIKE', "%{$search}%")->count();
+            $totalFiltered = Status::whereRaw($conditions)->count();
         }
 
         $json_data = array(

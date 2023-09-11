@@ -62,6 +62,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('description')->group(function () {
@@ -71,6 +72,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('category')->group(function () {
@@ -80,6 +82,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('status')->group(function () {
@@ -109,6 +112,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('module')->group(function () {
@@ -118,6 +122,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
 });
