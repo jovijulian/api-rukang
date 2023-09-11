@@ -53,6 +53,12 @@ Route::prefix('v1')->group(function () {
     Route::prefix('group')->group(function () {
         Route::controller(GroupController::class)->group(function () {
             Route::get('/group', 'getGroups');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin']);
         });
     });
     Route::prefix('segment')->group(function () {
