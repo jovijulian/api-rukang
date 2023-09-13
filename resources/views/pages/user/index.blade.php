@@ -165,7 +165,7 @@
 
       getData()
 
-      // GET DESCRIPTION
+      // GET USER
       function getData() {
         table.DataTable({
           responsive: true,

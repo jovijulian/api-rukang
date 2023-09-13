@@ -48,76 +48,20 @@
             </ul>
           </div>
         </div>
-        <!-- /Filter -->
-        {{-- <div class="card mb-0" id="filter_inputs">
-          <div class="card-body pb-0">
-            <div class="row">
-              <div class="col-lg-12 col-sm-12">
-                <div class="row">
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Product</option>
-                        <option>Macbook pro</option>
-                        <option>Orange</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Category</option>
-                        <option>Computers</option>
-                        <option>Fruits</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Sub Category</option>
-                        <option>Computer</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Brand</option>
-                        <option>N/D</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12 ">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Price</option>
-                        <option>150.00</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg-1 col-sm-6 col-12">
-                    <div class="form-group">
-                      <a class="btn btn-filters ms-auto"><img src="{{ url('assets/img/icons/search-whites.svg') }}" alt="img"></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-        <!-- /Filter -->
         <div class="table-responsive">
-          <table id="data-user-inactive" class="table datanew">
+          <table id="data-user-inactive" class="table">
             <thead>
               <tr>
                 <th>Nama Lengkap</th>
+                <th>Email</th>
                 <th>No HP</th>
-                <th>Email </th>
-                <th>Tanggal Lahir</th>
-                <th>Kelompok</th>
                 <th>Alamat</th>
-                <th>Dibuat</th>
+                <th>Tanggal Lahir</th>
+                <th>Nama Kelompok</th>
+                <th>Dibuat Pada</th>
+                <th>Diubah Pada</th>
+                <th>Dibuat Oleh</th>
+                <th>Diubah Oleh</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -130,10 +74,21 @@
   </div>
 
   <script>
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
     $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
 
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
@@ -148,77 +103,90 @@
       }
 
       // GET DATA
-      const table = $('#data-user-inactive').DataTable()
-
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
+      const table = $('#data-user-inactive')
 
       getData()
 
       // GET USER NOT VERIFY
       function getData() {
-        axios.get("{{ url('api/v1/user/user-inactive') }}", config)
-          .then(function(res) {
-            const users = res.data.data.items
-
-            users.map((user, i) => {
-              const formattedCreatedAt = new Date(user.created_at).toISOString().split('T')[0];
-
-              table.row.add([
-                user.fullname,
-                user.phone_number,
-                user.email,
-                user.birthdate,
-                user.group_name,
-                user.address,
-                formattedCreatedAt,
-                `<button class="p-2 btn btn-submit btn-verify" id="${user.id}" >Verifikasi Akun</button>`,
-              ]).draw(false)
-            })
-
-            $('.btn-verify').on('click', (e) => {
-              updateUserActive(e.target.id)
-            })
-          })
-          .catch(function(err) {
-            console.log(err)
-          })
-      }
-
-
-      function updateUserActive(id) {
-        Swal.fire({
-          title: 'Yakin ingin memverifikasi user?',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Ya',
-          cancelButtonText: 'Kembali'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $('#global-loader').show()
-
-            axios.put(`{{ url('api/v1/user/update-status-user/${id}') }}`, {
-                isActive: 1
-              }, config)
-              .then(res => {
-                sessionStorage.setItem("success", "User Berhasil Terverifikasi!")
-                location.reload()
-              })
-              .catch(err => {
-                Swal.fire('User Gagal Terverifikasi!', '', 'error')
-                console.log(err)
-              })
-          }
+        table.DataTable({
+          responsive: true,
+          processing: true,
+          serverSide: true,
+          bInfo: true,
+          sDom: 'frBtlpi',
+          ordering: true, 
+			    pagingType: 'numbers', 
+          language: {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search...",
+            info: "_START_ - _END_ of _TOTAL_ items",
+          },
+          initComplete: (settings, json)=>{
+            $('.dataTables_filter').appendTo('.search-input')
+          },
+          ajax: {
+            url: "{{ url('api/v1/user/datatable-inactive') }}",
+            dataType: 'json',
+            type: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': token,
+              'Authorization': `${tokenType} ${accessToken}`
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          },
+          columns: [
+            {data: 'fullname'},
+            {data: 'email'},
+            {data: 'phone_number'},
+            {data: 'address'},
+            {data: 'birthdate'},
+            {data: 'group_name'},
+            {data: function(data) {
+              return new Date(data.created_at).toISOString().split('T')[0]}
+            },
+            {data: function(data) {
+              return new Date(data.updated_at).toISOString().split('T')[0]}
+            },
+            {data: 'created_by'},
+            {data: 'updated_by'},
+            {data: 'id', 
+              'render': function(data) {
+                return `<button onclick="updateUserActive('${data}')" class="p-2 btn btn-submit" >Verifikasi Akun</button>`
+              }
+            },
+          ]
         })
       }
-
     })
+
+    function updateUserActive(id) {
+      Swal.fire({
+        title: 'Yakin ingin memverifikasi user?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.put(`{{ url('api/v1/user/update-status-user/${id}') }}`, {
+              isActive: 1
+            }, config)
+            .then(res => {
+              sessionStorage.setItem("success", "User Berhasil Terverifikasi!")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('User Gagal Terverifikasi!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection
