@@ -26,8 +26,8 @@ class ModuleController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
