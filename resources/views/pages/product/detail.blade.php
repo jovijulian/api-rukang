@@ -12,7 +12,7 @@
         <h6>Informasi detail produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added">Update Status Produk</a>
+        <a href="/product/update-status" class="btn btn-added update-status">Update Status Produk</a>
       </div>
     </div>
     <!-- /add -->
@@ -167,13 +167,7 @@
         .then(res => {
           const product = res.data.data.item
 
-          console.log(product.status_logs[0]);
-
-
-          // const formattedCreatedAt = new Date(product.created_at).toISOString().split('T')[0]
-          // const formattedUpdatedAt = new Date(product.updated_at).toISOString().split('T')[0]
-          // const formattedCreatedAtStatus = new Date(product.status_log.created_at).toISOString().split('T')[0]
-          // const formattedUpdatedAtStatus = new Date(product.status_log.updated_at).toISOString().split('T')[0]
+          $('.update-status').attr('href', '/product/update-status/' + product.id)
 
 
           JsBarcode("#barcode", product.barcode)
