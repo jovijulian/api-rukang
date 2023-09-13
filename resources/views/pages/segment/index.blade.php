@@ -20,12 +20,12 @@
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
-            <div class="search-path">
+            {{-- <div class="search-path">
               <a class="btn btn-filter" id="filter_search">
                 <img src="{{ url('assets/img/icons/filter.svg') }}" alt="img">
                 <span><img src="{{ url('assets/img/icons/closes.svg') }}" alt="img"></span>
               </a>
-            </div>
+            </div> --}}
             <div class="search-input">
               <a class="btn btn-searchset"><img src="{{ url('assets/img/icons/search-white.svg') }}" alt="img"></a>
             </div>
@@ -47,7 +47,7 @@
             </ul>
           </div>
         </div>
-        <!-- /Filter -->
+        {{-- <!-- /Filter -->
         <div class="card mb-0" id="filter_inputs">
           <div class="card-body pb-0">
             <div class="row">
@@ -105,17 +105,17 @@
             </div>
           </div>
         </div>
-        <!-- /Filter -->
-        <div class="table-responsive">
-          <table id="segment-table" class="table datanew">
+        <!-- /Filter --> --}}
+        <div class="table-responsive pb-4">
+          <table id="segment-table" class="table">
             <thead>
               <tr>
                 <th>No</th>
                 <th>Nama</th>
                 <th>Tempat</th>
                 <th>Warna Barcode</th>
-                <th>Dibuat</th>
-                <th>Diubah</th>
+                <th>Dibuat Pada</th>
+                <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
                 <th>Diubah Oleh</th>
                 <th>Action</th>
@@ -148,14 +148,12 @@
       }
 
       // GET DATA
-      const table = $('#segment-table').DataTable()
+      const table = $('#segment-table')
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
@@ -164,34 +162,90 @@
 
       // GET SEGMENT
       function getData() {
-        axios.get("{{ url('api/v1/segment/index') }}", config)
-          .then(function(res) {
-            const segments = res.data.data.items
-
-            segments.map((segment, i) => {
-              const formattedCreatedAt = new Date(segment.created_at).toISOString().split('T')[0];
-              const formattedUpdatedAt = new Date(segment.updated_at).toISOString().split('T')[0];
-
-              table.row.add([
-                i + 1,
-                segment.segment_name,
-                segment.segment_place,
-                segment.barcode_color,
-                formattedCreatedAt,
-                formattedUpdatedAt,
-                segment.created_by,
-                segment.updated_by,
-                `
-                  <a class="me-3" href="/segment/edit/${segment.id}">
+        $('#segment-table').DataTable({
+          responsive: true,
+          processing: true,
+          serverSide: true,
+          bInfo: true,
+          sDom: 'frBtlpi',
+          ordering: true, 
+			    pagingType: 'numbers', 
+          language: {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search...",
+            info: "_START_ - _END_ of _TOTAL_ items",
+          },
+          initComplete: (settings, json)=>{
+            $('.dataTables_filter').appendTo('.search-input')
+          },
+          ajax: {
+            url: "{{ url('api/v1/segment/datatable') }}",
+            dataType: 'json',
+            type: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': token,
+              'Authorization': `${tokenType} ${accessToken}`
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          },
+          columns: [
+            {data: 'id'},
+            {data: 'segment_name'},
+            {data: 'segment_place'},
+            {data: 'barcode_color'},
+            {data: function(data) {
+              return new Date(data.created_at).toISOString().split('T')[0]}
+            },
+            {data: function(data) {
+              return new Date(data.updated_at).toISOString().split('T')[0]}
+            },
+            {data: 'created_by'},
+            {data: 'updated_by'},
+            {data: 'id', 
+              'render': function(data) {
+                return `
+                  <a class="me-3" href="/segment/edit/` + data + `">
                     <img src="assets/img/icons/edit.svg" alt="img">
                   </a>
-                `,
-              ]).draw(false)
-            })
-          })
-          .catch(function(err) {
-            console.log(err)
-          })
+                `
+              }
+            },
+          ]
+        })
+
+
+
+        // axios.get("{{ url('api/v1/segment/index') }}", config)
+        //   .then(function(res) {
+        //     const segments = res.data.data.items
+
+        //     segments.map((segment, i) => {
+        //       const formattedCreatedAt = new Date(segment.created_at).toISOString().split('T')[0];
+        //       const formattedUpdatedAt = new Date(segment.updated_at).toISOString().split('T')[0];
+
+        //       table.row.add([
+        //         i + 1,
+        //         segment.segment_name,
+        //         segment.segment_place,
+        //         segment.barcode_color,
+        //         formattedCreatedAt,
+        //         formattedUpdatedAt,
+        //         segment.created_by,
+        //         segment.updated_by,
+        //         `
+        //           <a class="me-3" href="/segment/edit/${segment.id}">
+        //             <img src="assets/img/icons/edit.svg" alt="img">
+        //           </a>
+        //         `,
+        //       ]).draw(false)
+        //     })
+        //   })
+        //   .catch(function(err) {
+        //     console.log(err)
+        //   })
       }
 
     })
