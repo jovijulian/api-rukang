@@ -26,7 +26,7 @@ class CategoryController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
             $order = $request->has('order') ? $request->input('order') : 'DESC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
