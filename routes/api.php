@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SegmentController;
 use App\Http\Controllers\Api\StatusController;
+use App\Http\Controllers\Api\ModuleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +43,24 @@ Route::prefix('v1')->group(function () {
             Route::post('/reset-password', 'resetPassword');
             Route::get('/user-inactive', 'getUserInactive')->middleware(['auth:api', 'check_admin']);
             Route::put('/update-status-user/{id}', 'setActiveUser')->middleware(['auth:api', 'check_admin']);
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin']);
+            Route::post('/datatable-inactive', 'datatableInactive')->middleware(['auth:api', 'check_admin']);
         });
     });
     Route::prefix('group')->group(function () {
         Route::controller(GroupController::class)->group(function () {
             Route::get('/group', 'getGroups');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin']);
         });
     });
     Route::prefix('segment')->group(function () {
@@ -56,6 +70,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('description')->group(function () {
@@ -65,6 +80,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('category')->group(function () {
@@ -74,6 +90,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('status')->group(function () {
@@ -83,6 +100,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('product')->group(function () {
@@ -92,7 +110,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::put('/update-status/{id}', 'setStatusProduct')->middleware('auth:api');
+            Route::post('/update-status/{id}', 'setStatusLogProduct')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
     Route::prefix('shipping')->group(function () {
@@ -102,6 +121,17 @@ Route::prefix('v1')->group(function () {
             Route::get('/detail/{id}', 'show')->middleware('auth:api');
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
+        });
+    });
+    Route::prefix('module')->group(function () {
+        Route::controller(ModuleController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
         });
     });
 });

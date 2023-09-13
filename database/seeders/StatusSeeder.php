@@ -20,7 +20,7 @@ class StatusSeeder extends Seeder
             'status' => "Selesai Produksi",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -30,7 +30,7 @@ class StatusSeeder extends Seeder
             'status' => "Siap dikirim",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -40,7 +40,7 @@ class StatusSeeder extends Seeder
             'status' => "Siap dikirim (cat di IKN)",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -50,7 +50,7 @@ class StatusSeeder extends Seeder
             'status' => "Sedang dikirim",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -60,7 +60,7 @@ class StatusSeeder extends Seeder
             'status' => "Diterima",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -70,7 +70,7 @@ class StatusSeeder extends Seeder
             'status' => "Disimpan",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -80,7 +80,7 @@ class StatusSeeder extends Seeder
             'status' => "Perakitan",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);
@@ -90,7 +90,7 @@ class StatusSeeder extends Seeder
             'status' => "Instalasi",
             'created_at' => $timeNow,
             'updated_at' => $timeNow,
-            'created_by' => "admin@admin.com",
+            'created_by' => "Admin",
             'updated_by' => "",
             'deleted_by' => "",
         ]);

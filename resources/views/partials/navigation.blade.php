@@ -49,132 +49,11 @@
     </li>
     <!-- /Search -->
 
-    <!-- Flag -->
-    <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
-      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-        <i data-feather="globe"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a href="javascript:void(0);" class="dropdown-item active">
-          <img src="{{ url('assets/img/flags/us.png') }}" alt="" height="16"> English
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="{{ url('assets/img/flags/fr.png') }}" alt="" height="16"> French
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="{{ url('assets/img/flags/es.png') }}" alt="" height="16"> Spanish
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="{{ url('assets/img/flags/de.png') }}" alt="" height="16"> German
-        </a>
-      </div>
-    </li>
-    <!-- /Flag -->
-
     <li class="nav-item nav-item-box">
       <a href="javascript:void(0);" id="btnFullscreen">
         <i data-feather="maximize"></i>
       </a>
     </li>
-    <li class="nav-item nav-item-box">
-      <a href="email.html">
-        <i data-feather="mail"></i>
-        <span class="badge rounded-pill">1</span>
-      </a>
-    </li>
-    <!-- Notifications -->
-    {{-- <li class="nav-item dropdown nav-item-box">
-      <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-        <i data-feather="bell"></i><span class="badge rounded-pill">2</span>
-      </a>
-      <div class="dropdown-menu notifications">
-        <div class="topnav-dropdown-header">
-          <span class="notification-title">Notifications</span>
-          <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
-        </div>
-        <div class="noti-content">
-          <ul class="notification-list">
-            <li class="notification-message">
-              <a href="activities.html">
-                <div class="media d-flex">
-                  <span class="avatar flex-shrink-0">
-                    <img alt="" src="assets/img/profiles/avatar-02.jpg">
-                  </span>
-                  <div class="media-body flex-grow-1">
-                    <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span
-                        class="noti-title">Patient appointment booking</span></p>
-                    <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="notification-message">
-              <a href="activities.html">
-                <div class="media d-flex">
-                  <span class="avatar flex-shrink-0">
-                    <img alt="" src="assets/img/profiles/avatar-03.jpg">
-                  </span>
-                  <div class="media-body flex-grow-1">
-                    <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> changed the task name
-                      <span class="noti-title">Appointment booking with payment gateway</span>
-                    </p>
-                    <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="notification-message">
-              <a href="activities.html">
-                <div class="media d-flex">
-                  <span class="avatar flex-shrink-0">
-                    <img alt="" src="assets/img/profiles/avatar-06.jpg">
-                  </span>
-                  <div class="media-body flex-grow-1">
-                    <p class="noti-details"><span class="noti-title">Misty Tison</span> added <span
-                        class="noti-title">Domenic Houston</span> and <span class="noti-title">Claire Mapes</span> to
-                      project <span class="noti-title">Doctor available module</span></p>
-                    <p class="noti-time"><span class="notification-time">8 mins ago</span></p>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="notification-message">
-              <a href="activities.html">
-                <div class="media d-flex">
-                  <span class="avatar flex-shrink-0">
-                    <img alt="" src="assets/img/profiles/avatar-17.jpg">
-                  </span>
-                  <div class="media-body flex-grow-1">
-                    <p class="noti-details"><span class="noti-title">Rolland Webber</span> completed task <span
-                        class="noti-title">Patient and Doctor video conferencing</span></p>
-                    <p class="noti-time"><span class="notification-time">12 mins ago</span></p>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="notification-message">
-              <a href="activities.html">
-                <div class="media d-flex">
-                  <span class="avatar flex-shrink-0">
-                    <img alt="" src="assets/img/profiles/avatar-13.jpg">
-                  </span>
-                  <div class="media-body flex-grow-1">
-                    <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span> added new task <span
-                        class="noti-title">Private chat module</span></p>
-                    <p class="noti-time"><span class="notification-time">2 days ago</span></p>
-                  </div>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="topnav-dropdown-footer">
-          <a href="activities.html">View all Notifications</a>
-        </div>
-      </div>
-    </li> --}}
-    <!-- /Notifications -->
-
     <li class="nav-item nav-item-box">
       <a href="generalsettings.html"><i data-feather="settings"></i></a>
     </li>
@@ -255,6 +134,9 @@
             <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
             <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
             <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
+            <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i data-feather="clipboard"></i><span>Modul</span></a></li>
+            <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
+            <li><a href="/group" class="{{ request()->is('group*') ? 'active group' : 'group' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -267,7 +149,8 @@
         <li class="submenu-open is-admin">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>Verifikasi User</span></a></li>
+            <li><a href="/user" class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>User</span></a></li>
+            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
             {{-- <li class="submenu">
               <a href="javascript:void(0);" class="{{ request()->is('user*') ? 'active subdrop' : '' }}"><i
                   data-feather="users"></i><span>User</span><span class="menu-arrow"></span></a>
@@ -281,7 +164,7 @@
         </li>
 
 
-        <li class="submenu-open">
+        {{-- <li class="submenu-open">
           <h6 class="submenu-hdr">Products</h6>
           <ul>
             <li><a href="/product"><i data-feather="box"></i><span>Products</span></a></li>
@@ -481,7 +364,7 @@
               </ul>
             </li>
           </ul>
-        </li>
+        </li> --}}
         <li class="submenu-open">
           <h6 class="submenu-hdr">Settings</h6>
           <ul>
@@ -514,6 +397,7 @@
     const accessToken = localStorage.getItem('access_token')
 
     !currentUser.isAdmin && $('.is-admin').hide()
+    !currentUser.isAdmin && $('.group').hide()
 
     $('.fullname').text(currentUser.fullname)
     $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')

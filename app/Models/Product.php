@@ -37,11 +37,12 @@ class Product extends Model
         'segment_id',
         'segment_name',
         'barcode',
+        'module_id',
         'module_number',
         'bilah_number',
         'production_date',
         'shelf_number',
-        '"1/0"',
+        'quantity',
         'nut_bolt',
         'description_id',
         'description',
@@ -49,8 +50,13 @@ class Product extends Model
         'status_id',
         'status',
         'status_date',
-        'process_photo',
+        'status_photo',
         'note',
+        'shipping_id',
+        'shipping_name',
+        'current_location',
+        'group_id',
+        'group_name',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -75,5 +81,15 @@ class Product extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(StatusLog::class);
     }
 }

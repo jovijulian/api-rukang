@@ -55,6 +55,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'updated_by',
         'reset_password_token',
         'token_expire',
+        'email_verified_at',
     ];
 
     /**

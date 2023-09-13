@@ -50,7 +50,7 @@ class RegisterController extends BaseApiController
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -58,6 +58,7 @@ class RegisterController extends BaseApiController
 
     protected function store(array $data): Model
     {
+        $timeNow = Carbon::now();
         $user = User::query()->create([
             'id' =>  Uuid::uuid4()->toString(),
             'email' => $data['email'],
@@ -70,6 +71,7 @@ class RegisterController extends BaseApiController
             'group_name' => $data['group_name'],
             'created_by' => $data['email'],
             'isAdmin' => 0,
+            'email_verified_at' => $timeNow,
         ]);
         return $user;
     }
@@ -138,7 +140,7 @@ class RegisterController extends BaseApiController
                 } else if ($e instanceof BadRequestHttpException) {
                     return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

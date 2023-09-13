@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Status;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
-use App\Models\Status;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -25,7 +26,7 @@ class StatusController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
             $order = $request->has('order') ? $request->input('order') : 'DESC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -120,7 +121,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -146,7 +147,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -211,7 +212,7 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -226,6 +227,12 @@ class StatusController extends Controller
         $status = Status::find($id);
         if ($status == null) {
             throw new \Exception("Status tidak ada", 404);
+        }
+
+        $product = Product::query()->where('status_id', $status->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Status digunakan oleh Produk", 409);
         }
         $status->deleted_by = auth()->user()->fullname;
         $status->save();
@@ -251,9 +258,55 @@ class StatusController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
+    }
+
+    public function datatable(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Status::count();
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Status::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND status LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Status::whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Status::whereRaw($conditions)->count();
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
     }
 }

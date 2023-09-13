@@ -68,6 +68,7 @@ class ProductController extends Controller
         }
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -77,11 +78,9 @@ class ProductController extends Controller
         $arrayValidator = [
             'barcode' => [
                 'required', 'min:1', 'max:100',
-                Rule::unique('products')->where(function ($query) {
-                    $query->whereNotNull('deleted_at');
-                }),
+                'unique:products,barcode,NULL,id',
             ],
-            'process_photo' => ['required'],
+            'status_photo' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -93,8 +92,8 @@ class ProductController extends Controller
         $productData = new Product();
         $image_url = null;
         Storage::exists('product') or Storage::makeDirectory('product');
-        if ($data['process_photo']) {
-            $image = Storage::putFile('product', $data['process_photo'], 'public');
+        if ($data['status_photo']) {
+            $image = Storage::putFile('product', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
         }
 
@@ -105,11 +104,12 @@ class ProductController extends Controller
         $productData->segment_id = $data['segment_id'];
         $productData->segment_name = $data['segment_name'];
         $productData->barcode = $data['barcode'];
+        $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
         $productData->production_date = $data['production_date'];
         $productData->shelf_number = $data['shelf_number'];
-        $productData->{'"1/0"'} = $data['1/0'];
+        $productData->quantity = $data['quantity'];
         $productData->nut_bolt = $data['nut_bolt'];
         $productData->description_id = $data['description_id'];
         $productData->description = $data['description'];
@@ -117,8 +117,13 @@ class ProductController extends Controller
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
         $productData->status_date = $timeNow;
-        $productData->process_photo = $image_url;
+        $productData->status_photo = $image_url;
         $productData->note = $data['note'];
+        $productData->shipping_id = $data['shipping_id'];
+        $productData->shipping_name = $data['shipping_name'];
+        $productData->current_location = $data['current_location'];
+        $productData->group_id = auth()->user()->group_id;
+        $productData->group_name = auth()->user()->group_name;
 
         $productData->created_at = $timeNow;
         $productData->updated_at = $timeNow;
@@ -135,7 +140,7 @@ class ProductController extends Controller
         $statusLogData->status_id = $productData->status_id;
         $statusLogData->status_name = $productData->status;
         $statusLogData->status_date = $productData->status_date;
-        $statusLogData->status_photo = $productData->process_photo;
+        $statusLogData->status_photo = $productData->status_photo;
         $statusLogData->note = $productData->note;
         $statusLogData->created_at = $timeNow;
         $statusLogData->updated_at = $timeNow;
@@ -173,7 +178,7 @@ class ProductController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -199,7 +204,7 @@ class ProductController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -214,11 +219,8 @@ class ProductController extends Controller
         $arrayValidator = [
             'barcode' => [
                 'required', 'min:1', 'max:100',
-                Rule::unique('products')->where(function ($query) {
-                    $query->whereNotNull('deleted_at');
-                }),
+
             ],
-            'process_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -234,18 +236,18 @@ class ProductController extends Controller
             throw new \Exception("Invalid product id", 406);
         }
 
-        $image_url = $data['process_photo'];
-        if ($data['process_photo']) {
-            $image = Storage::putFile('product', $data['process_photo'], 'public');
-            $image_url = Storage::url($image);
-            //hapus picture sebelumnya
-            if (isset($productData->process_photo)) {
-                $old = parse_url($productData->process_photo);
-                if (Storage::exists($old['path'])) {
-                    Storage::delete($old['path']);
-                }
-            }
-        }
+        // $image_url = $data['status_photo'];
+        // if ($data['status_photo']) {
+        //     $image = Storage::putFile('product', $data['status_photo'], 'public');
+        //     $image_url = Storage::url($image);
+        //     //hapus picture sebelumnya
+        //     if (isset($productData->status_photo)) {
+        //         $old = parse_url($productData->status_photo);
+        //         if (Storage::exists($old['path'])) {
+        //             Storage::delete($old['path']);
+        //         }
+        //     }
+        // }
 
         $productData->id = $id;
         $productData->category_id = $data['category_id'];
@@ -253,37 +255,27 @@ class ProductController extends Controller
         $productData->segment_id = $data['segment_id'];
         $productData->segment_name = $data['segment_name'];
         $productData->barcode = $data['barcode'];
+        $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
         $productData->production_date = $data['production_date'];
         $productData->shelf_number = $data['shelf_number'];
-        $productData->{'"1/0"'} = $data['1/0'];
+        $productData->quantity = $data['quantity'];
         $productData->nut_bolt = $data['nut_bolt'];
         $productData->description_id = $data['description_id'];
         $productData->description = $data['description'];
         $productData->delivery_date = $data['delivery_date'];
-        $productData->status_id = $data['status_id'];
-        $productData->status = $data['status'];
+        $productData->status_id;
+        $productData->status;
         $productData->status_date;
-        $productData->process_photo = $image_url;
-        $productData->note = $data['note'];
+        $productData->status_photo;
+        $productData->note;
+        $productData->group_id = auth()->user()->group_id;
+        $productData->group_name = auth()->user()->group_name;
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save
         $productData->save();
-
-        $statusLogData = StatusLog::where('product_id', $id)->first();
-        $statusId = $statusLogData->id;
-        $statusLogData->id = $statusId;
-        $statusLogData->product_id;
-        $statusLogData->status_id = $productData->status_id;
-        $statusLogData->status_name = $productData->status;
-        $statusLogData->status_date = $productData->status_date;
-        $statusLogData->status_photo = $productData->process_photo;
-        $statusLogData->note = $productData->note;
-        $statusLogData->updated_at = $productData->updated_at;
-        $statusLogData->updated_by = $productData->updated_by;
-        $statusLogData->save();
 
         return $productData;
     }
@@ -315,7 +307,7 @@ class ProductController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -333,17 +325,26 @@ class ProductController extends Controller
             throw new \Exception("Produk tidak ada", 404);
         }
 
-        if (isset($product->process_photo)) {
-            $old = parse_url($product->process_photo);
+        if (isset($product->status_photo)) {
+            $old = parse_url($product->status_photo);
             if (Storage::exists($old['path'])) {
                 Storage::delete($old['path']);
             }
         }
 
-        $statusLog = StatusLog::where('product_id', $id)->first();
-        $statusLog->deleted_by = auth()->user()->fullname;
-        $statusLog->save();
-        $statusLog->delete();
+        $statusLogs = StatusLog::where('product_id', $id)->get();
+
+        foreach ($statusLogs as $statusLog) {
+            if (isset($statusLog->status_photo)) {
+                $old = parse_url($statusLog->status_photo);
+                if (Storage::exists($old['path'])) {
+                    Storage::delete($old['path']);
+                }
+            }
+            $statusLog->deleted_by = auth()->user()->fullname;
+            $statusLog->save();
+            $statusLog->delete();
+        }
 
         $product->deleted_by = auth()->user()->fullname;
         $product->deleted_flag = 1;
@@ -369,13 +370,13 @@ class ProductController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
     }
 
-    protected function validateUpdateStatus(array $data)
+    protected function validateStatusLogProduct(array $data)
     {
         $arrayValidator = [
             'status_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
@@ -383,15 +384,15 @@ class ProductController extends Controller
         return Validator::make($data, $arrayValidator);
     }
 
-    public function setStatusProduct($id, Request $request)
+    public function setStatusLogProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateUpdateStatus($request->all());
+            $validate = $this->validateStatusLogProduct($request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $data = $this->updateStatusProduct($id, $request->all(), $request);
+            $data = $this->insertStatusLogProduct($id, $request->all(), $request);
 
             DB::commit();
             $single = new StatusLogResource($data);
@@ -407,36 +408,30 @@ class ProductController extends Controller
                 } else if ($e instanceof BadRequestHttpException) {
                     return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
     }
 
-    protected function updateStatusProduct($id, array $data, Request $request)
+    protected function insertStatusLogProduct($id, array $data, Request $request)
     {
         $timeNow = Carbon::now();
-        $statusLog = StatusLog::find($id);
+        $statusLog = new StatusLog();
 
         if (empty($statusLog)) {
             throw new \Exception("Invalid status log id", 406);
         }
 
-        $image_url = $data['status_photo'];
+        $image_url = null;
+        Storage::exists('product') or Storage::makeDirectory('product');
         if ($data['status_photo']) {
             $image = Storage::putFile('product', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
-            //hapus picture sebelumnya
-            if (isset($statusLog->status_photo)) {
-                $old = parse_url($statusLog->status_photo);
-                if (Storage::exists($old['path'])) {
-                    Storage::delete($old['path']);
-                }
-            }
         }
 
-        $statusLog->id = $id;
-        $statusLog->product_id = $data['product_id'];
+        $statusLog->id = Uuid::uuid4()->toString();
+        $statusLog->product_id = $id;
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
         $statusLog->status_date = $timeNow;
@@ -448,6 +443,71 @@ class ProductController extends Controller
         //Save
         $statusLog->save();
 
+        $productData = Product::find($id);
+        $productData->status_id = $statusLog->status_id;
+        $productData->status = $statusLog->status_name;
+        $productData->status_date = $statusLog->status_date;
+        $productData->status_photo = $statusLog->status_photo;
+        $productData->note = $statusLog->note;
+        $productData->save();
+
         return $statusLog;
+    }
+
+    public function datatable(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Product::count();
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Product::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND barcode LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR category LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR shelf_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR description LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Product::whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Product::whereRaw($conditions)->count();
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
     }
 }

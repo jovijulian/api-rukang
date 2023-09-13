@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use App\Models\Product;
 use App\Models\Segment;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
@@ -25,7 +26,7 @@ class SegmentController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
             $order = $request->has('order') ? $request->input('order') : 'DESC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -123,7 +124,7 @@ class SegmentController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -149,7 +150,7 @@ class SegmentController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -217,7 +218,7 @@ class SegmentController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
@@ -233,6 +234,13 @@ class SegmentController extends Controller
         if ($segment == null) {
             throw new \Exception("Segmen tidak ada", 404);
         }
+
+        $product = Product::query()->where('segment_id', $segment->id)->first();
+
+        if ($product != null) {
+            return throw new \Exception("Data Segmen digunakan oleh Produk", 409);
+        }
+
         $segment->deleted_by = auth()->user()->fullname;
         $segment->save();
 
@@ -258,9 +266,57 @@ class SegmentController extends Controller
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }
+    }
+
+    public function datatable(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Segment::count();
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Segment::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND segment_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR barcode_color LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Segment::whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Segment::whereRaw($conditions)->count();
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
     }
 }
