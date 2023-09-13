@@ -36,6 +36,9 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->bigInteger('shipping_id')->unsigned()->nullable();
             $table->string('shipping_name', 40)->comment("Ekspedisi")->nullable();
+            $table->string('current_location', 100)->comment("Lokasi terkini")->nullable();
+            $table->bigInteger('group_id')->unsigned()->nullable();
+            $table->string('group_name', 100)->comment("Kelompok")->nullable();
 
             $table->timestamps();
             $table->string('created_by', 40)->nullable();
@@ -50,6 +53,7 @@ return new class extends Migration
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->foreign('module_id')->references('id')->on('modules');
             $table->foreign('shipping_id')->references('id')->on('shippings');
+            $table->foreign('group_id')->references('id')->on('groups');
         });
     }
 

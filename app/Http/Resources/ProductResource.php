@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use App\Models\Module;
 use App\Models\Segment;
 use App\Models\StatusLog;
@@ -44,6 +45,9 @@ class ProductResource extends JsonResource
             'status_logs' => StatusLogResource::collection(StatusLog::query()->where('product_id', $this->id)->get()),
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
+            'current_location' => $this->current_location,
+            'group_id' => $this->group_id,
+            'group_name' => $this->group_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
