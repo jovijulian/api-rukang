@@ -121,6 +121,9 @@ class ProductController extends Controller
         $productData->note = $data['note'];
         $productData->shipping_id = $data['shipping_id'];
         $productData->shipping_name = $data['shipping_name'];
+        $productData->current_location = $data['current_location'];
+        $productData->group_id = auth()->user()->group_id;
+        $productData->group_name = auth()->user()->group_name;
 
         $productData->created_at = $timeNow;
         $productData->updated_at = $timeNow;
@@ -267,6 +270,8 @@ class ProductController extends Controller
         $productData->status_date;
         $productData->status_photo;
         $productData->note;
+        $productData->group_id = auth()->user()->group_id;
+        $productData->group_name = auth()->user()->group_name;
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save
@@ -482,6 +487,7 @@ class ProductController extends Controller
                 $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR status LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }

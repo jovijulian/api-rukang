@@ -25,6 +25,8 @@ class UserSeeder extends Seeder
             'birthdate' => "2002-07-31",
             'isActive' => "1",
             'isAdmin' => 1,
+            'group_id' => 1,
+            'group_name' => "Kelompok 1",
         ]);
     }
 }
