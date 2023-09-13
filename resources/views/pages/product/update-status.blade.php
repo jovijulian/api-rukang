@@ -105,7 +105,7 @@
 
         const data = {
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
-          status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
+          status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           note: $('#note').val(),
           status_photo: $('#image-status')[0].files[0],
         }
