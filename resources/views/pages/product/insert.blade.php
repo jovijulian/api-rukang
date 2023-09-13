@@ -367,27 +367,32 @@
 
       function insertData() {
         const data = {
-          category_id: $('#category-product').val(),
-          category: $('#category-product').find("option:selected").text(),
-          segment_id: $('#segment-product').val(),
-          segment_name: $('#segment-product').find("option:selected").text(),
+          category_id: $('#category-product').val() ? $('#category-product').val() : '',
+          category: $('#category-product').val() ? $('#category-product').find("option:selected").text() : '',
+          segment_id: $('#segment-product').val() ? $('#segment-product').val() : '',
+          segment_name: $('#segment-product').val() ? $('#segment-product').find("option:selected").text() : '',
           barcode: $('#barcode-product').val(),
-          module_id: $('#module-product').val(),
-          module_number: $('#module-product').find("option:selected").text(),
+          module_id: $('#module-product').val() ? $('#module-product').val() : '',
+          module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val(),
           production_date: $('#production-date').val(),
           shelf_number: $('#shelf-number').val(),
-          // 1/0: $(".io:checked").val(),
-          nut_bolt: $('.nut-bolt').val(),
-          description_id: $('#description-product').val(),
-          description: $('#description-product').find("option:selected").text(),
+          quantity: $(".io:checked").val() ? $(".io:checked").val() : '',
+          nut_bolt: $('.nut-bolt').val() ? $('.nut-bolt').val() : '',
+          description_id: $('#description-product').val() ? $('#description-product').val() : "",
+          description: $('#description-product').val() ? $('#description-product').find("option:selected").text() : "",
           delivery_date: $('#delivery-date').val(),
-          status_id:$('#status-product').val(),
-          status: $('#status-product').find("option:selected").text(),
+          status_id: $('#status-product').val() ? $('#status-product').val() : '',
+          status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           note: $('#note').val(),
-          status_photo: $('#image-status')[0].files[0]
+          status_photo: $('#image-status')[0].files[0],
+          shipping_id: "",
+          shipping_name: "",
+          current_location: ""
         }
-        data["1/0"] = $(".io:checked").val();
+
+        console.log(data)
+        // return
 
 
         axios.post("{{ url('api/v1/product/create') }}", data, config)

@@ -151,9 +151,9 @@
       }
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
       // GET DATA
       const table = $('#product-table')

@@ -136,7 +136,7 @@
             <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
             <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i data-feather="clipboard"></i><span>Modul</span></a></li>
             <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
-            <li><a href="/group" class="{{ request()->is('group*') ? 'active' : '' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
+            <li><a href="/group" class="{{ request()->is('group*') ? 'active group' : 'group' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -397,6 +397,7 @@
     const accessToken = localStorage.getItem('access_token')
 
     !currentUser.isAdmin && $('.is-admin').hide()
+    !currentUser.isAdmin && $('.group').hide()
 
     $('.fullname').text(currentUser.fullname)
     $('.role').text(currentUser.isAdmin ? 'Admin' : 'Pegawai')
