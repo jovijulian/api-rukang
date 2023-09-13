@@ -210,9 +210,6 @@
                   <a class="me-3" href="product/detail/` + data + ` ">
                     <img src="assets/img/icons/eye.svg" alt="img">
                   </a>
-                  <a class="me-3" href="/product/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
                 `
               }
             },
@@ -222,9 +219,7 @@
             {data: 'bilah_number'},
             {data: 'shelf_number'},
             {data: 'production_date'},
-            {data: function(data) {
-              return data.quantity ? 'Ya' : 'Tidak'
-            } },
+            {data: 'quantity'},
             {data: function(data) {
               return data.nut_bolt ? 'Ya' : 'Tidak'
             } },
