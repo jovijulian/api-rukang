@@ -116,6 +116,7 @@
       // GET KELOMPOK
       axios.get("{{ url('api/v1/group/group') }}")
         .then(function(res) {
+          console.log(res)
           const groups = res.data.data.items
           groups.forEach(group => {
             $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)

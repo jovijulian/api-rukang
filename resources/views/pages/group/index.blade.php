@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>User</title>
+  <title>Kelompok</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>User</h4>
-        <h6>Manajemen Data User</h6>
+        <h4>Kelompok</h4>
+        <h6>Manajemen Data Kelompok</h6>
       </div>
       <div class="page-btn">
-        <a href="/user/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah User Baru</a>
+        <a href="/group/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Kelompok Baru</a>
       </div>
     </div>
 
@@ -107,21 +107,16 @@
         </div>
         <!-- /Filter --> --}}
         <div class="table-responsive pb-4">
-          <table id="user-table" class="table">
+          <table id="group-table" class="table">
             <thead>
               <tr>
-                <th>Nama Lengkap</th>
-                <th>Email</th>
-                <th>No HP</th>
-                <th>Alamat</th>
-                <th>Tanggal Lahir</th>
+                <th>No</th>
                 <th>Nama Kelompok</th>
-                <th>Aktif</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
                 <th>Diubah Oleh</th>
-                {{-- <th>Action</th> --}}
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +146,7 @@
       }
 
       // GET DATA
-      const table = $('#user-table')
+      const table = $('#group-table')
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -165,7 +160,7 @@
 
       getData()
 
-      // GET USER
+      // GET DESCRIPTION
       function getData() {
         table.DataTable({
           responsive: true,
@@ -185,7 +180,7 @@
             $('.dataTables_filter').appendTo('.search-input')
           },
           ajax: {
-            url: "{{ url('api/v1/user/datatable') }}",
+            url: "{{ url('api/v1/group/datatable') }}",
             dataType: 'json',
             type: 'POST',
             headers: {
@@ -197,15 +192,8 @@
             }
           },
           columns: [
-            {data: 'fullname'},
-            {data: 'email'},
-            {data: 'phone_number'},
-            {data: 'address'},
-            {data: 'birthdate'},
+            {data: 'id'},
             {data: 'group_name'},
-            {data: 'isActive', render: function(data) {
-              return data ? '<span class="badges bg-lightgreen">Aktif</span>' : '<span class="badges bg-lightred">Tidak</span>'
-            }},
             {data: function(data) {
               return new Date(data.created_at).toISOString().split('T')[0]}
             },
@@ -214,15 +202,15 @@
             },
             {data: 'created_by'},
             {data: 'updated_by'},
-            // {data: 'id', 
-            //   'render': function(data) {
-            //     return `
-            //       <a class="me-3" href="/shipping/edit/` + data + `">
-            //         <img src="assets/img/icons/edit.svg" alt="img">
-            //       </a>
-            //     `
-            //   }
-            // },
+            {data: 'id', 
+              'render': function(data) {
+                return `
+                  <a class="me-3" href="/group/edit/` + data + `">
+                    <img src="assets/img/icons/edit.svg" alt="img">
+                  </a>
+                `
+              }
+            },
           ]
         })
 
