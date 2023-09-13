@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>User</title>
+  <title>Ekspedisi</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>User</h4>
-        <h6>Manajemen Data User</h6>
+        <h4>Ekspedisi</h4>
+        <h6>Manajemen Data Ekspedisi</h6>
       </div>
       <div class="page-btn">
-        <a href="/user/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah User Baru</a>
+        <a href="/shipping/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Ekspedisi Baru</a>
       </div>
     </div>
 
@@ -107,21 +107,16 @@
         </div>
         <!-- /Filter --> --}}
         <div class="table-responsive pb-4">
-          <table id="user-table" class="table">
+          <table id="description-table" class="table">
             <thead>
               <tr>
-                <th>Nama Lengkap</th>
-                <th>Email</th>
-                <th>No HP</th>
-                <th>Alamat</th>
-                <th>Tanggal Lahir</th>
-                <th>Nama Kelompok</th>
-                <th>Aktif</th>
+                <th>No</th>
+                <th>Nama Ekspedisi</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
                 <th>Diubah Oleh</th>
-                {{-- <th>Action</th> --}}
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +146,7 @@
       }
 
       // GET DATA
-      const table = $('#user-table')
+      const table = $('#description-table')
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -185,7 +180,7 @@
             $('.dataTables_filter').appendTo('.search-input')
           },
           ajax: {
-            url: "{{ url('api/v1/user/datatable') }}",
+            url: "{{ url('api/v1/shipping/datatable') }}",
             dataType: 'json',
             type: 'POST',
             headers: {
@@ -197,15 +192,8 @@
             }
           },
           columns: [
-            {data: 'fullname'},
-            {data: 'email'},
-            {data: 'phone_number'},
-            {data: 'address'},
-            {data: 'birthdate'},
-            {data: 'group_name'},
-            {data: 'isActive', render: function(data) {
-              return data ? '<span class="badges bg-lightgreen">Aktif</span>' : '<span class="badges bg-lightred">Tidak</span>'
-            }},
+            {data: 'id'},
+            {data: 'shipping_name'},
             {data: function(data) {
               return new Date(data.created_at).toISOString().split('T')[0]}
             },
@@ -214,15 +202,15 @@
             },
             {data: 'created_by'},
             {data: 'updated_by'},
-            // {data: 'id', 
-            //   'render': function(data) {
-            //     return `
-            //       <a class="me-3" href="/shipping/edit/` + data + `">
-            //         <img src="assets/img/icons/edit.svg" alt="img">
-            //       </a>
-            //     `
-            //   }
-            // },
+            {data: 'id', 
+              'render': function(data) {
+                return `
+                  <a class="me-3" href="/shipping/edit/` + data + `">
+                    <img src="assets/img/icons/edit.svg" alt="img">
+                  </a>
+                `
+              }
+            },
           ]
         })
 

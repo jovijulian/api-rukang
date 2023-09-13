@@ -134,6 +134,9 @@
             <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Deskripsi</span></a></li>
             <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
             <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
+            <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i data-feather="clipboard"></i><span>Modul</span></a></li>
+            <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
+            <li><a href="/group" class="{{ request()->is('group*') ? 'active' : '' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -146,7 +149,8 @@
         <li class="submenu-open is-admin">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>Verifikasi User</span></a></li>
+            <li><a href="/user" class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>User</span></a></li>
+            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
             {{-- <li class="submenu">
               <a href="javascript:void(0);" class="{{ request()->is('user*') ? 'active subdrop' : '' }}"><i
                   data-feather="users"></i><span>User</span><span class="menu-arrow"></span></a>
