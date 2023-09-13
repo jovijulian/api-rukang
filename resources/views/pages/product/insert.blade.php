@@ -70,10 +70,18 @@
                 <h5 class="card-title mb-4">Produk</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
-                    <div class="form-group row">
+                    {{-- <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Modul</label>
                       <div class="col-lg-9">
                         <input type="text" id="module-number" class="form-control" placeholder="Masukan nomor modul">
+                      </div>
+                    </div> --}}
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Nomor Modul</label>
+                      <div class="col-lg-9">
+                        <select id="module-product" class="form-control select">
+                          <option value="pilih modul" selected="selected" disabled>Pilih modul</option>
+                        </select>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -112,13 +120,13 @@
                         <div class="form-check form-check-inline">
                           <input class="form-check-input io" name="io-radio" type="radio" id="io-yes" value=1>
                           <label class="form-check-label" for="io-yes">
-                            Ya
+                            1
                           </label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input io" type="radio" name="io-radio" id="io-no" value=0>
                           <label class="form-check-label" for="io-no">
-                            Tidak
+                            0
                           </label>
                         </div>
                       </div>
@@ -187,7 +195,7 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Upload Foto Proses</label>
+                      <label class="col-lg-3 col-form-label">Upload Foto Status</label>
                       <div class="col-lg-9">
                         <input class="form-control" type="file" id="image-status" accept="image/*">
                       </div>
@@ -232,6 +240,7 @@
         }
       }
 
+      getModule()
       getCategory()
       getSegment()
       getStatus()
@@ -266,6 +275,20 @@
         insertData()
       })
 
+
+      function getModule() {
+        axios.get("{{ url('api/v1/module/index') }}", config)
+          .then(res => {
+            const modules = res.data.data.items
+            modules.map(module => {
+              $('#module-product').append(`<option value=${module.id}>${module.module_number}</option>`)
+            })
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
 
       function getCategory() {
         axios.get("{{ url('api/v1/category/index') }}", config)
@@ -349,7 +372,8 @@
           segment_id: $('#segment-product').val(),
           segment_name: $('#segment-product').find("option:selected").text(),
           barcode: $('#barcode-product').val(),
-          module_number: $('#module-number').val(),
+          module_id: $('#module-product').val(),
+          module_number: $('#module-product').find("option:selected").text(),
           bilah_number: $('#no-bilah').val(),
           production_date: $('#production-date').val(),
           shelf_number: $('#shelf-number').val(),
@@ -361,10 +385,9 @@
           status_id:$('#status-product').val(),
           status: $('#status-product').find("option:selected").text(),
           note: $('#note').val(),
-          process_photo: $('#image-status')[0].files[0]
+          status_photo: $('#image-status')[0].files[0]
         }
         data["1/0"] = $(".io:checked").val();
-
 
 
         axios.post("{{ url('api/v1/product/create') }}", data, config)
