@@ -71,11 +71,11 @@
                   <h6 id="created-by"></h6>
                 </li>
                 <li>
-                  <h4>Diupdate Pada</h4>
+                  <h4>Diubah Pada</h4>
                   <h6 id="updated-at"></h6>
                 </li>
                 <li>
-                  <h4>Diupdate Oleh</h4>
+                  <h4>Diubah Oleh</h4>
                   <h6 id="updated-by"></h6>
                 </li>
               </ul>
@@ -169,19 +169,21 @@
 
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
+          console.log(product);
+
 
           JsBarcode("#barcode", product.barcode)
 
-          $('#category').text(product.category)
-          $('#segment').text(product.segment.segment_name)
-          $('#module-number').text(product.module.module_number)
-          $('#bilah-number').text(product.bilah_number)
-          $('#production-date').text(product.production_date)
-          $('#shelf-number').text(product.shelf_number)
-          $('#quantity').text(product.quantity)
+          $('#category').text(product.category ? product.category : '')
+          $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
+          $('#module-number').text(product.module.module_number ? product.module.module_number : '')
+          $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
+          $('#production-date').text(product.production_date ? product.production_date : '')
+          $('#shelf-number').text(product.shelf_number ? product.shelf_number : '')
+          $('#quantity').text(product.quantity ? product.quantity : '')
           $('#nut-bolt').text(product.nut_bolt ? 'Ya' : 'Tidak')
-          $('#description').text(product.description.description)
-          $('#delivery-date').text(product.delivery_date)
+          $('#description').text(product.description ? product.description : '')
+          $('#delivery-date').text(product.delivery_date ? product.delivery_date : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0])
           $('#created-by').text(product.created_by)
           $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0])
@@ -199,7 +201,7 @@
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0]}</td>
                   <td>${statusLog.created_by}</td>
                   <td>${new Date(statusLog.updated_at).toISOString().split('T')[0]}</td>
-                  <td>${statusLog.updated_by}</td>
+                  <td>${statusLog.updated_by ? statusLog.updated_by : ''}</td>
                 </tr>
               `
             )
