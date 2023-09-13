@@ -66,9 +66,9 @@
       const accessToken = localStorage.getItem('access_token')
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
 
       $('#insert-segment-form').on('submit', () => {

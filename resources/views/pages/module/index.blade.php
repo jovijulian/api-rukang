@@ -135,10 +135,10 @@
 
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
-      if (success) {
-        Swal.fire(success, '', 'success')
-        sessionStorage.removeItem("success")
-      }
+      // if (success) {
+      //   Swal.fire(success, '', 'success')
+      //   sessionStorage.removeItem("success")
+      // }
 
       // REDIRECT IF NOT ADMIN
       if(!currentUser.isAdmin) {

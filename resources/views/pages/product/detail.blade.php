@@ -149,9 +149,9 @@
       const accessToken = localStorage.getItem('access_token')
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
