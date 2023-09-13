@@ -20,12 +20,12 @@
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
-            <div class="search-path">
+            {{-- <div class="search-path">
               <a class="btn btn-filter" id="filter_search">
                 <img src="{{ url('assets/img/icons/filter.svg') }}" alt="img">
                 <span><img src="{{ url('assets/img/icons/closes.svg') }}" alt="img"></span>
               </a>
-            </div>
+            </div> --}}
             <div class="search-input">
               <a class="btn btn-searchset"><img src="{{ url('assets/img/icons/search-white.svg') }}" alt="img"></a>
             </div>
@@ -47,7 +47,7 @@
             </ul>
           </div>
         </div>
-        <!-- /Filter -->
+        {{-- <!-- /Filter -->
         <div class="card mb-0" id="filter_inputs">
           <div class="card-body pb-0">
             <div class="row">
@@ -105,15 +105,15 @@
             </div>
           </div>
         </div>
-        <!-- /Filter -->
-        <div class="table-responsive">
-          <table id="description-table" class="table datanew">
+        <!-- /Filter --> --}}
+        <div class="table-responsive pb-4">
+          <table id="description-table" class="table">
             <thead>
               <tr>
                 <th>No</th>
                 <th>Deskripsi</th>
-                <th>Dibuat</th>
-                <th>Diubah</th>
+                <th>Dibuat Pada</th>
+                <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
                 <th>Diubah Oleh</th>
                 <th>Action</th>
@@ -146,7 +146,7 @@
       }
 
       // GET DATA
-      const table = $('#description-table').DataTable()
+      const table = $('#description-table')
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -162,32 +162,58 @@
 
       // GET DESCRIPTION
       function getData() {
-        axios.get("{{ url('api/v1/description/index') }}", config)
-          .then(function(res) {
-            const descriptions = res.data.data.items
-
-            descriptions.map((description, i) => {
-              const formattedCreatedAt = new Date(description.created_at).toISOString().split('T')[0];
-              const formattedUpdatedAt = new Date(description.updated_at).toISOString().split('T')[0];
-
-              table.row.add([
-                i + 1,
-                description.description,
-                formattedCreatedAt,
-                formattedUpdatedAt,
-                description.created_by,
-                description.updated_by,
-                `
-                  <a class="me-3" href="/description/edit/${description.id}">
+        table.DataTable({
+          responsive: true,
+          processing: true,
+          serverSide: true,
+          bInfo: true,
+          sDom: 'frBtlpi',
+          ordering: true, 
+			    pagingType: 'numbers', 
+          language: {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search...",
+            info: "_START_ - _END_ of _TOTAL_ items",
+          },
+          initComplete: (settings, json)=>{
+            $('.dataTables_filter').appendTo('.search-input')
+          },
+          ajax: {
+            url: "{{ url('api/v1/description/datatable') }}",
+            dataType: 'json',
+            type: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': token,
+              'Authorization': `${tokenType} ${accessToken}`
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          },
+          columns: [
+            {data: 'id'},
+            {data: 'description'},
+            {data: function(data) {
+              return new Date(data.created_at).toISOString().split('T')[0]}
+            },
+            {data: function(data) {
+              return new Date(data.updated_at).toISOString().split('T')[0]}
+            },
+            {data: 'created_by'},
+            {data: 'updated_by'},
+            {data: 'id', 
+              'render': function(data) {
+                return `
+                  <a class="me-3" href="/description/edit/` + data + `">
                     <img src="assets/img/icons/edit.svg" alt="img">
                   </a>
-                `,
-              ]).draw(false)
-            })
-          })
-          .catch(function(err) {
-            console.log(err)
-          })
+                `
+              }
+            },
+          ]
+        })
+
       }
     })
   </script>

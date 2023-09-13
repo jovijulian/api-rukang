@@ -22,12 +22,12 @@
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
-            <div class="search-path">
+            {{-- <div class="search-path">
               <a class="btn btn-filter" id="filter_search">
                 <img src="assets/img/icons/filter.svg" alt="img">
                 <span><img src="assets/img/icons/closes.svg" alt="img"></span>
               </a>
-            </div>
+            </div> --}}
             <div class="search-input">
               <a class="btn btn-searchset"><img src="assets/img/icons/search-white.svg" alt="img"></a>
             </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
         <!-- /Filter -->
-        <div class="card mb-0" id="filter_inputs">
+        {{-- <div class="card mb-0" id="filter_inputs">
           <div class="card-body pb-0">
             <div class="row">
               <div class="col-lg-12 col-sm-12">
@@ -106,13 +106,13 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> --}}
         <!-- /Filter -->
-        <div class="table-responsive">
-          <table id="product-table" class="table datanew">
+        <div class="table-responsive pb-4">
+          <table id="product-table" class="table">
             <thead>
               <tr>
-                <th>No</th>
+                {{-- <th>No</th> --}}
                 <th>Action</th>
                 <th>Kategori</th>
                 <th>Segmen</th>
@@ -125,7 +125,7 @@
                 <th>Deskripsi</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
-                <th>Dibuat</th>
+                <th>Dibuat Pada</th>
                 <th>Dibuat Oleh</th>
               </tr>
             </thead>
@@ -156,7 +156,7 @@
       }
 
       // GET DATA
-      const table = $('#product-table').DataTable()
+      const table = $('#product-table')
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -173,44 +173,70 @@
 
       // GET PRODUCT
       function getData() {
-        axios.get("{{ url('api/v1/product/index') }}", config)
-          .then(function(res) {
-            const produts = res.data.data.items
-
-            produts.map((product, i) => {
-              const formattedCreatedAt = new Date(product.created_at).toISOString().split('T')[0];
-              const formattedUpdatedAt = new Date(product.updated_at).toISOString().split('T')[0];
-
-              table.row.add([
-                i + 1,
-                `
-                  <a class="me-3" href="product/detail/${product.id}">
+        table.DataTable({
+          responsive: true,
+          processing: true,
+          serverSide: true,
+          bInfo: true,
+          sDom: 'frBtlpi',
+          ordering: true, 
+			    pagingType: 'numbers', 
+          language: {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search...",
+            info: "_START_ - _END_ of _TOTAL_ items",
+          },
+          initComplete: (settings, json)=>{
+            $('.dataTables_filter').appendTo('.search-input')
+          },
+          ajax: {
+            url: "{{ url('api/v1/product/datatable') }}",
+            dataType: 'json',
+            type: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': token,
+              'Authorization': `${tokenType} ${accessToken}`
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          },
+          columns: [
+            // {data: 'id', name: 'id', render: $.fn.dataTable.render.text() },
+            {data: 'id', 
+              'render': function(data) {
+                return `
+                  <a class="me-3" href="product/detail/` + data + ` ">
                     <img src="assets/img/icons/eye.svg" alt="img">
                   </a>
-                  <a class="me-3" href="/product/edit/${product.id}">
+                  <a class="me-3" href="/product/edit/` + data + `">
                     <img src="assets/img/icons/edit.svg" alt="img">
                   </a>
-                `,
-                product.category,
-                product.segment_name,
-                product.module_number,
-                product.bilah_number,
-                product.shelf_number,
-                product.production_date,
-                // product.1/0,
-                'tes',
-                product.nut_bolt ? 'Ya' : 'Tidak',
-                product.description,
-                product.delivery_date,
-                product.status_log.status_name,
-                formattedCreatedAt,
-                product.created_by,
-              ]).draw(false)
-            })
-          })
-          .catch(function(err) {
-            console.log(err)
-          })
+                `
+              }
+            },
+            {data: 'category'},
+            {data: 'segment_name'},
+            {data: 'module_number'},
+            {data: 'bilah_number'},
+            {data: 'shelf_number'},
+            {data: 'production_date'},
+            {data: function(data) {
+              return data.quantity ? 'Ya' : 'Tidak'
+            } },
+            {data: function(data) {
+              return data.nut_bolt ? 'Ya' : 'Tidak'
+            } },
+            {data: 'description'},
+            {data: 'delivery_date'},
+            {data: 'status'},
+            {data: function(data) {
+              return new Date(data.created_at).toISOString().split('T')[0]}
+            },
+            {data: 'created_by'},
+          ]
+        })
       }
     })
   </script>
