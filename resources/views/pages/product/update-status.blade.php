@@ -29,27 +29,30 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="update-segment-form">
+              <form id="update-status-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen" required>
+                  <label class="col-lg-3 col-form-label">Status</label>
+                  <div class="col-lg-9">
+                    <select id="status-product" class="form-control select">
+                      <option value="pilih status" selected="selected" disabled>Pilih status</option>
+                    </select>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tempat</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen" required>
+                  <label class="col-lg-3 col-form-label">Catatan</label>
+                  <div class="col-lg-9">
+                    <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Warna Barcode</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
+                  <label class="col-lg-3 col-form-label">Upload Foto Status</label>
+                  <div class="col-lg-9">
+                    <input class="form-control" type="file" id="image-status" accept="image/*">
+                    <div id="image-preview" class="mt-2"></div>
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Update Status</button>
                 </div>
               </form>
             </div>
@@ -70,50 +73,81 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
+      $('#image-status').change(function(){
+        const file = this.files[0]
+        if (file){
+          let reader = new FileReader()
+          reader.onload = function(event){
+            $('#image-preview img').remove()
+            $('#image-preview').append(`<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 150px; width: auto">`)
+          }
+          reader.readAsDataURL(file)
+        }
+      })
+
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
+
       
+      getStatus()
       getData()
 
-      $('#update-segment-form').on('submit', () => {
+      $('#update-status-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
         const data = {
-          segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
-          barcode_color: $('#barcode-color').val(),
+          status_id: $('#status-product').val() ? $('#status-product').val() : '',
+          status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
+          note: $('#note').val(),
+          status_photo: $('#image-status')[0].files[0],
         }
 
+        console.log(data)
+        // return
 
-        axios.put("{{ url('api/v1/segment/update/' . $id) }}", data, config)
+        axios.post("{{ url('api/v1/product/update-status/' . $id) }}", data, config)
           .then(res => {
-            const segmen = res.data.data.item
-            sessionStorage.setItem("success", `${segmen.segment_name} berhasil diedit`)
-            window.location.href = "{{ url('/segment') }}"
+            const produk = res.data.data.item
+            sessionStorage.setItem("success", `Produk berhasil diedit`)
+            window.location.href = "{{ url('/product') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Segmen gagal diedit', '', 'error')
+            Swal.fire('Produk gagal diedit', '', 'error')
             console.log(err)
           })
 
       })
 
       function getData() {
-        axios.get("{{ url('api/v1/segment/detail/' . $id) }}", config)
+        axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
           .then(res => {
             const data = res.data.data.item
-            $('#segment-name').val(data.segment_name)
-            $('#segment-place').val(data.segment_place)
-            $('#barcode-color').val(data.barcode_color)
+
+            $('#status-product').val(data.status_id).change()
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+
+      function getStatus() {
+        axios.get("{{ url('api/v1/status/index') }}", config)
+          .then(res => {
+            const statuses = res.data.data.items
+            statuses.map(status => {
+              $('#status-product').append(
+                `<option value=${status.id}>${status.status}</option>`)
+            })
+
           })
           .catch(err => {
             console.log(err)
