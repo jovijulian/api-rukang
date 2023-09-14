@@ -166,10 +166,10 @@
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode</label>
-                      <div class="col-lg-7">
+                      <div class="col-lg-9">
                         <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode">
                       </div>
-                      <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p>
+                      {{-- <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p> --}}
                     </div>
                     <div class="form-group row">
                       <svg id="barcode"></svg>
@@ -224,6 +224,7 @@
       const currentUser = JSON.parse(localStorage.getItem('current_user'))
       const tokenType = localStorage.getItem('token_type')
       const accessToken = localStorage.getItem('access_token')
+      
 
       // REDIRECT IF NOT ADMIN
       if (!currentUser.isAdmin) {
@@ -247,13 +248,6 @@
       getDesc()
 
       barcode()
-
-      $('#generate-barcode').on('click', function() {
-        const randomNumber = Math.random().toString().slice(2,11);
-        
-        $('#barcode-product').val(randomNumber)
-        JsBarcode("#barcode", randomNumber)
-      })
 
       $('#image-status').change(function(){
         const file = this.files[0]
@@ -359,11 +353,58 @@
       }
 
       function barcode() {
+        let segment = ''
+        let module = ''
+        let bilah = ''
+        let category = ''
+
         const barcode = $('#barcode-product')
         barcode.on('input',() => {
           JsBarcode("#barcode", barcode.val())
         })
+
+        $('#segment-product').on('change', () => {
+          segment = $('#segment-product').find("option:selected").text().split(" ")
+          segment[0] = segment[0][0]
+          segment[1] = segment[1].length === 1 ? '0' + segment[1] : segment[1]
+          segment = segment.join('')
+
+          generateBarcode(segment, module, bilah, category)
+        })
+
+        $('#module-product').on('change', () => {
+          module = $('#module-product').find("option:selected").text().match(/[A-Z]+|\d+/g)
+          module[0] = module[0][0]
+          module[1] = module[1].length === 1 ? '0' + module[1] : module[1]
+          module = module.join('')
+
+          generateBarcode(segment, module, bilah, category)
+        })
+
+       $('#no-bilah').on('change', () => {
+          bilah = $('#no-bilah').find("option:selected").text().match(/[A-Z]+|\d+/g)
+          bilah[0] = bilah[0][0]
+          bilah[1] = bilah[1].length === 1 ? '0' + bilah[1] : bilah[1]
+          bilah = bilah.join('')
+
+          generateBarcode(segment, module, bilah, category)
+        })
+
+       $('#category-product').on('change', () => {
+          category = $('#category-product').find("option:selected").text().charAt(0)
+
+          generateBarcode(segment, module, bilah, category)
+        })
       }
+
+      function generateBarcode(segment, module, bilah, category) {
+        let barcode = segment + module + bilah + category
+        console.log(barcode)
+
+        $('#barcode-product').val(barcode)
+        JsBarcode("#barcode", barcode)
+      }
+
 
       function insertData() {
         const data = {
@@ -391,7 +432,7 @@
           current_location: ""
         }
 
-        console.log(data)
+        // console.log(data)
         // return
 
 
