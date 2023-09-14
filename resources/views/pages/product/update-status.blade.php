@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Segmen</title>
+  <title>Update Status</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Segmen</h3>
+            <h3 class="page-title">Update Status</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/segment') }}">Segmen</a></li>
-              <li class="breadcrumb-item active">Edit Segmen</li>
+              <li class="breadcrumb-item"><a href="{{ url('/product') }}">Produk</a></li>
+              <li class="breadcrumb-item active">Update Status Produk</li>
             </ul>
           </div>
         </div>
