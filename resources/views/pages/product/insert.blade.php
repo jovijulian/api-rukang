@@ -167,7 +167,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode</label>
                       <div class="col-lg-9">
-                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode">
+                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode" required>
                       </div>
                       {{-- <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p> --}}
                     </div>
