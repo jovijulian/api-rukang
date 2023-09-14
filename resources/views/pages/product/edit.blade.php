@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Tambah Produk</title>
+  <title>Edit Produk</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Tambah Data Produk</h3>
+            <h3 class="page-title">Edit Data Produk</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{ url('/product') }}">Produk</a></li>
-              <li class="breadcrumb-item active">Tambah Produk</li>
+              <li class="breadcrumb-item active">Edit Produk</li>
             </ul>
           </div>
         </div>
@@ -30,7 +30,7 @@
               <h5 class="card-title">Two Column Horizontal Form</h5>
             </div> --}}
             <div class="card-body">
-              <form id="insert-product-form">
+              <form id="edit-product-form">
                 <h5 class="card-title mb-4">Kategori & Segmen</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
@@ -70,12 +70,6 @@
                 <h5 class="card-title mb-4">Produk</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
-                    {{-- <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Modul</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="module-number" class="form-control" placeholder="Masukan nomor modul">
-                      </div>
-                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Modul</label>
                       <div class="col-lg-9">
@@ -177,38 +171,8 @@
                   </div>
                 </div>
 
-                <h5 class="card-title mb-4">Status</h5>
-                <div class="row mb-4 gx-lg-5">
-                  <div class="col-xl-6">
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Status</label>
-                      <div class="col-lg-9">
-                        <select id="status-product" class="form-control select">
-                          <option value="pilih status" selected="selected" disabled>Pilih status</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Catatan</label>
-                      <div class="col-lg-9">
-                        <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Upload Foto Status</label>
-                      <div class="col-lg-9">
-                        <input class="form-control" type="file" id="image-status" accept="image/*">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="form-group row" id="image-preview">
-                    </div>
-                  </div>
-                </div>
-
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary px-5 py-3">Tambah Produk</button>
+                  <button type="submit" class="btn btn-primary px-5 py-3">Edit Produk</button>
                 </div>
               </form>
             </div>
@@ -235,7 +199,7 @@
       let config = {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
@@ -244,29 +208,17 @@
       getModule()
       getCategory()
       getSegment()
-      getStatus()
       getDesc()
+      getDetailProduct()
 
       barcode()
 
-      $('#image-status').change(function(){
-        const file = this.files[0]
-        if (file){
-          let reader = new FileReader()
-          reader.onload = function(event){
-            $('#image-preview img').remove()
-            $('#image-preview').append(`<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 300px; width: auto">`)
-          }
-          reader.readAsDataURL(file)
-        }
-      })
 
-
-      $('#insert-product-form').on('submit', () => {
+      $('#edit-product-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
-        insertData()
+        updateData()
       })
 
 
@@ -337,15 +289,19 @@
           })
       }
 
-      function getStatus() {
-        axios.get("{{ url('api/v1/status/index') }}", config)
+      function getDetailProduct() {
+        axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
           .then(res => {
-            const statuses = res.data.data.items
-            statuses.map(status => {
-              $('#status-product').append(
-                `<option value=${status.id}>${status.status}</option>`)
-            })
+            const data = res.data.data.item
 
+            $('#category-product').val(data.category_id).change()
+            $('#segment-product').val(data.segment.id).change()
+            $('#module-product').val(data.module.id).change()
+            $('#no-bilah').val(data.bilah_number).change()
+            $('#shelf-number').val(data.shelf_number)
+            $('#production-date').val(data.production_date)
+            data.quantity ? $("[name='io-radio'][value='1']").prop("checked", true) : $("[name='io-radio'][value='0']").prop("checked", true)
+            data.nut_bolt ? $("[name='nut-bolt'][value='1']").prop("checked", true) : $("[name='nut-bolt'][value='0']").prop("checked", true)
           })
           .catch(err => {
             console.log(err)
@@ -406,7 +362,7 @@
       }
 
 
-      function insertData() {
+      function updateData() {
         const data = {
           category_id: $('#category-product').val() ? $('#category-product').val() : '',
           category: $('#category-product').val() ? $('#category-product').find("option:selected").text() : '',
@@ -415,36 +371,29 @@
           barcode: $('#barcode-product').val(),
           module_id: $('#module-product').val() ? $('#module-product').val() : '',
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
-          bilah_number: $('#no-bilah').val() ? $('#no-bilah').val() : '',
+          bilah_number: $('#no-bilah').val(),
           production_date: $('#production-date').val(),
           shelf_number: $('#shelf-number').val(),
           quantity: $(".io:checked").val() ? $(".io:checked").val() : '',
           nut_bolt: $('.nut-bolt:checked').val() ? $('.nut-bolt:checked').val() : '',
           description_id: $('#description-product').val() ? $('#description-product').val() : "",
           description: $('#description-product').val() ? $('#description-product').find("option:selected").text() : "",
-          delivery_date: $('#delivery-date').val(),
-          status_id: $('#status-product').val() ? $('#status-product').val() : '',
-          status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
-          note: $('#note').val(),
-          status_photo: $('#image-status')[0].files[0],
-          shipping_id: "",
-          shipping_name: "",
-          current_location: ""
+          delivery_date: $('#delivery-date').val()
         }
 
         // console.log(data)
         // return
 
 
-        axios.post("{{ url('api/v1/product/create') }}", data, config)
+        axios.put("{{ url('api/v1/product/update/' . $id) }}", data, config)
           .then(res => {
             const product = res.data.data.item
-            sessionStorage.setItem("success", `Produk berhasil ditambahkan`)
+            sessionStorage.setItem("success", `Produk berhasil diedit`)
             window.location.href = "{{ url('/product') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Produk gagal ditambahkan', '', 'error')
+            Swal.fire('Produk gagal diedit', '', 'error')
             console.log(err)
           })
       }

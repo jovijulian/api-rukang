@@ -172,12 +172,12 @@
           $('#quantity').text(product.quantity ? product.quantity : '')
           $('#nut-bolt').text(product.nut_bolt ? 'Ya' : 'Tidak')
           $('#description').text(product.description ? product.description : '')
-          $('#production-date').text(product.production_date ? product.production_date : '')
-          $('#delivery-date').text(product.delivery_date ? product.delivery_date : '')
+          $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
+          $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#product-note').text(product.note ? product.note : '')
-          $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0])
+          $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#created-by').text(product.created_by)
-          $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0])
+          $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#updated-by').text(product.updated_by)
 
           $("#image-status").attr("src", product.status_logs[0].status_photo)
@@ -188,11 +188,11 @@
                 <tr>
                   <td><img src="${statusLog.status_photo}" width="40" alt="${statusLog.id}"></td>
                   <td>${statusLog.status_name}</td>
-                  <td>${statusLog.status_date}</td>
+                  <td>${new Date(statusLog.status_date).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.note}</td>
-                  <td>${new Date(statusLog.created_at).toISOString().split('T')[0]}</td>
+                  <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by}</td>
-                  <td>${new Date(statusLog.updated_at).toISOString().split('T')[0]}</td>
+                  <td>${new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.updated_by ? statusLog.updated_by : ''}</td>
                 </tr>
               `

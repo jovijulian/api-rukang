@@ -112,7 +112,7 @@
           <table id="product-table" class="table">
             <thead>
               <tr>
-                {{-- <th>No</th> --}}
+                <th>No</th>
                 <th>Action</th>
                 <th>Kategori</th>
                 <th>Segmen</th>
@@ -203,12 +203,25 @@
             }
           },
           columns: [
-            // {data: 'id', name: 'id', render: $.fn.dataTable.render.text() },
-            {data: 'id', 
-              'render': function(data) {
+            {
+              data: 'id',
+              orderable: false,
+              searchable: false,
+              render: function (data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1;
+              },
+            },
+            {
+              data: 'id',
+              orderable: false,
+              searchable: false,
+              render: function(data) {
                 return `
                   <a class="me-3" href="product/detail/` + data + ` ">
                     <img src="assets/img/icons/eye.svg" alt="img">
+                  </a>
+                  <a class="me-5" href="/product/edit/` + data + `">
+                    <img src="assets/img/icons/edit.svg" alt="img">
                   </a>
                 `
               }
@@ -218,19 +231,35 @@
             {data: 'module_number'},
             {data: 'bilah_number'},
             {data: 'shelf_number'},
-            {data: 'production_date'},
+            {
+              data: 'production_date',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
+            },
             {data: 'quantity'},
-            {data: function(data) {
-              return data.nut_bolt ? 'Ya' : 'Tidak'
-            } },
+            {
+              data: 'nut_bolt',
+              render: function (data) {
+                return data ? 'Ya' : 'Tidak'
+              }
+            },
             {data: 'description'},
-            {data: 'delivery_date'},
+            {
+              data: 'delivery_date',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
+            },
             {data: 'status'},
-            {data: function(data) {
-              return new Date(data.created_at).toISOString().split('T')[0]}
+            {
+              data: 'created_at',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
             },
             {data: 'created_by'},
-          ]
+          ],
         })
       }
     })
