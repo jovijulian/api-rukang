@@ -39,10 +39,6 @@
                   <h6 id="bilah-number"></h6>
                 </li>
                 <li>
-                  <h4>Tanggal Produksi</h4>
-                  <h6 id="production-date"></h6>
-                </li>
-                <li>
                   <h4>Nomor Rak</h4>
                   <h6 id="shelf-number"></h6>
                 </li>
@@ -59,8 +55,16 @@
                   <h6 id="description"></h6>
                 </li>
                 <li>
+                  <h4>Tanggal Produksi</h4>
+                  <h6 id="production-date"></h6>
+                </li>
+                <li>
                   <h4>Tanggal Pengiriman</h4>
                   <h6 id="delivery-date"></h6>
+                </li>
+                <li>
+                  <h4>Catatan</h4>
+                  <h6 id="product-note"></h6>
                 </li>
                 <li>
                   <h4>Dibuat Pada</h4>
@@ -86,6 +90,7 @@
                       <th>Foto Status</th>
                       <th>Status</th>
                       <th>Tanggal Status</th>
+                      <th>Catatan</th>
                       <th>Dibuat Pada</th>
                       <th>Dibuat Oleh</th>
                       <th>Diubah Pada</th>
@@ -93,21 +98,6 @@
                     </tr>
                   </thead>
                   <tbody id="status-table">
-                    {{-- <tr>
-                      <td>John</td>
-                      <td>Doe</td>
-                      <td>john@example.com</td>
-                    </tr>
-                    <tr>
-                      <td>Mary</td>
-                      <td>Moe</td>
-                      <td>mary@example.com</td>
-                    </tr>
-                    <tr>
-                      <td>July</td>
-                      <td>Dooley</td>
-                      <td>july@example.com</td>
-                    </tr> --}}
                   </tbody>
                 </table>
               </div>
@@ -178,12 +168,13 @@
           $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
           $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#production-date').text(product.production_date ? product.production_date : '')
           $('#shelf-number').text(product.shelf_number ? product.shelf_number : '')
           $('#quantity').text(product.quantity ? product.quantity : '')
           $('#nut-bolt').text(product.nut_bolt ? 'Ya' : 'Tidak')
           $('#description').text(product.description ? product.description : '')
+          $('#production-date').text(product.production_date ? product.production_date : '')
           $('#delivery-date').text(product.delivery_date ? product.delivery_date : '')
+          $('#product-note').text(product.note ? product.note : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0])
           $('#created-by').text(product.created_by)
           $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0])
@@ -198,6 +189,7 @@
                   <td><img src="${statusLog.status_photo}" width="40" alt="${statusLog.id}"></td>
                   <td>${statusLog.status_name}</td>
                   <td>${statusLog.status_date}</td>
+                  <td>${statusLog.note}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0]}</td>
                   <td>${statusLog.created_by}</td>
                   <td>${new Date(statusLog.updated_at).toISOString().split('T')[0]}</td>
