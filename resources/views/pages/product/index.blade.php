@@ -220,6 +220,9 @@
                   <a class="me-3" href="product/detail/` + data + ` ">
                     <img src="assets/img/icons/eye.svg" alt="img">
                   </a>
+                  <a class="me-5" href="/product/edit/` + data + `">
+                    <img src="assets/img/icons/edit.svg" alt="img">
+                  </a>
                 `
               }
             },
