@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\LocationLog;
+use App\Models\StatusLog;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StatusLogResource extends JsonResource
+class LocationLogResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +17,10 @@ class StatusLogResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'status_log_id' => $this->status_log_id,
+            'status' => StatusLog::select('status_name')->where('id', $this->status_log_id)->first(),
             'product_id' => $this->product_id,
-            'status_id' => $this->status_id,
-            'status_name' => $this->status_name,
-            'status_photo' => $this->status_photo,
-            'note' => $this->note,
-            // 'location_log' => new LocationLogResource(LocationLog::where('status_log_id', $this->id)->first()),
+            'current_location' => $this->current_location,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,

@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
+use App\Models\Status;
 use App\Models\Product;
 use App\Models\StatusLog;
+use App\Models\LocationLog;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\LocationLogResource;
 use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -116,7 +119,6 @@ class ProductController extends Controller
         $productData->delivery_date = $data['delivery_date'];
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
-        $productData->status_date = $timeNow;
         $productData->status_photo = $image_url;
         $productData->note = $data['note'];
         $productData->shipping_id = $data['shipping_id'];
@@ -130,7 +132,7 @@ class ProductController extends Controller
         $productData->created_by = auth()->user()->fullname;
         $productData->updated_by = null;
 
-        // save status
+        // save product
         $productData->save();
 
         $statusLogData = new StatusLog();
@@ -139,14 +141,31 @@ class ProductController extends Controller
         $statusLogData->product_id = $productData->id;
         $statusLogData->status_id = $productData->status_id;
         $statusLogData->status_name = $productData->status;
-        $statusLogData->status_date = $productData->status_date;
         $statusLogData->status_photo = $productData->status_photo;
         $statusLogData->note = $productData->note;
+        $statusLogData->shipping_id = $productData->shipping_id;
+        $statusLogData->shipping_name = $productData->shipping_name;
         $statusLogData->created_at = $timeNow;
         $statusLogData->updated_at = $timeNow;
         $statusLogData->created_by = auth()->user()->fullname;
         $statusLogData->updated_by = null;
+
+        //save status logs
         $statusLogData->save();
+
+        $locationLogData = new LocationLog();
+        $locationLogId = Uuid::uuid4()->toString();
+        $locationLogData->id = $locationLogId;
+        $locationLogData->status_log_id = $statusLogData->id;
+        $locationLogData->product_id = $productData->id;
+        $locationLogData->current_location = $productData->current_location;
+        $locationLogData->created_at = $timeNow;
+        $locationLogData->updated_at = $timeNow;
+        $locationLogData->created_by = auth()->user()->fullname;
+        $locationLogData->updated_by = null;
+
+        //save location logs
+        $locationLogData->save();
 
 
         return $productData;
@@ -267,9 +286,11 @@ class ProductController extends Controller
         $productData->delivery_date = $data['delivery_date'];
         $productData->status_id;
         $productData->status;
-        $productData->status_date;
         $productData->status_photo;
         $productData->note;
+        $productData->shipping_id;
+        $productData->shipping_name;
+        $productData->current_location;
         $productData->group_id = auth()->user()->group_id;
         $productData->group_name = auth()->user()->group_name;
         $productData->updated_at = $timeNow;
@@ -340,6 +361,12 @@ class ProductController extends Controller
                 if (Storage::exists($old['path'])) {
                     Storage::delete($old['path']);
                 }
+            }
+            $LocationLogs = LocationLog::where('status_log_id', $statusLog->id)->get();
+            foreach ($LocationLogs as $LocationLog) {
+                $LocationLog->deleted_by = auth()->user()->fullname;
+                $LocationLog->save();
+                $LocationLog->delete();
             }
             $statusLog->deleted_by = auth()->user()->fullname;
             $statusLog->save();
@@ -434,9 +461,10 @@ class ProductController extends Controller
         $statusLog->product_id = $id;
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
-        $statusLog->status_date = $timeNow;
         $statusLog->status_photo = $image_url;
         $statusLog->note = $data['note'];
+        $statusLog->shipping_id = $data['shipping_id'];
+        $statusLog->shipping_name = $data['shipping_name'];
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
 
@@ -446,10 +474,21 @@ class ProductController extends Controller
         $productData = Product::find($id);
         $productData->status_id = $statusLog->status_id;
         $productData->status = $statusLog->status_name;
-        $productData->status_date = $statusLog->status_date;
         $productData->status_photo = $statusLog->status_photo;
         $productData->note = $statusLog->note;
+        $productData->shipping_id = $statusLog->shipping_id;
+        $productData->shipping_name = $statusLog->shipping_name;
+        $productData->current_location = $data['current_location'];
         $productData->save();
+
+        $locationLog = new LocationLog();
+        $locationLog->id = Uuid::uuid4()->toString();
+        $locationLog->status_log_id = $statusLog->id;
+        $locationLog->product_id = $id;
+        $locationLog->current_location = $data['current_location'];
+        $locationLog->updated_at = $timeNow;
+        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->save();
 
         return $statusLog;
     }
@@ -509,5 +548,74 @@ class ProductController extends Controller
             "data"            => $data
         );
         return json_encode($json_data);
+    }
+
+    protected function validateEditLocation(array $data)
+    {
+        $arrayValidator = [
+            'current_location' => ['required'],
+        ];
+        return Validator::make($data, $arrayValidator);
+    }
+
+    public function editLocation($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validate = $this->validateEditLocation($request->all());
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
+            }
+            $data = $this->updateLocation($id, $request->all(), $request);
+
+            DB::commit();
+            $single = new LocationLogResource($data);
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else if ($e instanceof BadRequestHttpException) {
+                    return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    protected function updateLocation($id, array $data, Request $request)
+    {
+        $timeNow = Carbon::now();
+
+        $statusLog = StatusLog::find($id);
+        // dd($statusLog);
+
+        if (empty($statusLog)) {
+            throw new \Exception("Invalid status log id", 406);
+        }
+        $statusLog->shipping_id;
+        $statusLog->shipping_name;
+        $statusLog->updated_at = $timeNow;
+        $statusLog->updated_by = auth()->user()->fullname;
+        //Save
+        $statusLog->save();
+
+
+        $productData = Product::where('id', $statusLog->product_id)->first();
+        $productData->current_location = $data['current_location'];
+        $productData->save();
+
+        $locationLog = LocationLog::where('status_log_id', $id)->first();
+        $locationLog->current_location = $data['current_location'];
+        $locationLog->updated_at = $timeNow;
+        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->save();
+
+        return $locationLog;
     }
 }
