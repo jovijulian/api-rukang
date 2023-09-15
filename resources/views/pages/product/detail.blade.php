@@ -159,9 +159,6 @@
 
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
-          console.log(product);
-
-
           JsBarcode("#barcode", product.barcode)
 
           $('#category').text(product.category ? product.category : '')
@@ -186,7 +183,7 @@
             $('#status-table').append(
               `
                 <tr>
-                  <td><img src="${statusLog.status_photo}" width="40" alt="${statusLog.id}"></td>
+                  <td><img class="cursor-pointer" src="${statusLog.status_photo}" onclick="previewPhoto('${statusLog.status_photo}')" width="40" alt="${statusLog.id + statusLog.status_date}"></td>
                   <td>${statusLog.status_name}</td>
                   <td>${new Date(statusLog.status_date).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.note}</td>
@@ -214,5 +211,15 @@
           console.log(err)
         })
     })
+
+    function previewPhoto(url) {
+      Swal.fire({
+        showConfirmButton: false,
+        imageUrl: url,
+        // imageWidth: 'auto',
+        imageWidth: 700,
+        width: 700
+      })
+    }
   </script>
 @endsection

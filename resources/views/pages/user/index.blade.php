@@ -122,7 +122,7 @@
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
                 <th>Diubah Oleh</th>
-                {{-- <th>Action</th> --}}
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -134,11 +134,21 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+    
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
 
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -154,15 +164,6 @@
       // GET DATA
       const table = $('#user-table')
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       getData()
 
@@ -232,19 +233,42 @@
             },
             {data: 'created_by'},
             {data: 'updated_by'},
-            // {data: 'id', 
-            //   'render': function(data) {
-            //     return `
-            //       <a class="me-3" href="/shipping/edit/` + data + `">
-            //         <img src="assets/img/icons/edit.svg" alt="img">
-            //       </a>
-            //     `
-            //   }
-            // },
+            {data: 'id', 
+              render: function(data) {
+                return `
+                    <a class="me-3" onclick="deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  `
+              }
+            },
           ]
         })
-
       }
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus user?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/user/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "User berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('User gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection
