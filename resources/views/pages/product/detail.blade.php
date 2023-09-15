@@ -89,7 +89,6 @@
                     <tr>
                       <th>Foto Status</th>
                       <th>Status</th>
-                      <th>Tanggal Status</th>
                       <th>Catatan</th>
                       <th>Dibuat Pada</th>
                       <th>Dibuat Oleh</th>
@@ -157,6 +156,8 @@
         .then(res => {
           const product = res.data.data.item
 
+          console.log(product);
+
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
           JsBarcode("#barcode", product.barcode)
@@ -185,7 +186,6 @@
                 <tr>
                   <td><img class="cursor-pointer" src="${statusLog.status_photo}" onclick="previewPhoto('${statusLog.status_photo}')" width="40" alt="${statusLog.id + statusLog.status_date}"></td>
                   <td>${statusLog.status_name}</td>
-                  <td>${new Date(statusLog.status_date).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.note}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by}</td>
@@ -195,16 +195,6 @@
               `
             )
           })
-
-          // $('#status').text(product.status_log.status_name)
-          // $('#status-date').text(product.status_log.status_date)
-          // $('#note').text(product.status_log.note)
-          // $('#created-at-status').text(formattedCreatedAtStatus)
-          // $('#created-by-status').text(product.status_log.created_by)
-          // $('#updated-at-status').text(formattedUpdatedAtStatus)
-          // $('#updated-by-status').text(product.status_log.updated_by)
-
-          // $("#image-status").attr("src", product.status_photo)
 
         })
         .catch(err => {
@@ -216,7 +206,6 @@
       Swal.fire({
         showConfirmButton: false,
         imageUrl: url,
-        // imageWidth: 'auto',
         imageWidth: 700,
         width: 700
       })
