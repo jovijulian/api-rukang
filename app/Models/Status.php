@@ -16,6 +16,7 @@ class Status extends Model
 
     protected $fillable = [
         'status',
+        'need_expedition',
         'created_by',
         'updated_by',
         'deleted_by',

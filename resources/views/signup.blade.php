@@ -114,16 +114,45 @@
       })
 
       // GET KELOMPOK
-      axios.get("{{ url('api/v1/group/group') }}")
-        .then(function(res) {
-          const groups = res.data.data.items
-          groups.forEach(group => {
-            $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)
-          });
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
+      $('#group').select2({
+        ajax: {
+          url: "{{ url('api/v1/group/group') }}",
+          dataType: 'json',
+          type: "GET",
+          data: function(params) {
+            var query = {
+              search: params.term,
+              page: params.page || 1
+            }
+            return query
+          },
+          processResults: function(data, params) {
+            params.page = params.page || 1
+
+            return {
+              results: $.map(data.data.items, function(item) {
+                return {
+                  text: item.group_name,
+                  id: item.id,
+                }
+              }),
+              pagination: {
+                more: data.page_info.last_page != params.page
+              }
+            }
+          }
+        }
+      })
+      // axios.get("{{ url('api/v1/group/group') }}")
+      //   .then(function(res) {
+      //     const groups = res.data.data.items
+      //     groups.forEach(group => {
+      //       $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)
+      //     });
+      //   })
+      //   .catch(function(err) {
+      //     console.log(err);
+      //   });
 
 
       // SUBMIT FORM
@@ -173,7 +202,7 @@
             'Accept': 'application/json'
           }
         }
-        
+
 
         axios.post("{{ url('api/v1/auth/register') }}", data, config)
           .then(function(res) {

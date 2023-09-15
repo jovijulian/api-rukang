@@ -128,11 +128,21 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
 
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -148,15 +158,6 @@
       // GET DATA
       const table = $('#description-table')
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       getData()
 
@@ -220,11 +221,22 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                return `
-                  <a class="me-3" href="/description/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                `
+                if (currentUser.isAdmin) {
+                  return `
+                    <a class="me-3" href="/description/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                    <a class="me-3" onclick=" deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  `
+                } else {
+                  return `
+                    <a class="me-3" href="/description/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                  `
+                }
               }
             },
           ]
@@ -232,5 +244,29 @@
 
       }
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus deskripsi?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/description/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "Deskripsi berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('Deskripsi gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection

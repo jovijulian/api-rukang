@@ -112,6 +112,7 @@
               <tr>
                 <th>No</th>
                 <th>Status</th>
+                <th>Butuh Ekspedisi</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -128,16 +129,31 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+    
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
 
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
         Swal.fire(success, '', 'success')
         sessionStorage.removeItem("success")
+      }
+      const error = sessionStorage.getItem("error")
+      if (error) {
+        Swal.fire(error, '', 'error')
+        sessionStorage.removeItem("error")
       }
 
       // REDIRECT IF NOT ADMIN
@@ -148,15 +164,6 @@
       // GET DATA
       const table = $('#status-table')
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       getData()
 
@@ -202,6 +209,12 @@
             },
             {data: 'status'},
             {
+              data: 'need_expedition',
+              render: function (data) {
+                return data ? 'Ya' : 'Tidak'
+              }
+            },
+            {
               data: 'created_at',
               render: function (data) {
                 return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
@@ -220,16 +233,51 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                return `
-                  <a class="me-3" href="/status/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                `
+                if (currentUser.isAdmin) {
+                  return `
+                    <a class="me-3" href="/status/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                    <a class="me-3" onclick="deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  `
+                } else {
+                  return `
+                    <a class="me-3" href="/status/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                  `
+                }
               }
             },
           ]
         })
       }
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus status?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/status/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "Status berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('Status gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection

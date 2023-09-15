@@ -72,6 +72,7 @@ class StatusController extends Controller
     {
         $arrayValidator = [
             'status' => ['required', 'string', 'min:1', 'max:40'],
+            'need_expedition' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -84,6 +85,7 @@ class StatusController extends Controller
 
         // input data process
         $statusData->status = $data['status'];
+        $statusData->need_expedition = $data['need_expedition'];
         $statusData->created_at = $timeNow;
         $statusData->updated_at = $timeNow;
         $statusData->created_by = auth()->user()->fullname;
@@ -161,6 +163,7 @@ class StatusController extends Controller
     {
         $arrayValidator = [
             'status' => ['required', 'string', 'min:1', 'max:40'],
+            'need_expedition' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -177,6 +180,7 @@ class StatusController extends Controller
         }
         $statusData->id = $id;
         $statusData->status = $data['status'];
+        $statusData->need_expedition = $data['need_expedition'];
         $statusData->updated_at = $timeNow;
         $statusData->updated_by = auth()->user()->fullname;
         //Save
@@ -287,6 +291,7 @@ class StatusController extends Controller
             $conditions = '1 = 1';
             if (!empty($search)) {
                 $conditions .= " AND status LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND need_expedition LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }

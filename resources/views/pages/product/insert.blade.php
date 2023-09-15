@@ -135,13 +135,15 @@
                       <label class="col-lg-3 col-form-label">Dimur/dibaut?</label>
                       <div class="col-lg-9 my-auto">
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-yes" value=1>
+                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-yes"
+                            value=1>
                           <label class="form-check-label" for="bolt-yes">
                             Ya
                           </label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-no" value=0>
+                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-no"
+                            value=0>
                           <label class="form-check-label" for="bolt-no">
                             Tidak
                           </label>
@@ -167,7 +169,8 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode</label>
                       <div class="col-lg-9">
-                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode" required>
+                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode"
+                          required>
                       </div>
                       {{-- <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p> --}}
                     </div>
@@ -186,6 +189,20 @@
                         <select id="status-product" class="form-control select">
                           <option value="pilih status" selected="selected" disabled>Pilih status</option>
                         </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Ekspedisi</label>
+                      <div class="col-lg-9">
+                        <select id="shipping" class="form-control select" disabled>
+                          <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
+                      <div class="col-lg-9">
+                        <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -224,12 +241,12 @@
       const currentUser = JSON.parse(localStorage.getItem('current_user'))
       const tokenType = localStorage.getItem('token_type')
       const accessToken = localStorage.getItem('access_token')
-      
+
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -245,73 +262,142 @@
       getCategory()
       getSegment()
       getStatus()
+      getShipping()
       getDesc()
 
       barcode()
 
-      $('#image-status').change(function(){
+      $('#image-status').change(function() {
         const file = this.files[0]
-        if (file){
+        if (file) {
           let reader = new FileReader()
-          reader.onload = function(event){
+          reader.onload = function(event) {
             $('#image-preview img').remove()
-            $('#image-preview').append(`<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 300px; width: auto">`)
+            $('#image-preview').append(
+              `<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 300px; width: auto">`
+            )
           }
           reader.readAsDataURL(file)
         }
       })
 
 
-      $('#insert-product-form').on('submit', () => {
-        event.preventDefault()
-        $('#global-loader').show()
-
-        insertData()
-      })
-
-
       function getModule() {
-        axios.get("{{ url('api/v1/module/index') }}", config)
-          .then(res => {
-            const modules = res.data.data.items
-            modules.map(module => {
-              $('#module-product').append(`<option value=${module.id}>${module.module_number}</option>`)
-            })
+        $('#module-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/module/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.module_number,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+
+        // axios.get("{{ url('api/v1/module/index') }}", config)
+        //   .then(res => {
+        //     const modules = res.data.data.items
+        //     modules.map(module => {
+        //       $('#module-product').append(`<option value=${module.id}>${module.module_number}</option>`)
+        //     })
+
+        //   })
+        //   .catch(err => {
+        //     console.log(err)
+        //   })
       }
 
       function getCategory() {
-        axios.get("{{ url('api/v1/category/index') }}", config)
-          .then(res => {
-            const categories = res.data.data.items
-            categories.map(category => {
-              $('#category-product').append(`<option value=${category.id}>${category.category}</option>`)
-            })
+        $('#category-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/category/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.category,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function getSegment() {
         let segments = []
 
-        axios.get("{{ url('api/v1/segment/index') }}", config)
-          .then(res => {
-            segments = res.data.data.items
+        $('#segment-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/segment/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              segments = data.data.items
+              
 
-            segments.map(segment => {
-              $('#segment-product').append(`<option value=${segment.id}>${segment.segment_name}</option>`)
-            })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.segment_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true,
+          }
+        })
 
         $('#segment-product').on('change', () => {
           const id = $('#segment-product').val()
@@ -323,33 +409,122 @@
       }
 
       function getDesc() {
-        axios.get("{{ url('api/v1/description/index') }}", config)
-          .then(res => {
-            const descriptions = res.data.data.items
-            descriptions.map(description => {
-              $('#description-product').append(
-                `<option value=${description.id}>${description.description}</option>`)
-            })
+        $('#description-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/description/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.description,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function getStatus() {
-        axios.get("{{ url('api/v1/status/index') }}", config)
-          .then(res => {
-            const statuses = res.data.data.items
-            statuses.map(status => {
-              $('#status-product').append(
-                `<option value=${status.id}>${status.status}</option>`)
-            })
+        $('#status-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/status/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              // console.log(data);
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.status,
+                    id: item.id,
+                    location: item.need_expedition
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+        
+        $('#status-product').on('change', function(e) {
+          const needExpedition = $(this).select2('data')[0].location
+          if (needExpedition) {
+            $('#shipping').removeAttr('disabled')
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+            $('#current-location').removeAttr('disabled')
+          } else {
+            $('#shipping').select2("enable", false)
+            $("#shipping").val(null).trigger("change")
+            
+            $('#current-location').attr('disabled', 'disabled')
+            $('#current-location').val('')
+          }
+        })
+      }
+
+      function getShipping() {
+        $('#shipping').select2({
+          placeholder: "Pilih ekspedisi",
+          ajax: {
+            url: "{{ url('api/v1/shipping/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.shipping_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function barcode() {
@@ -359,7 +534,7 @@
         let category = ''
 
         const barcode = $('#barcode-product')
-        barcode.on('input',() => {
+        barcode.on('input', () => {
           JsBarcode("#barcode", barcode.val())
         })
 
@@ -381,7 +556,7 @@
           generateBarcode(segment, module, bilah, category)
         })
 
-       $('#no-bilah').on('change', () => {
+        $('#no-bilah').on('change', () => {
           bilah = $('#no-bilah').find("option:selected").text().match(/[A-Z]+|\d+/g)
           bilah[0] = bilah[0][0]
           bilah[1] = bilah[1].length === 1 ? '0' + bilah[1] : bilah[1]
@@ -390,7 +565,7 @@
           generateBarcode(segment, module, bilah, category)
         })
 
-       $('#category-product').on('change', () => {
+        $('#category-product').on('change', () => {
           category = $('#category-product').find("option:selected").text().charAt(0)
 
           generateBarcode(segment, module, bilah, category)
@@ -399,11 +574,18 @@
 
       function generateBarcode(segment, module, bilah, category) {
         let barcode = segment + module + bilah + category
-        console.log(barcode)
 
         $('#barcode-product').val(barcode)
         JsBarcode("#barcode", barcode)
       }
+
+      
+      $('#insert-product-form').on('submit', () => {
+        event.preventDefault()
+        $('#global-loader').show()
+
+        insertData()
+      })
 
 
       function insertData() {
@@ -426,10 +608,10 @@
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           note: $('#note').val(),
-          status_photo: $('#image-status')[0].files[0],
-          shipping_id: "",
-          shipping_name: "",
-          current_location: ""
+          status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
+          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
+          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
         // console.log(data)

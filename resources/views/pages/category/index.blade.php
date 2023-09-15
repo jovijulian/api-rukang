@@ -128,11 +128,21 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
 
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -148,15 +158,6 @@
       // GET DATA
       const table = $('#category-table')
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       getData()
 
@@ -220,44 +221,51 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                return `
-                  <a class="me-3" href="/category/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                `
+                if (currentUser.isAdmin) {
+                  return `
+                    <a class="me-3" href="/category/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                    <a class="me-3" onclick="deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  `
+                } else {
+                  return `
+                    <a class="me-3" href="/category/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                  `
+                }
               }
             },
           ]
         })
-
-
-        // axios.get("{{ url('api/v1/category/index') }}", config)
-        //   .then(function(res) {
-        //     const categories = res.data.data.items
-
-        //     categories.map((category, i) => {
-        //       const formattedCreatedAt = new Date(category.created_at).toISOString().split('T')[0];
-        //       const formattedUpdatedAt = new Date(category.updated_at).toISOString().split('T')[0];
-
-        //       table.row.add([
-        //         i + 1,
-        //         category.category,
-        //         formattedCreatedAt,
-        //         formattedUpdatedAt,
-        //         category.created_by,
-        //         category.updated_by,
-        //         `
-        //           <a class="me-3" href="/category/edit/${category.id}">
-        //             <img src="assets/img/icons/edit.svg" alt="img">
-        //           </a>
-        //         `,
-        //       ]).draw(false)
-        //     })
-        //   })
-        //   .catch(function(err) {
-        //     console.log(err)
-        //   })
       }
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus kategori?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/category/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "Kategori berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('Kategori gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection

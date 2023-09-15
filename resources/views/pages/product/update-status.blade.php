@@ -39,6 +39,20 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Ekspedisi</label>
+                  <div class="col-lg-9">
+                    <select id="shipping" class="form-control select" disabled>
+                      <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
+                  <div class="col-lg-9">
+                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Catatan</label>
                   <div class="col-lg-9">
                     <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
@@ -94,10 +108,98 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
-
       
       getStatus()
-      getData()
+      getShipping()
+            
+      function getStatus() {
+        $('#status-product').select2({
+          placeholder: 'Pilih status',
+          ajax: {
+            url: "{{ url('api/v1/status/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.status,
+                    id: item.id,
+                    location: item.need_expedition
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            }
+          },
+          cache: true
+        })
+        
+        $('#status-product').on('change', function(e) {
+          const needExpedition = $(this).select2('data')[0].location
+
+          console.log(needExpedition)
+          
+          if (needExpedition) {
+            $('#shipping').removeAttr('disabled')
+
+            $('#current-location').removeAttr('disabled')
+          } else {
+            $('#shipping').select2("enable", false)
+            $("#shipping").val(null).trigger("change")
+            
+            $('#current-location').attr('disabled', 'disabled')
+            $('#current-location').val('')
+          }
+        })
+      }
+
+      function getShipping() {
+        $('#shipping').select2({
+          placeholder: "Pilih ekspedisi",
+          ajax: {
+            url: "{{ url('api/v1/shipping/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.shipping_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
+
 
       $('#update-status-form').on('submit', () => {
         event.preventDefault()
@@ -107,52 +209,28 @@
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           note: $('#note').val(),
-          status_photo: $('#image-status')[0].files[0],
+          status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
+          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
+          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
-        console.log(data)
+        // console.log(data)
         // return
 
         axios.post("{{ url('api/v1/product/update-status/' . $id) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
-            sessionStorage.setItem("success", `Produk berhasil diedit`)
-            window.location.href = "{{ url('/product') }}"
+            sessionStorage.setItem("success", `Status produk berhasil diupdate`)
+            window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Produk gagal diedit', '', 'error')
+            Swal.fire('Status produk gagal diupdate', '', 'error')
             console.log(err)
           })
 
       })
-
-      function getData() {
-        axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
-          .then(res => {
-            const data = res.data.data.item
-
-            $('#status-product').val(data.status_id).change()
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
-
-      function getStatus() {
-        axios.get("{{ url('api/v1/status/index') }}", config)
-          .then(res => {
-            const statuses = res.data.data.items
-            statuses.map(status => {
-              $('#status-product').append(
-                `<option value=${status.id}>${status.status}</option>`)
-            })
-
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
 
     })
   </script>

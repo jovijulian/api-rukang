@@ -234,7 +234,7 @@
             {
               data: 'production_date',
               render: function (data) {
-                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+                return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
               }
             },
             {data: 'quantity'},

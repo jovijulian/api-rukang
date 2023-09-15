@@ -7,6 +7,7 @@ use App\Models\Module;
 use App\Models\Segment;
 use App\Models\StatusLog;
 use App\Models\Description;
+use App\Models\LocationLog;
 use App\Http\Resources\ModuleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -39,10 +40,10 @@ class ProductResource extends JsonResource
             'delivery_date' => $this->delivery_date,
             'status_id' => $this->status_id,
             'status' => $this->status,
-            'status_date' => $this->status_date,
             'status_photo' => $this->status_photo,
             'note' => $this->note,
             'status_logs' => StatusLogResource::collection(StatusLog::query()->where('product_id', $this->id)->get()),
+            'location_logs' => LocationLogResource::collection(LocationLog::query()->where('product_id', $this->id)->get()),
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
             'current_location' => $this->current_location,
