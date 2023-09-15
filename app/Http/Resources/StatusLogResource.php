@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\LocationLog;
+use App\Models\Status;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StatusLogResource extends JsonResource
@@ -22,7 +23,7 @@ class StatusLogResource extends JsonResource
             'status_name' => $this->status_name,
             'status_photo' => $this->status_photo,
             'note' => $this->note,
-            // 'location_log' => new LocationLogResource(LocationLog::where('status_log_id', $this->id)->first()),
+            'status_detail' => Status::select('status', 'need_expedition')->where('id', $this->status_id)->first(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,

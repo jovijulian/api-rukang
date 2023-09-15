@@ -83,7 +83,7 @@ class ProductController extends Controller
                 'required', 'min:1', 'max:100',
                 'unique:products,barcode,NULL,id',
             ],
-            'status_photo' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
+            // 'status_photo' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -238,7 +238,6 @@ class ProductController extends Controller
         $arrayValidator = [
             'barcode' => [
                 'required', 'min:1', 'max:100',
-
             ],
         ];
         return Validator::make($data, $arrayValidator);
@@ -406,7 +405,7 @@ class ProductController extends Controller
     protected function validateStatusLogProduct(array $data)
     {
         $arrayValidator = [
-            'status_photo' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
+            // 'status_photo' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
         ];
         return Validator::make($data, $arrayValidator);
     }
