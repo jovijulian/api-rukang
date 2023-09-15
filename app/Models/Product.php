@@ -49,7 +49,6 @@ class Product extends Model
         'delivery_date',
         'status_id',
         'status',
-        'status_date',
         'status_photo',
         'note',
         'shipping_id',
