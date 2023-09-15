@@ -99,4 +99,5 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/insert', 'insert');
     Route::get('product/update-status/{id}', 'updateStatus');
     Route::get('product/edit/{id}', 'edit');
+    Route::get('product/edit-location/{id}', 'editLocation');
 });

@@ -310,7 +310,8 @@
                     more: data.page_info.last_page != params.page
                 }
               }
-            }
+            },
+            cache: true
           }
         })
 
@@ -355,7 +356,8 @@
                     more: data.page_info.last_page != params.page
                 }
               }
-            }
+            },
+            cache: true
           }
         })
       }
@@ -393,7 +395,7 @@
                 }
               }
             },
-            cache: false,
+            cache: true,
           }
         })
 
@@ -434,7 +436,8 @@
                     more: data.page_info.last_page != params.page
                 }
               }
-            }
+            },
+            cache: true
           }
         })
       }
@@ -468,7 +471,8 @@
                     more: data.page_info.last_page != params.page
                 }
               }
-            }
+            },
+            cache: true
           }
         })
         
@@ -517,7 +521,8 @@
                     more: data.page_info.last_page != params.page
                 }
               }
-            }
+            },
+            cache: true
           }
         })
       }
