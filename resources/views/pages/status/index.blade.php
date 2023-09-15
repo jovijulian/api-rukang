@@ -112,6 +112,7 @@
               <tr>
                 <th>No</th>
                 <th>Status</th>
+                <th>Butuh Ekspedisi</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -138,6 +139,11 @@
       if (success) {
         Swal.fire(success, '', 'success')
         sessionStorage.removeItem("success")
+      }
+      const error = sessionStorage.getItem("error")
+      if (error) {
+        Swal.fire(error, '', 'error')
+        sessionStorage.removeItem("error")
       }
 
       // REDIRECT IF NOT ADMIN
@@ -201,6 +207,12 @@
               },
             },
             {data: 'status'},
+            {
+              data: 'need_expedition',
+              render: function (data) {
+                return data ? 'Ya' : 'Tidak'
+              }
+            },
             {
               data: 'created_at',
               render: function (data) {
