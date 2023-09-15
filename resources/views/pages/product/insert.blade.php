@@ -192,6 +192,12 @@
                       </div>
                     </div>
                     <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
+                      <div class="col-lg-9">
+                        <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Catatan</label>
                       <div class="col-lg-9">
                         <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
@@ -230,9 +236,9 @@
 
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -264,14 +270,6 @@
           }
           reader.readAsDataURL(file)
         }
-      })
-
-
-      $('#insert-product-form').on('submit', () => {
-        event.preventDefault()
-        $('#global-loader').show()
-
-        insertData()
       })
 
 
@@ -448,12 +446,13 @@
             },
             processResults: function(data, params) {
               params.page = params.page || 1
-
+              // console.log(data);
               return {
                 results: $.map(data.data.items, function(item) {
                   return {
                     text: item.status,
                     id: item.id,
+                    location: item.need_expedition
                   }
                 }),
                 pagination: {
@@ -461,6 +460,17 @@
                 }
               }
             }
+          }
+        })
+        
+        $('#status-product').on('change', function(e) {
+          const needExpedition = $(this).select2('data')[0].location
+          console.log(needExpedition)
+          if (needExpedition) {
+            $('#current-location').removeAttr('disabled')
+          } else {
+            $('#current-location').attr('disabled', 'disabled')
+            $('#current-location').val('')
           }
         })
       }
@@ -517,6 +527,14 @@
         JsBarcode("#barcode", barcode)
       }
 
+      
+      $('#insert-product-form').on('submit', () => {
+        event.preventDefault()
+        $('#global-loader').show()
+
+        insertData()
+      })
+
 
       function insertData() {
         const data = {
@@ -533,8 +551,7 @@
           quantity: $(".io:checked").val() ? $(".io:checked").val() : '',
           nut_bolt: $('.nut-bolt:checked').val() ? $('.nut-bolt:checked').val() : '',
           description_id: $('#description-product').val() ? $('#description-product').val() : "",
-          description: $('#description-product').val() ? $('#description-product').find("option:selected").text() :
-            "",
+          description: $('#description-product').val() ? $('#description-product').find("option:selected").text() : "",
           delivery_date: $('#delivery-date').val(),
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
@@ -542,7 +559,7 @@
           status_photo: $('#image-status')[0].files[0],
           shipping_id: "",
           shipping_name: "",
-          current_location: ""
+          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
         // console.log(data)
