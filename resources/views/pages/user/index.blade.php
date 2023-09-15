@@ -110,6 +110,7 @@
           <table id="user-table" class="table">
             <thead>
               <tr>
+                <th>No</th>
                 <th>Nama Lengkap</th>
                 <th>Email</th>
                 <th>No HP</th>
@@ -197,20 +198,37 @@
             }
           },
           columns: [
+            {
+              data: 'id',
+              orderable: false,
+              searchable: false,
+              render: function (data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1;
+              },
+            },
             {data: 'fullname'},
             {data: 'email'},
             {data: 'phone_number'},
             {data: 'address'},
             {data: 'birthdate'},
             {data: 'group_name'},
-            {data: 'isActive', render: function(data) {
-              return data ? '<span class="badges bg-lightgreen">Aktif</span>' : '<span class="badges bg-lightred">Tidak</span>'
-            }},
-            {data: function(data) {
-              return new Date(data.created_at).toISOString().split('T')[0]}
+            {
+              data: 'isActive', 
+              render: function(data) {
+                return data ? '<span class="badges bg-lightgreen">Aktif</span>' : '<span class="badges bg-lightred">Tidak</span>'
+              }
             },
-            {data: function(data) {
-              return new Date(data.updated_at).toISOString().split('T')[0]}
+            {
+              data: 'created_at',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
+            },
+            {
+              data: 'updated_at',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
             },
             {data: 'created_by'},
             {data: 'updated_by'},

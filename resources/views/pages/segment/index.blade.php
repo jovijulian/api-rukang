@@ -192,20 +192,36 @@
             }
           },
           columns: [
-            {data: 'id'},
+            {
+              data: 'id',
+              orderable: false,
+              searchable: false,
+              render: function (data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1;
+              },
+            },
             {data: 'segment_name'},
             {data: 'segment_place'},
             {data: 'barcode_color'},
-            {data: function(data) {
-              return new Date(data.created_at).toISOString().split('T')[0]}
+            {
+              data: 'created_at',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
             },
-            {data: function(data) {
-              return new Date(data.updated_at).toISOString().split('T')[0]}
+            {
+              data: 'updated_at',
+              render: function (data) {
+                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              }
             },
             {data: 'created_by'},
             {data: 'updated_by'},
-            {data: 'id', 
-              'render': function(data) {
+            {
+              data: 'id',
+              orderable: false,
+              searchable: false,
+              render: function(data) {
                 return `
                   <a class="me-3" href="/segment/edit/` + data + `">
                     <img src="assets/img/icons/edit.svg" alt="img">
