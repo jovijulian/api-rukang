@@ -192,6 +192,14 @@
                       </div>
                     </div>
                     <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Ekspedisi</label>
+                      <div class="col-lg-9">
+                        <select id="shipping" class="form-control select" disabled>
+                          <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                       <div class="col-lg-9">
                         <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
@@ -254,6 +262,7 @@
       getCategory()
       getSegment()
       getStatus()
+      getShipping()
       getDesc()
 
       barcode()
@@ -465,12 +474,50 @@
         
         $('#status-product').on('change', function(e) {
           const needExpedition = $(this).select2('data')[0].location
-          console.log(needExpedition)
           if (needExpedition) {
+            $('#shipping').removeAttr('disabled')
+
             $('#current-location').removeAttr('disabled')
           } else {
+            $('#shipping').select2("enable", false)
+            $("#shipping").val(null).trigger("change")
+            
             $('#current-location').attr('disabled', 'disabled')
             $('#current-location').val('')
+          }
+        })
+      }
+
+      function getShipping() {
+        $('#shipping').select2({
+          placeholder: "Pilih ekspedisi",
+          ajax: {
+            url: "{{ url('api/v1/shipping/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.shipping_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            }
           }
         })
       }
@@ -556,9 +603,9 @@
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           note: $('#note').val(),
-          status_photo: $('#image-status')[0].files[0],
-          shipping_id: "",
-          shipping_name: "",
+          status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
+          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
+          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
