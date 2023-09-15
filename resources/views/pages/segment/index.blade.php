@@ -130,12 +130,20 @@
   </div>
 
   <script>
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+    
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+    
     $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
-
-      // NOTIF VERIFY USER
+      // NOTIF
       const success = sessionStorage.getItem("success")
       if (success) {
         Swal.fire(success, '', 'success')
@@ -150,15 +158,11 @@
       // GET DATA
       const table = $('#segment-table')
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       getData()
+
+      // ROLE ACTION
+      // currentUser.isAdmin && $('.delete-segment').hide()
 
       // GET SEGMENT
       function getData() {
@@ -222,48 +226,51 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                return `
-                  <a class="me-3" href="/segment/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                `
+                if (currentUser.isAdmin) {
+                  return `
+                    <a class="me-3" href="/segment/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                    <a class="me-3" onclick=" deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  `
+                } else {
+                  return `
+                    <a class="me-3" href="/segment/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                  `
+                }
               }
             },
           ]
         })
-
-
-
-        // axios.get("{{ url('api/v1/segment/index') }}", config)
-        //   .then(function(res) {
-        //     const segments = res.data.data.items
-
-        //     segments.map((segment, i) => {
-        //       const formattedCreatedAt = new Date(segment.created_at).toISOString().split('T')[0];
-        //       const formattedUpdatedAt = new Date(segment.updated_at).toISOString().split('T')[0];
-
-        //       table.row.add([
-        //         i + 1,
-        //         segment.segment_name,
-        //         segment.segment_place,
-        //         segment.barcode_color,
-        //         formattedCreatedAt,
-        //         formattedUpdatedAt,
-        //         segment.created_by,
-        //         segment.updated_by,
-        //         `
-        //           <a class="me-3" href="/segment/edit/${segment.id}">
-        //             <img src="assets/img/icons/edit.svg" alt="img">
-        //           </a>
-        //         `,
-        //       ]).draw(false)
-        //     })
-        //   })
-        //   .catch(function(err) {
-        //     console.log(err)
-        //   })
       }
-
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus segmen?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/segment/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "Segmen berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              Swal.fire('Segmen gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection
