@@ -112,6 +112,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
             Route::post('/update-status/{id}', 'setStatusLogProduct')->middleware('auth:api');
             Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
         });
     });
     Route::prefix('shipping')->group(function () {
