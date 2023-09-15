@@ -221,12 +221,12 @@
         axios.post("{{ url('api/v1/product/update-status/' . $id) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
-            sessionStorage.setItem("success", `Produk berhasil diedit`)
-            window.location.href = "{{ url('/product') }}"
+            sessionStorage.setItem("success", `Status produk berhasil diupdate`)
+            window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Produk gagal diedit', '', 'error')
+            Swal.fire('Status produk gagal diupdate', '', 'error')
             console.log(err)
           })
 
