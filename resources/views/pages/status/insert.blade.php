@@ -33,7 +33,24 @@
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Status</label>
                   <div class="col-lg-10">
-                    <input type="text" id="status" class="form-control" placeholder="Masukan status" required>
+                    <input type="text" id="status" class="form-control" placeholder="Masukan status" maxlength="40" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-2 col-form-label">Butuh Ekspedisi?</label>
+                  <div class="col-lg-10 my-auto">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input expedition" name="expedition-radio" type="radio" id="expedition-yes" value=1 required>
+                      <label class="form-check-label" for="expedition-yes">
+                        Ya
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input expedition" name="expedition-radio" type="radio" id="expedition-no" value=0>
+                      <label class="form-check-label" for="expedition-no">
+                        Tidak
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <div class="text-end">
@@ -58,6 +75,15 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      let config = {
+        headers: {
+          'X-CSRF-TOKEN': token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `${tokenType} ${accessToken}`
+        }
+      }
 
       $('#insert-status-form').on('submit', () => {
         event.preventDefault()
@@ -65,17 +91,9 @@
 
         const data = {
           status: $('#status').val(),
+          need_expedition: $(".expedition:checked").val() ? $(".expedition:checked").val() : '',
         }
 
-        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        let config = {
-          headers: {
-            'X-CSRF-TOKEN': token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `${tokenType} ${accessToken}`
-          }
-        }
 
         axios.post("{{ url('api/v1/status/create') }}", data, config)
           .then(res => {
