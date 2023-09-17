@@ -37,7 +37,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -82,12 +82,12 @@
         axios.put("{{ url('api/v1/group/update/' . $id) }}", data, config)
           .then(res => {
             const group = res.data.data.item
-            sessionStorage.setItem("success", `${group.group_name} berhasil diedit`)
+            sessionStorage.setItem("success", `${group.group_name} berhasil diubah`)
             window.location.href = "{{ url('/group') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Kelompok gagal diedit', '', 'error')
+            Swal.fire('Kelompok gagal diubah', '', 'error')
             console.log(err)
           })
 
