@@ -37,7 +37,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -82,12 +82,12 @@
         axios.put("{{ url('api/v1/category/update/' . $id) }}", data, config)
           .then(res => {
             const category = res.data.data.item
-            sessionStorage.setItem("success", `${category.category} berhasil diedit`)
+            sessionStorage.setItem("success", `${category.category} berhasil diubah`)
             window.location.href = "{{ url('/category') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Kategori gagal diedit', '', 'error')
+            Swal.fire('Kategori gagal diubah', '', 'error')
             console.log(err)
           })
 

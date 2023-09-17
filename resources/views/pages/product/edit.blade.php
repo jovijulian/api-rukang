@@ -172,7 +172,7 @@
                 </div>
 
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary px-5 py-3">Edit Produk</button>
+                  <button type="submit" class="btn btn-primary px-5 py-3">Ubah Produk</button>
                 </div>
               </form>
             </div>
@@ -323,6 +323,7 @@
           segment = $('#segment-product').find("option:selected").text().split(" ")
           segment[0] = segment[0][0]
           segment[1] = segment[1].length === 1 ? '0' + segment[1] : segment[1]
+          segment = segment.slice(0, 2)
           segment = segment.join('')
 
           generateBarcode(segment, module, bilah, category)
@@ -332,6 +333,7 @@
           module = $('#module-product').find("option:selected").text().match(/[A-Z]+|\d+/g)
           module[0] = module[0][0]
           module[1] = module[1].length === 1 ? '0' + module[1] : module[1]
+          module = module.slice(0, 2)
           module = module.join('')
 
           generateBarcode(segment, module, bilah, category)

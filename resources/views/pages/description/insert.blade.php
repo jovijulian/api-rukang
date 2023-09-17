@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Tambah Deskripsi</title>
+  <title>Tambah Keterangan</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Tambah Data Deskripsi</h3>
+            <h3 class="page-title">Tambah Data Keterangan</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Deskripsi</a></li>
-              <li class="breadcrumb-item active">Tambah Deskripsi</li>
+              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Keterangan</a></li>
+              <li class="breadcrumb-item active">Tambah Keterangan</li>
             </ul>
           </div>
         </div>
@@ -31,9 +31,9 @@
             <div class="card-body p-4">
               <form id="insert-description-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Deskripsi</label>
+                  <label class="col-lg-2 col-form-label">Keterangan</label>
                   <div class="col-lg-10">
-                    <input type="text" id="description" class="form-control" placeholder="Masukan deskripsi" required>
+                    <input type="text" id="description" class="form-control" placeholder="Masukan keterangan" required>
                   </div>
                 </div>
                 <div class="text-end">
@@ -85,7 +85,7 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Deskripsi gagal ditambahkan', '', 'error')
+            Swal.fire('Keterangan gagal ditambahkan', '', 'error')
             console.log(err)
           })
 

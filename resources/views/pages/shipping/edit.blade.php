@@ -37,7 +37,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -82,12 +82,12 @@
         axios.put("{{ url('api/v1/shipping/update/' . $id) }}", data, config)
           .then(res => {
             const shipping = res.data.data.item
-            sessionStorage.setItem("success", `${shipping.shipping_name} berhasil diedit`)
+            sessionStorage.setItem("success", `${shipping.shipping_name} berhasil diubah`)
             window.location.href = "{{ url('/shipping') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Ekspedisi gagal diedit', '', 'error')
+            Swal.fire('Ekspedisi gagal diubah', '', 'error')
             console.log(err)
           })
 

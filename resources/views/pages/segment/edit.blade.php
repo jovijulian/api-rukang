@@ -49,7 +49,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -96,12 +96,12 @@
         axios.put("{{ url('api/v1/segment/update/' . $id) }}", data, config)
           .then(res => {
             const segmen = res.data.data.item
-            sessionStorage.setItem("success", `${segmen.segment_name} berhasil diedit`)
+            sessionStorage.setItem("success", `${segmen.segment_name} berhasil diubah`)
             window.location.href = "{{ url('/segment') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Segmen gagal diedit', '', 'error')
+            Swal.fire('Segmen gagal diubah', '', 'error')
             console.log(err)
           })
 

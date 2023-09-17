@@ -37,7 +37,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -82,12 +82,12 @@
         axios.put("{{ url('api/v1/module/update/' . $id) }}", data, config)
           .then(res => {
             const module = res.data.data.item
-            sessionStorage.setItem("success", `${module.module_number} berhasil diedit`)
+            sessionStorage.setItem("success", `${module.module_number} berhasil diubah`)
             window.location.href = "{{ url('/module') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('No Modul gagal diedit', '', 'error')
+            Swal.fire('No Modul gagal diubah', '', 'error')
             console.log(err)
           })
 
