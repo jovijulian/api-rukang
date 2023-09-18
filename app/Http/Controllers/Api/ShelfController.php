@@ -35,10 +35,10 @@ class ShelfController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND shelfs.shelf_name LIKE '%$search_term%'";
+                $conditions .= " AND shelves.shelf_name LIKE '%$search_term%'";
             }
 
-            $paginate = Shelf::query()->select(['shelfs.*'])
+            $paginate = Shelf::query()->select(['shelves.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
