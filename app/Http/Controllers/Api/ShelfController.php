@@ -225,14 +225,14 @@ class ShelfController extends Controller
 
         $shelf = Shelf::find($id);
         if ($shelf == null) {
-            throw new \Exception("Kategori tidak ada", 404);
+            throw new \Exception("Shelf tidak ada", 404);
         }
 
-        $product = Product::query()->where('shelf_id', $shelf->id)->first();
+        // $product = Product::query()->where('shelf_id', $shelf->id)->first();
 
-        if ($product != null) {
-            return throw new \Exception("Data Rak digunakan oleh Produk", 409);
-        }
+        // if ($product != null) {
+        //     return throw new \Exception("Data Rak digunakan oleh Produk", 409);
+        // }
 
         $shelf->deleted_by = auth()->user()->fullname;
         $shelf->save();
