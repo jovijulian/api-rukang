@@ -135,7 +135,7 @@ class ShippingController extends Controller
         try {
             $model = Shipping::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Ekspedisi tidak ada");
+                throw new \Exception("Ekspedisi tidak ada", 404);
             }
             $single = new ShippingResource($model);
             return ResponseStd::okSingle($single);

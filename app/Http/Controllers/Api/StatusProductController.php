@@ -137,7 +137,7 @@ class StatusProductController extends Controller
         try {
             $model = StatusProduct::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Proses tidak ada");
+                throw new \Exception("Status Produk tidak ada", 404);
             }
             $single = new StatusProductResource($model);
             return ResponseStd::okSingle($single);

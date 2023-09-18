@@ -134,7 +134,7 @@ class CategoryController extends Controller
         try {
             $model = Category::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Kategori tidak ada");
+                throw new \Exception("Status Alat dan Bahan tidak ada", 404);
             }
             $single = new CategoryResource($model);
             return ResponseStd::okSingle($single);

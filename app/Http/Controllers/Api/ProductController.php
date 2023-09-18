@@ -211,7 +211,7 @@ class ProductController extends Controller
         try {
             $model = Product::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Produk tidak ada");
+                throw new \Exception("Produk tidak ada", 404);
             }
             $single = new ProductResource($model);
             return ResponseStd::okSingle($single);

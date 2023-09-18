@@ -137,7 +137,7 @@ class GroupController extends Controller
         try {
             $model = Group::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Kelompok tidak ada");
+                throw new \Exception("Kelompok tidak ada", 404);
             }
             $single = new GroupResource($model);
             return ResponseStd::okSingle($single);

@@ -134,7 +134,7 @@ class ModuleController extends Controller
         try {
             $model = Module::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Modul tidak ada");
+                throw new \Exception("Modul tidak ada", 404);
             }
             $single = new ModuleResource($model);
             return ResponseStd::okSingle($single);

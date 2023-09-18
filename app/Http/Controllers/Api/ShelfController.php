@@ -134,7 +134,7 @@ class ShelfController extends Controller
         try {
             $model = Shelf::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Kategori tidak ada");
+                throw new \Exception("Rak tidak ada", 404);
             }
             $single = new ShelfResource($model);
             return ResponseStd::okSingle($single);

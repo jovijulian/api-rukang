@@ -300,7 +300,7 @@ class UserController extends Controller
         try {
             $model = User::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("User tidak ada");
+                throw new \Exception("User tidak ada", 404);
             }
             $single = new UserResource($model);
             return ResponseStd::okSingle($single);
