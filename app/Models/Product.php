@@ -77,9 +77,9 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function status()
+    public function statusProduct()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(StatusProduct::class);
     }
 
     public function module()
