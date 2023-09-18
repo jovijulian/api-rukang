@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StatusLog extends Model
+class LocationToolLog extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -16,7 +16,7 @@ class StatusLog extends Model
      * @var string
      */
 
-    protected $table = 'status_logs';
+    protected $table = 'location_tool_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -35,30 +35,16 @@ class StatusLog extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'status_tool_log_id',
         'product_id',
-        'status_id',
-        'status',
-        'photo_status',
-        'note',
-        'shipping_id',
-        'shipping_name',
+        'current_location',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    public function product()
+    public function statusToolLog()
     {
-        return $this->belongsTo(Product::class);
-    }
-
-    // public function statuses()
-    // {
-    //     return $this->hasMany(Status::class);
-    // }
-
-    public function locationLogs()
-    {
-        return $this->hasMany(LocationLog::class);
+        return $this->belongsTo(StatusToolLog::class);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ShelfController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\StatusProductController;
 use App\Http\Controllers\Api\StatusToolMaterialController;
+use App\Http\Controllers\Api\ToolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
@@ -155,6 +156,18 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
             Route::post('/datatable', 'datatable')->middleware('auth:api');
+        });
+    });
+    Route::prefix('tool')->group(function () {
+        Route::controller(ToolController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/update-status/{id}', 'setStatusLogTool')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
         });
     });
 });
