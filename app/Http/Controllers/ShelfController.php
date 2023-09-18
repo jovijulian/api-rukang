@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class StatusController extends Controller
+class ShelfController extends Controller
 {
     public function index()
     {
-        return view('pages.status.index');
+        return view('pages.shelf.index');
     }
 
     public function insert()
     {
-        return view('pages.status.insert');
+        return view('pages.shelf.insert');
     }
 
     public function edit($id)
     {
-        return view('pages.status.edit', ['id' => $id]);
+        return view('pages.shelf.edit', ['id' => $id]);
     }
 }
