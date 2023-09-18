@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\StatusProduct;
+use App\Models\StatusToolMaterial;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\StatusProductResource;
+use App\Http\Resources\StatusToolMaterialResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class StatusProductController extends Controller
+class StatusToolMaterialController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,19 +35,19 @@ class StatusProductController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND status_products.status LIKE '%$search_term%'";
+                $conditions .= " AND status_tools_materials.status LIKE '%$search_term%'";
             }
 
-            $paginate = StatusProduct::query()->select(['status_products.*'])
+            $paginate = StatusToolMaterial::query()->select(['status_tools_materials.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = StatusProduct::query()
+            $countAll = StatusToolMaterial::query()
                 ->count();
 
             // paging response.
-            $response = StatusProductResource::collection($paginate);
+            $response = StatusToolMaterialResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -81,20 +81,20 @@ class StatusProductController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $statusProductData = new StatusProduct();
+        $statusToolMaterialData = new StatusToolMaterial();
 
-        // input data status
-        $statusProductData->status = $data['status'];
-        $statusProductData->need_expedition = $data['need_expedition'];
-        $statusProductData->created_at = $timeNow;
-        $statusProductData->updated_at = $timeNow;
-        $statusProductData->created_by = auth()->user()->fullname;
-        $statusProductData->updated_by = null;
+        // input data status tool material
+        $statusToolMaterialData->status = $data['status'];
+        $statusToolMaterialData->need_expedition = $data['need_expedition'];
+        $statusToolMaterialData->created_at = $timeNow;
+        $statusToolMaterialData->updated_at = $timeNow;
+        $statusToolMaterialData->created_by = auth()->user()->fullname;
+        $statusToolMaterialData->updated_by = null;
 
-        // save status
-        $statusProductData->save();
+        // save process
+        $statusToolMaterialData->save();
 
-        return $statusProductData;
+        return $statusToolMaterialData;
     }
 
     /**
@@ -112,7 +112,7 @@ class StatusProductController extends Controller
             DB::commit();
 
             // return
-            $single = new StatusProductResource($model);
+            $single = new StatusToolMaterialResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -135,11 +135,11 @@ class StatusProductController extends Controller
     public function show(string $id)
     {
         try {
-            $model = StatusProduct::query()->find($id);
+            $model = StatusToolMaterial::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("Proses tidak ada");
+                throw new \Exception("Status Alat dan Bahan tidak ada", 404);
             }
-            $single = new StatusProductResource($model);
+            $single = new StatusToolMaterialResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -172,21 +172,21 @@ class StatusProductController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find status product by id
-        $statusProductData = StatusProduct::find($id);
+        // Find status tool material by id
+        $statusToolMaterial = StatusToolMaterial::find($id);
 
-        if (empty($statusProductData)) {
-            throw new \Exception("Invalid status product id", 406);
+        if (empty($statusToolMaterial)) {
+            throw new \Exception("Invalid status tool material id", 406);
         }
-        $statusProductData->id = $id;
-        $statusProductData->status = $data['status'];
-        $statusProductData->need_expedition = $data['need_expedition'];
-        $statusProductData->updated_at = $timeNow;
-        $statusProductData->updated_by = auth()->user()->fullname;
+        $statusToolMaterial->id = $id;
+        $statusToolMaterial->status = $data['status'];
+        $statusToolMaterial->need_expedition = $data['need_expedition'];
+        $statusToolMaterial->updated_at = $timeNow;
+        $statusToolMaterial->updated_by = auth()->user()->fullname;
         //Save
-        $statusProductData->save();
+        $statusToolMaterial->save();
 
-        return $statusProductData;
+        return $statusToolMaterial;
     }
 
     /**
@@ -205,7 +205,7 @@ class StatusProductController extends Controller
             DB::commit();
 
             // return.
-            $single = new StatusProductResource($data);
+            $single = new StatusToolMaterialResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -228,9 +228,9 @@ class StatusProductController extends Controller
     protected function delete($id)
     {
 
-        $status = StatusProduct::find($id);
+        $status = StatusToolMaterial::find($id);
         if ($status == null) {
-            throw new \Exception("Status Produk tidak ada", 404);
+            throw new \Exception("Status Alat dan Bahan tidak ada", 404);
         }
 
         // $product = Product::query()->where('status_id', $status->id)->first();
@@ -252,7 +252,7 @@ class StatusProductController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Status Produk berhasil dihapus.");
+            return ResponseStd::okNoOutput("Status Alat dan Bahan berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e instanceof ValidationException) {
@@ -281,10 +281,10 @@ class StatusProductController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = StatusProduct::count();
+        $totalData = StatusToolMaterial::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = StatusProduct::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = StatusToolMaterial::offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -296,14 +296,14 @@ class StatusProductController extends Controller
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  StatusProduct::whereRaw($conditions)
+            $data =  StatusToolMaterial::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = StatusProduct::whereRaw($conditions)->count();
+            $totalFiltered = StatusToolMaterial::whereRaw($conditions)->count();
         }
 
         $json_data = array(
