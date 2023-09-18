@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Status</title>
+  <title>Status Produk</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>Status</h4>
-        <h6>Manajemen Data Status</h6>
+        <h4>Status Produk</h4>
+        <h6>Manajemen Data Status Produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/status/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Status Baru</a>
+        <a href="/status-product/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Status Produk Baru</a>
       </div>
     </div>
 
@@ -187,7 +187,7 @@
             $('.dataTables_filter').appendTo('.search-input')
           },
           ajax: {
-            url: "{{ url('api/v1/status/datatable') }}",
+            url: "{{ url('api/v1/status-product/datatable') }}",
             dataType: 'json',
             type: 'POST',
             headers: {
@@ -235,7 +235,7 @@
               render: function(data) {
                 if (currentUser.isAdmin) {
                   return `
-                    <a class="me-3" href="/status/edit/` + data + `">
+                    <a class="me-3" href="/status-product/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                     <a class="me-3" onclick="deleteData('` + data + `')">
@@ -244,7 +244,7 @@
                   `
                 } else {
                   return `
-                    <a class="me-3" href="/status/edit/` + data + `">
+                    <a class="me-3" href="/status-product/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                   `
@@ -258,7 +258,7 @@
 
     function deleteData(id) {
       Swal.fire({
-        title: 'Yakin ingin menghapus status?',
+        title: 'Yakin ingin menghapus status produk?',
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Ya',
@@ -267,13 +267,13 @@
         if (result.isConfirmed) {
           $('#global-loader').show()
 
-          axios.delete(`{{ url('api/v1/status/delete/${id}') }}`, config)
+          axios.delete(`{{ url('api/v1/status-product/delete/${id}') }}`, config)
             .then(res => {
-              sessionStorage.setItem("success", "Status berhasil dihapus")
+              sessionStorage.setItem("success", "Status produk berhasil dihapus")
               location.reload()
             })
             .catch(err => {
-              Swal.fire('Status gagal dihapus!', '', 'error')
+              Swal.fire('Status produk gagal dihapus!', '', 'error')
               console.log(err)
             })
         }

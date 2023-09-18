@@ -54,8 +54,12 @@
         <i data-feather="maximize"></i>
       </a>
     </li>
-    <li class="nav-item nav-item-box">
-      <a href="generalsettings.html"><i data-feather="settings"></i></a>
+    <li class="nav-item nav-item-box " id="dark-mode-toggle">
+      {{-- <a class="dark-mode"><i data-feather="moon"></i></a> --}}
+      <a class="light-mode"><i data-feather="sun"></i></a>
+    </li>
+    <li class="nav-item nav-item-box ">
+      <a><i data-feather="settings"></i></a>
     </li>
     <li class="nav-item dropdown has-arrow main-drop">
       <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
@@ -84,8 +88,8 @@
           <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
               data-feather="settings"></i>Settings</a>
           <hr class="m-0">
-          <button class="dropdown-item logout pb-0 logout-account"><img
-              src="{{ url('assets/img/icons/log-out.svg') }}" class="me-2" alt="img">Logout</button>
+          <button class="dropdown-item logout pb-0 logout-account"><img src="{{ url('assets/img/icons/log-out.svg') }}"
+              class="me-2" alt="img">Logout</button>
         </div>
       </div>
     </li>
@@ -94,8 +98,8 @@
 
   <!-- Mobile Menu -->
   <div class="dropdown mobile-user-menu">
-    <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-      aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+    <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+        class="fa fa-ellipsis-v"></i></a>
     <div class="dropdown-menu dropdown-menu-right">
       <a class="dropdown-item" href="profile.html">My Profile</a>
       <a class="dropdown-item" href="generalsettings.html">Settings</a>
@@ -121,27 +125,45 @@
         <li class="submenu-open">
           <h6 class="submenu-hdr">Manajemen Master</h6>
           <ul>
-            <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
-            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
-            <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i data-feather="clipboard"></i><span>Modul</span></a></li>
-            <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i data-feather="file-text"></i><span>Keterangan</span></a></li>
-            <li><a href="/status" class="{{ request()->is('status*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status</span></a></li>
-            <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
-            <li><a href="/group" class="{{ request()->is('group*') ? 'active group' : 'group' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
+            <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i
+                  data-feather="codepen"></i><span>Kategori</span></a></li>
+            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i
+                  data-feather="pie-chart"></i><span>Segmen</span></a></li>
+            <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i
+                  data-feather="clipboard"></i><span>Modul</span></a></li>
+            <li><a href="/shelf" class="{{ request()->is('shelf*') ? 'active' : '' }}"><i
+                  data-feather="server"></i><span>Rak</span></a></li>
+            <li><a href="/description" class="{{ request()->is('description*') ? 'active' : '' }}"><i
+                  data-feather="file-text"></i><span>Keterangan</span></a></li>
+            <li><a href="/status-product" class="{{ request()->is('status-product*') ? 'active' : '' }}"><i
+                  data-feather="package"></i><span>Status Produk</span></a></li>
+            <li><a href="/status-tool-material"
+                class="{{ request()->is('status-tool-material*') ? 'active' : '' }}"><i
+                  data-feather="package"></i><span>Status Alat & Bahan</span></a></li>
+            <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i
+                  data-feather="truck"></i><span>Ekspedisi</span></a></li>
+            <li><a href="/group" class="{{ request()->is('group*') ? 'active group' : 'group' }}"><i
+                  data-feather="users"></i><span>Kelompok</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
           <h6 class="submenu-hdr">Manajemen Produk</h6>
           <ul>
-            <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
-            <li><a href="/product/insert" class="{{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li>
+            <li><a href="/product"
+                class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i
+                  data-feather="box"></i><span>Produk</span></a></li>
+            <li><a href="/product/insert" class="{{ request()->is('product/insert') ? 'active' : '' }}"><i
+                  data-feather="plus-square"></i><span>Tambah Produk</span></a></li>
           </ul>
         </li>
         <li class="submenu-open is-admin">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="/user" class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>User</span></a></li>
-            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
+            <li><a href="/user"
+                class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i
+                  data-feather="users"></i><span>User</span></a></li>
+            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i
+                  data-feather="user-x"></i><span>Verifikasi User</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -175,7 +197,7 @@
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
 
-    !currentUser.isAdmin && $('.is-admin').hide()
+    !currentUser.isAdmin && $('.is-admin').hide() 
     !currentUser.isAdmin && $('.group').hide()
 
     $('.fullname').text(currentUser.fullname)
@@ -242,6 +264,7 @@
         }
       }
     }
+
   })
 </script>
 <!-- /Sidebar -->

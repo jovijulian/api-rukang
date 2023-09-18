@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Status</title>
+  <title>Tambah Status Produk</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Status</h3>
+            <h3 class="page-title">Tambah Data Status Produk</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/status') }}">Status</a></li>
-              <li class="breadcrumb-item active">Edit Status</li>
+              <li class="breadcrumb-item"><a href="{{ url('/status-product') }}">Status Produk</a></li>
+              <li class="breadcrumb-item active">Tambah Status</li>
             </ul>
           </div>
         </div>
@@ -29,7 +29,7 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="update-status-form">
+              <form id="insert-status-form">
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Status</label>
                   <div class="col-lg-10">
@@ -54,7 +54,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Ubah Data</button>
+                  <button type="submit" class="btn btn-primary">Tambah Data</button>
                 </div>
               </form>
             </div>
@@ -84,10 +84,8 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
-      
-      getData()
 
-      $('#update-status-form').on('submit', () => {
+      $('#insert-status-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
@@ -97,33 +95,20 @@
         }
 
 
-        axios.put("{{ url('api/v1/status/update/' . $id) }}", data, config)
+        axios.post("{{ url('api/v1/status-product/create') }}", data, config)
           .then(res => {
             const status = res.data.data.item
-            sessionStorage.setItem("success", `${status.status} berhasil diubah`)
-            window.location.href = "{{ url('/status') }}"
+            sessionStorage.setItem("success", `${status.status} berhasil ditambahkan`)
+            window.location.href = "{{ url('/status-product') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Kategori gagal diubah', '', 'error')
+            Swal.fire('Status gagal ditambahkan', '', 'error')
             console.log(err)
           })
 
       })
 
-      function getData() {
-        axios.get("{{ url('api/v1/status/detail/' . $id) }}", config)
-          .then(res => {
-            const data = res.data.data.item
-            $('#status').val(data.status)
-            data.need_expedition ? $("[name='expedition-radio'][value='1']").prop("checked", true) : $("[name='expedition-radio'][value='0']").prop("checked", true)
-          })
-          .catch(err => {
-            console.log(err)
-            sessionStorage.setItem("error", `Data tidak ditemukan`)
-            window.location.href = "{{ url('/status') }}"
-          })
-      }
     })
   </script>
 @endsection
