@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Deskripsi</title>
+  <title>Keterangan</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>Deskripsi</h4>
-        <h6>Manajemen Data Deskripsi</h6>
+        <h4>Keterangan</h4>
+        <h6>Manajemen Data Keterangan</h6>
       </div>
       <div class="page-btn">
-        <a href="/description/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Deskripsi Baru</a>
+        <a href="/description/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Keterangan Baru</a>
       </div>
     </div>
 
@@ -111,7 +111,7 @@
             <thead>
               <tr>
                 <th>No</th>
-                <th>Deskripsi</th>
+                <th>Keterangan</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -247,7 +247,7 @@
 
     function deleteData(id) {
       Swal.fire({
-        title: 'Yakin ingin menghapus deskripsi?',
+        title: 'Yakin ingin menghapus keterangan?',
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Ya',
@@ -258,11 +258,11 @@
 
           axios.delete(`{{ url('api/v1/description/delete/${id}') }}`, config)
             .then(res => {
-              sessionStorage.setItem("success", "Deskripsi berhasil dihapus")
+              sessionStorage.setItem("success", "Keterangan berhasil dihapus")
               location.reload()
             })
             .catch(err => {
-              Swal.fire('Deskripsi gagal dihapus!', '', 'error')
+              Swal.fire('Keterangan gagal dihapus!', '', 'error')
               console.log(err)
             })
         }

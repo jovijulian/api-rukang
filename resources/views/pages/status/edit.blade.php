@@ -54,7 +54,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -100,12 +100,12 @@
         axios.put("{{ url('api/v1/status/update/' . $id) }}", data, config)
           .then(res => {
             const status = res.data.data.item
-            sessionStorage.setItem("success", `${status.status} berhasil diedit`)
+            sessionStorage.setItem("success", `${status.status} berhasil diubah`)
             window.location.href = "{{ url('/status') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Kategori gagal diedit', '', 'error')
+            Swal.fire('Kategori gagal diubah', '', 'error')
             console.log(err)
           })
 

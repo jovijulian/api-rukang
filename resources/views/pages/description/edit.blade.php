@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Deskripsi</title>
+  <title>Edit Keterangan</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Deskripsi</h3>
+            <h3 class="page-title">Edit Data Keterangan</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Deskripsi</a></li>
-              <li class="breadcrumb-item active">Edit Deskripsi</li>
+              <li class="breadcrumb-item"><a href="{{ url('/description') }}">Keterangan</a></li>
+              <li class="breadcrumb-item active">Edit Keterangan</li>
             </ul>
           </div>
         </div>
@@ -31,13 +31,13 @@
             <div class="card-body p-4">
               <form id="update-description-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Deskripsi</label>
+                  <label class="col-lg-2 col-form-label">Keterangan</label>
                   <div class="col-lg-10">
-                    <input type="text" id="description" class="form-control" placeholder="Masukan deskripsi" required>
+                    <input type="text" id="description" class="form-control" placeholder="Masukan keterangan" required>
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Edit Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -82,12 +82,12 @@
         axios.put("{{ url('api/v1/description/update/' . $id) }}", data, config)
           .then(res => {
             const description = res.data.data.item
-            sessionStorage.setItem("success", `${description.description} berhasil diedit`)
+            sessionStorage.setItem("success", `${description.description} berhasil diubah`)
             window.location.href = "{{ url('/description') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Deskripsi gagal diedit', '', 'error')
+            Swal.fire('Deskripsi gagal diubah', '', 'error')
             console.log(err)
           })
 

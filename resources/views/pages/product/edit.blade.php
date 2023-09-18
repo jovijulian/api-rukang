@@ -172,7 +172,7 @@
                 </div>
 
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary px-5 py-3">Edit Produk</button>
+                  <button type="submit" class="btn btn-primary px-5 py-3">Ubah Produk</button>
                 </div>
               </form>
             </div>
@@ -223,47 +223,109 @@
 
 
       function getModule() {
-        axios.get("{{ url('api/v1/module/index') }}", config)
-          .then(res => {
-            const modules = res.data.data.items
-            modules.map(module => {
-              $('#module-product').append(`<option value=${module.id}>${module.module_number}</option>`)
-            })
+        $('#module-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/module/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.module_number,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function getCategory() {
-        axios.get("{{ url('api/v1/category/index') }}", config)
-          .then(res => {
-            const categories = res.data.data.items
-            categories.map(category => {
-              $('#category-product').append(`<option value=${category.id}>${category.category}</option>`)
-            })
+        $('#category-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/category/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.category,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function getSegment() {
         let segments = []
 
-        axios.get("{{ url('api/v1/segment/index') }}", config)
-          .then(res => {
-            segments = res.data.data.items
+        $('#segment-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/segment/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              segments = data.data.items
+              
 
-            segments.map(segment => {
-              $('#segment-product').append(`<option value=${segment.id}>${segment.segment_name}</option>`)
-            })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.segment_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true,
+          }
+        })
 
         $('#segment-product').on('change', () => {
           const id = $('#segment-product').val()
@@ -294,14 +356,20 @@
           .then(res => {
             const data = res.data.data.item
 
-            $('#category-product').val(data.category_id).change()
-            $('#segment-product').val(data.segment.id).change()
-            $('#module-product').val(data.module.id).change()
+            // $('#category-product').val(data.category_id).change()
+            // $('#segment-product').val(data.segment.id).change()
+            // $('#module-product').val(data.module.id).change()
+            $("#category-product").append(`<option value=${data.category_id} selected>${data.category}</option>`)
+            $("#segment-product").append(`<option value=${data.segment.id} selected>${data.segment.segment_name}</option>`)
+            $('#barcode-color').val(data.segment.barcode_color)
+            $('#segment-place').val(data.segment.segment_place)
+            $("#module-product").append(`<option value=${data.module.id} selected>${data.module.module_number}</option>`)
             $('#no-bilah').val(data.bilah_number).change()
             $('#shelf-number').val(data.shelf_number)
             $('#production-date').val(data.production_date)
             data.quantity ? $("[name='io-radio'][value='1']").prop("checked", true) : $("[name='io-radio'][value='0']").prop("checked", true)
             data.nut_bolt ? $("[name='nut-bolt'][value='1']").prop("checked", true) : $("[name='nut-bolt'][value='0']").prop("checked", true)
+            $('#barcode-product').val(data.barcode).trigger('input')
           })
           .catch(err => {
             console.log(err)
@@ -323,6 +391,7 @@
           segment = $('#segment-product').find("option:selected").text().split(" ")
           segment[0] = segment[0][0]
           segment[1] = segment[1].length === 1 ? '0' + segment[1] : segment[1]
+          segment = segment.slice(0, 2)
           segment = segment.join('')
 
           generateBarcode(segment, module, bilah, category)
@@ -332,6 +401,7 @@
           module = $('#module-product').find("option:selected").text().match(/[A-Z]+|\d+/g)
           module[0] = module[0][0]
           module[1] = module[1].length === 1 ? '0' + module[1] : module[1]
+          module = module.slice(0, 2)
           module = module.join('')
 
           generateBarcode(segment, module, bilah, category)
@@ -355,7 +425,6 @@
 
       function generateBarcode(segment, module, bilah, category) {
         let barcode = segment + module + bilah + category
-        console.log(barcode)
 
         $('#barcode-product').val(barcode)
         JsBarcode("#barcode", barcode)

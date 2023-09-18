@@ -542,6 +542,7 @@
           segment = $('#segment-product').find("option:selected").text().split(" ")
           segment[0] = segment[0][0]
           segment[1] = segment[1].length === 1 ? '0' + segment[1] : segment[1]
+          segment = segment.slice(0, 2)
           segment = segment.join('')
 
           generateBarcode(segment, module, bilah, category)
@@ -551,6 +552,7 @@
           module = $('#module-product').find("option:selected").text().match(/[A-Z]+|\d+/g)
           module[0] = module[0][0]
           module[1] = module[1].length === 1 ? '0' + module[1] : module[1]
+          module = module.slice(0, 2)
           module = module.join('')
 
           generateBarcode(segment, module, bilah, category)
@@ -614,8 +616,8 @@
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
-        // console.log(data)
-        // return
+        console.log(data)
+        return
 
 
         axios.post("{{ url('api/v1/product/create') }}", data, config)
