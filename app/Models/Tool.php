@@ -6,17 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StatusLog extends Model
+class Tool extends Model
 {
     use HasFactory, SoftDeletes;
-
-    /**
-     * The primary key for the model.
-     *
-     * @var string
-     */
-
-    protected $table = 'status_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -32,33 +24,48 @@ class StatusLog extends Model
      * @var string
      */
     protected $keyType = 'string';
-    protected $dates = ['deleted_at'];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     protected $fillable = [
-        'product_id',
+        'category_id',
+        'category',
+        'type',
+        'tool_name',
+        'serial_number',
+        'amount',
+        'note',
         'status_id',
         'status',
-        'photo_status',
-        'note',
+        'status_photo',
+        'status_note',
         'shipping_id',
+        'current_location',
         'shipping_name',
+        'group_id',
+        'group_name',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    public function product()
+
+    public function category()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Category::class);
     }
 
-    // public function statuses()
-    // {
-    //     return $this->hasMany(Status::class);
-    // }
-
-    public function locationLogs()
+    public function statusToolMaterial()
     {
-        return $this->hasMany(LocationLog::class);
+        return $this->belongsTo(StatusToolMaterial::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(StatusToolLog::class);
     }
 }
