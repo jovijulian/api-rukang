@@ -51,6 +51,7 @@ class StatusToolLog extends Model
         'note',
         'shipping_id',
         'shipping_name',
+        'number_plate',
         'created_by',
         'updated_by',
         'deleted_by',

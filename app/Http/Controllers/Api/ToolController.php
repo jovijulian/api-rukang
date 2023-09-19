@@ -5,22 +5,17 @@ namespace App\Http\Controllers\Api;
 use Carbon\Carbon;
 use App\Models\Tool;
 use Ramsey\Uuid\Uuid;
-use App\Models\StatusLog;
-use App\Models\LocationLog;
 use Illuminate\Http\Request;
 use App\Models\StatusToolLog;
 use App\Libraries\ResponseStd;
 use App\Models\LocationToolLog;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ToolResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\StatusLogResource;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\LocationLogResource;
 use App\Http\Resources\StatusToolLogResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\LocationToolLogResource;
@@ -140,6 +135,7 @@ class ToolController extends Controller
         $statusLogData->note = $toolData->status_note;
         $statusLogData->shipping_id =  $toolData->shipping_id;
         $statusLogData->shipping_name = $toolData->shipping_name;
+        $statusLogData->number_plate =  $data['number_plate'];
         $statusLogData->created_at = $timeNow;
         $statusLogData->updated_at = $timeNow;
         $statusLogData->created_by = auth()->user()->fullname;
@@ -476,6 +472,7 @@ class ToolController extends Controller
         $statusLog->note = $data['note'];
         $statusLog->shipping_id = $data['shipping_id'];
         $statusLog->shipping_name = $data['shipping_name'];
+        $statusLog->number_plate = $data['number_plate'];
         $statusLog->created_at = $timeNow;
         $statusLog->created_by = auth()->user()->fullname;
         $statusLog->updated_at = $timeNow;
@@ -610,6 +607,7 @@ class ToolController extends Controller
         }
         $statusLog->shipping_id;
         $statusLog->shipping_name;
+        $statusLog->number_plate;
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
         //Save
