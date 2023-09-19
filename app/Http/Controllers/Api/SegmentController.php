@@ -72,7 +72,6 @@ class SegmentController extends Controller
     {
         $arrayValidator = [
             'segment_name' => ['required', 'string', 'min:1', 'max:50'],
-            'segment_place' => ['required', 'string', 'min:1', 'max:50'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -85,7 +84,6 @@ class SegmentController extends Controller
 
         // input data segment
         $segment->segment_name = $data['segment_name'];
-        $segment->segment_place = $data['segment_place'];
         $segment->barcode_color = $data['barcode_color'];
         $segment->created_at = $timeNow;
         $segment->updated_at = $timeNow;
@@ -164,7 +162,6 @@ class SegmentController extends Controller
     {
         $arrayValidator = [
             'segment_name' => ['required', 'string', 'min:1', 'max:50'],
-            'segment_place' => ['required', 'string', 'min:1', 'max:50'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -181,7 +178,6 @@ class SegmentController extends Controller
         }
         $segment->id = $id;
         $segment->segment_name = $data['segment_name'];
-        $segment->segment_place = $data['segment_place'];
         $segment->barcode_color = $data['barcode_color'];
         $segment->updated_at = $timeNow;
         $segment->updated_by = auth()->user()->fullname;
@@ -295,7 +291,6 @@ class SegmentController extends Controller
             $conditions = '1 = 1';
             if (!empty($search)) {
                 $conditions .= " AND segment_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR barcode_color LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
