@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\DescriptionController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\ShelfController;
