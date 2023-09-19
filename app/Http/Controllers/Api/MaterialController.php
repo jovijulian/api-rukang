@@ -3,25 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Tool;
 use Ramsey\Uuid\Uuid;
+use App\Models\Material;
 use Illuminate\Http\Request;
-use App\Models\StatusToolLog;
 use App\Libraries\ResponseStd;
-use App\Models\LocationToolLog;
+use App\Models\StatusMaterialLog;
 use Illuminate\Support\Facades\DB;
+use App\Models\LocationMaterialLog;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ToolResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\MaterialResource;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\StatusToolLogResource;
 use Illuminate\Validation\ValidationException;
-use App\Http\Resources\LocationToolLogResource;
+use App\Http\Resources\StatusMaterialLogResource;
+use App\Http\Resources\LocationMaterialLogResource;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ToolController extends Controller
+class MaterialController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -40,19 +40,19 @@ class ToolController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND tools.tool_name LIKE '%$search_term%'";
+                $conditions .= " AND materials.material_name LIKE '%$search_term%'";
             }
 
-            $paginate = Tool::query()->select(['tools.*'])
+            $paginate = Material::query()->select(['materials.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Tool::query()
+            $countAll = Material::query()
                 ->count();
 
             // paging response.
-            $response = ToolResource::collection($paginate);
+            $response = MaterialResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -77,11 +77,8 @@ class ToolController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'type' => ['required', 'min:1', 'max:50'],
-            'tool_name' => ['required', 'min:1', 'max:100'],
-            'serial_number' => ['required', 'min:1', 'max:100'],
-            'amount' => ['required'],
-            'note' => ['required'],
+            'material_name' => ['required', 'min:1', 'max:70'],
+            'material_note' => ['required', 'min:1', 'max:100'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -90,66 +87,63 @@ class ToolController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $toolData = new Tool();
+        $materialData = new Material();
         $image_url = null;
-        Storage::exists('tool') or Storage::makeDirectory('tool');
+        Storage::exists('material') or Storage::makeDirectory('material');
         if ($data['status_photo']) {
-            $image = Storage::putFile('tool', $data['status_photo'], 'public');
+            $image = Storage::putFile('material', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
         }
 
-        $toolId = Uuid::uuid4()->toString();
-        $toolData->id = $toolId;
-        $toolData->category_id = $data['category_id'];
-        $toolData->category = $data['category'];
-        $toolData->type = $data['type'];
-        $toolData->tool_name = $data['tool_name'];
-        $toolData->serial_number = $data['serial_number'];
-        $toolData->amount = $data['amount'];
-        $toolData->note = $data['note'];
-        $toolData->status_id = $data['status_id'];
-        $toolData->status = $data['status'];
-        $toolData->status_photo = $image_url;
-        $toolData->status_note = $data['status_note'];
-        $toolData->shipping_id = $data['shipping_id'];
-        $toolData->shipping_name = $data['shipping_name'];
-        $toolData->current_location = $data['current_location'];
-        $toolData->group_id = auth()->user()->group_id;
-        $toolData->group_name = auth()->user()->group_name;
+        $materialId = Uuid::uuid4()->toString();
+        $materialData->id = $materialId;
+        $materialData->category_id = $data['category_id'];
+        $materialData->category = $data['category'];
+        $materialData->material_name = $data['material_name'];
+        $materialData->material_note = $data['material_note'];
+        $materialData->status_id = $data['status_id'];
+        $materialData->status = $data['status'];
+        $materialData->status_photo = $image_url;
+        $materialData->status_note = $data['status_note'];
+        $materialData->shipping_id = $data['shipping_id'];
+        $materialData->shipping_name = $data['shipping_name'];
+        $materialData->current_location = $data['current_location'];
+        $materialData->group_id = auth()->user()->group_id;
+        $materialData->group_name = auth()->user()->group_name;
 
-        $toolData->created_at = $timeNow;
-        $toolData->updated_at = $timeNow;
-        $toolData->created_by = auth()->user()->fullname;
-        $toolData->updated_by = null;
+        $materialData->created_at = $timeNow;
+        $materialData->updated_at = $timeNow;
+        $materialData->created_by = auth()->user()->fullname;
+        $materialData->updated_by = null;
 
-        // save tool
-        $toolData->save();
+        // save material
+        $materialData->save();
 
-        $statusLogData = new StatusToolLog();
+        $statusLogData = new StatusMaterialLog();
         $statusLogId = Uuid::uuid4()->toString();
         $statusLogData->id = $statusLogId;
-        $statusLogData->tool_id = $toolData->id;
-        $statusLogData->status_id = $toolData->status_id;
-        $statusLogData->status_name = $toolData->status;
-        $statusLogData->status_photo = $toolData->status_photo;
-        $statusLogData->note = $toolData->status_note;
-        $statusLogData->shipping_id =  $toolData->shipping_id;
-        $statusLogData->shipping_name = $toolData->shipping_name;
+        $statusLogData->material_id = $materialData->id;
+        $statusLogData->status_id = $materialData->status_id;
+        $statusLogData->status_name = $materialData->status;
+        $statusLogData->status_photo = $materialData->status_photo;
+        $statusLogData->note = $materialData->status_note;
+        $statusLogData->shipping_id =  $materialData->shipping_id;
+        $statusLogData->shipping_name = $materialData->shipping_name;
         $statusLogData->number_plate =  $data['number_plate'];
         $statusLogData->created_at = $timeNow;
         $statusLogData->updated_at = $timeNow;
         $statusLogData->created_by = auth()->user()->fullname;
         $statusLogData->updated_by = null;
 
-        //save status tool logs
+        //save status material logs
         $statusLogData->save();
 
-        $locationLogData = new LocationToolLog();
+        $locationLogData = new LocationMaterialLog();
         $locationLogId = Uuid::uuid4()->toString();
         $locationLogData->id = $locationLogId;
-        $locationLogData->status_tool_log_id = $statusLogData->id;
-        $locationLogData->tool_id = $toolData->id;
-        $locationLogData->current_location = $toolData->current_location;
+        $locationLogData->status_material_log_id = $statusLogData->id;
+        $locationLogData->material_id = $materialData->id;
+        $locationLogData->current_location = $materialData->current_location;
         $locationLogData->created_at = $timeNow;
         $locationLogData->updated_at = $timeNow;
         $locationLogData->created_by = auth()->user()->fullname;
@@ -159,7 +153,7 @@ class ToolController extends Controller
         $locationLogData->save();
 
 
-        return $toolData;
+        return $materialData;
     }
 
     /**
@@ -177,7 +171,7 @@ class ToolController extends Controller
             DB::commit();
 
             // return
-            $single = new ToolResource($model);
+            $single = new MaterialResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -200,11 +194,11 @@ class ToolController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Tool::query()->find($id);
+            $model = Material::query()->find($id);
             if (empty($model)) {
-                throw new \Exception("Alat tidak ada", 404);
+                throw new \Exception("Bahan tidak ada", 404);
             }
-            $single = new ToolResource($model);
+            $single = new MaterialResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -227,11 +221,8 @@ class ToolController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'type' => ['required', 'min:1', 'max:50'],
-            'tool_name' => ['required', 'min:1', 'max:100'],
-            'serial_number' => ['required', 'min:1', 'max:100'],
-            'amount' => ['required'],
-            'note' => ['required'],
+            'material_name' => ['required', 'min:1', 'max:70'],
+            'material_note' => ['required', 'min:1', 'max:100'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -240,36 +231,33 @@ class ToolController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find tool by id
-        $toolData = Tool::find($id);
+        // Find material by id
+        $materialData = Material::find($id);
 
-        if (empty($toolData)) {
-            throw new \Exception("Invalid tool id", 406);
+        if (empty($materialData)) {
+            throw new \Exception("Invalid material id", 406);
         }
 
-        $toolData->id = $id;
-        $toolData->category_id = $data['category_id'];
-        $toolData->category = $data['category'];
-        $toolData->type = $data['type'];
-        $toolData->tool_name = $data['tool_name'];
-        $toolData->serial_number = $data['serial_number'];
-        $toolData->amount = $data['amount'];
-        $toolData->note = $data['note'];
-        $toolData->status_id;
-        $toolData->status;
-        $toolData->status_photo;
-        $toolData->status_note;
-        $toolData->shipping_id;
-        $toolData->shipping_name;
-        $toolData->current_location;
-        $toolData->group_id;
-        $toolData->group_name;
-        $toolData->updated_at = $timeNow;
-        $toolData->updated_by = auth()->user()->fullname;
+        $materialData->id = $id;
+        $materialData->category_id = $data['category_id'];
+        $materialData->category = $data['category'];
+        $materialData->material_name = $data['material_name'];
+        $materialData->material_note = $data['material_note'];
+        $materialData->status_id;
+        $materialData->status;
+        $materialData->status_photo;
+        $materialData->status_note;
+        $materialData->shipping_id;
+        $materialData->shipping_name;
+        $materialData->current_location;
+        $materialData->group_id;
+        $materialData->group_name;
+        $materialData->updated_at = $timeNow;
+        $materialData->updated_by = auth()->user()->fullname;
         //Save
-        $toolData->save();
+        $materialData->save();
 
-        return $toolData;
+        return $materialData;
     }
 
     /**
@@ -288,7 +276,7 @@ class ToolController extends Controller
             DB::commit();
 
             // return.
-            $single = new ToolResource($data);
+            $single = new MaterialResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -311,20 +299,20 @@ class ToolController extends Controller
     protected function delete($id)
     {
 
-        $tool = Tool::find($id);
+        $material = Material::find($id);
 
-        if ($tool == null) {
-            throw new \Exception("Alat tidak ada", 404);
+        if ($material == null) {
+            throw new \Exception("Bahan tidak ada", 404);
         }
 
-        if (isset($tool->status_photo)) {
-            $old = parse_url($tool->status_photo);
+        if (isset($material->status_photo)) {
+            $old = parse_url($material->status_photo);
             if (Storage::exists($old['path'])) {
                 Storage::delete($old['path']);
             }
         }
 
-        $statusLogs = StatusToolLog::where('tool_id', $id)->get();
+        $statusLogs = StatusMaterialLog::where('material_id', $id)->get();
 
         foreach ($statusLogs as $statusLog) {
             for ($i = 1; $i <= 10; $i++) {
@@ -336,7 +324,7 @@ class ToolController extends Controller
                     }
                 }
             }
-            $LocationLogs = LocationToolLog::where('status_tool_log_id', $statusLog->id)->get();
+            $LocationLogs = LocationMaterialLog::where('status_material_log_id', $statusLog->id)->get();
             foreach ($LocationLogs as $LocationLog) {
                 $LocationLog->deleted_by = auth()->user()->fullname;
                 $LocationLog->save();
@@ -347,11 +335,11 @@ class ToolController extends Controller
             $statusLog->delete();
         }
 
-        $tool->deleted_by = auth()->user()->fullname;
-        $tool->save();
-        $tool->delete();
+        $material->deleted_by = auth()->user()->fullname;
+        $material->save();
+        $material->delete();
 
-        return $tool;
+        return $material;
     }
     public function destroy(string $id)
     {
@@ -360,7 +348,7 @@ class ToolController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Alat berhasil dihapus.");
+            return ResponseStd::okNoOutput("Bahan berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e instanceof ValidationException) {
@@ -376,26 +364,26 @@ class ToolController extends Controller
         }
     }
 
-    protected function validateStatusLogTool(array $data)
+    protected function validateStatusLogMaterial(array $data)
     {
         $arrayValidator = [
-            // 'status_photo' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
+            // 'material_id' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);
     }
 
-    public function setStatusLogTool($id, Request $request)
+    public function setStatusLogMaterial($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateStatusLogTool($request->all());
+            $validate = $this->validateStatusLogMaterial($request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $data = $this->insertStatusLogTool($id, $request->all(), $request);
+            $data = $this->insertStatusLogMaterial($id, $request->all(), $request);
 
             DB::commit();
-            $single = new StatusToolLogResource($data);
+            $single = new StatusMaterialLogResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -414,16 +402,16 @@ class ToolController extends Controller
         }
     }
 
-    protected function insertStatusLogTool($id, array $data, Request $request)
+    protected function insertStatusLogMaterial($id, array $data, Request $request)
     {
         $timeNow = Carbon::now();
-        $statusLog = new StatusToolLog();
+        $statusLog = new StatusMaterialLog();
 
         if (empty($statusLog)) {
-            throw new \Exception("Invalid status tool log id", 406);
+            throw new \Exception("Invalid status material log id", 406);
         }
         $statusLog->id = Uuid::uuid4()->toString();
-        $statusLog->tool_id = $id;
+        $statusLog->material_id = $id;
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
 
@@ -433,10 +421,10 @@ class ToolController extends Controller
             if ($request->hasFile($key)) {
                 if ($request->file($key)->isValid()) {
                     // $image_url = null;
-                    Storage::exists('tool') or Storage::makeDirectory('tool');
+                    Storage::exists('material') or Storage::makeDirectory('material');
 
                     // Simpan gambar ke penyimpanan
-                    $image = Storage::putFile('tool', $file, 'public');
+                    $image = Storage::putFile('material', $file, 'public');
 
                     // Dapatkan URL gambar yang baru diunggah
                     $image_url = Storage::url($image);
@@ -480,18 +468,18 @@ class ToolController extends Controller
         //Save
         $statusLog->save();
 
-        $toolData = Tool::find($id);
-        $toolData->status_id = $statusLog->status_id;
-        $toolData->status = $statusLog->status_name;
-        $toolData->status_photo = $statusLog->status_photo;
-        $toolData->status_note = $statusLog->status_note;
-        $toolData->current_location = $data['current_location'];
-        $toolData->save();
+        $materialData = Material::find($id);
+        $materialData->status_id = $statusLog->status_id;
+        $materialData->status = $statusLog->status_name;
+        $materialData->status_photo = $statusLog->status_photo;
+        $materialData->status_note = $statusLog->status_note;
+        $materialData->current_location = $data['current_location'];
+        $materialData->save();
 
-        $locationLog = new LocationToolLog();
+        $locationLog = new LocationMaterialLog();
         $locationLog->id = Uuid::uuid4()->toString();
-        $locationLog->status_tool_log_id = $statusLog->id;
-        $locationLog->tool_id = $id;
+        $locationLog->status_material_log_id = $statusLog->id;
+        $locationLog->material_id = $id;
         $locationLog->current_location = $data['current_location'];
         $locationLog->created_at = $timeNow;
         $locationLog->created_by = auth()->user()->fullname;
@@ -515,20 +503,17 @@ class ToolController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Tool::count();
+        $totalData = Material::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Tool::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Material::offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND type LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR tool_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR serial_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR amount LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR note LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND material_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR material_note LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR category LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR status LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR shipping_name LIKE '%" . trim($search) . "%'";
@@ -537,14 +522,14 @@ class ToolController extends Controller
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Tool::whereRaw($conditions)
+            $data =  Material::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = Tool::whereRaw($conditions)->count();
+            $totalFiltered = Material::whereRaw($conditions)->count();
         }
 
         $json_data = array(
@@ -575,7 +560,7 @@ class ToolController extends Controller
             $data = $this->updateLocation($id, $request->all(), $request);
 
             DB::commit();
-            $single = new LocationToolLogResource($data);
+            $single = new LocationMaterialLogResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -598,11 +583,11 @@ class ToolController extends Controller
     {
         $timeNow = Carbon::now();
 
-        $statusLog = StatusToolLog::find($id);
+        $statusLog = StatusMaterialLog::find($id);
         // dd($statusLog);
 
         if (empty($statusLog)) {
-            throw new \Exception("Invalid status tool log id", 406);
+            throw new \Exception("Invalid status material log id", 406);
         }
         $statusLog->shipping_id;
         $statusLog->shipping_name;
@@ -613,11 +598,11 @@ class ToolController extends Controller
         $statusLog->save();
 
 
-        $toolData = Tool::where('id', $statusLog->tool_id)->first();
-        $toolData->current_location = $data['current_location'];
-        $toolData->save();
+        $materialData = Material::where('id', $statusLog->material_id)->first();
+        $materialData->current_location = $data['current_location'];
+        $materialData->save();
 
-        $locationLog = LocationToolLog::where('status_tool_log_id', $id)->first();
+        $locationLog = LocationMaterialLog::where('status_material_log_id', $id)->first();
         $locationLog->current_location = $data['current_location'];
         $locationLog->updated_at = $timeNow;
         $locationLog->updated_by = auth()->user()->fullname;

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class LocationToolLog extends Model
+class LocationMaterialLog extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -16,7 +16,7 @@ class LocationToolLog extends Model
      * @var string
      */
 
-    protected $table = 'location_tool_logs';
+    protected $table = 'location_material_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -35,8 +35,8 @@ class LocationToolLog extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'status_tool_log_id',
-        'tool_id',
+        'status_material_log_id',
+        'material_id',
         'current_location',
         'created_by',
         'updated_by',
