@@ -18,9 +18,8 @@ class CheckAdminMiddleware extends Middleware
     public function handle($request, Closure $next, ...$roleCode)
     {
         $user = auth()->user();
-        // $getRole = $roleCode[0];
         if ($user && in_array($user->isAdmin(), $roleCode)) {
-            return $next($request); // Izinkan akses
+            return $next($request);
         }
         /*
             Super Admin = 1
