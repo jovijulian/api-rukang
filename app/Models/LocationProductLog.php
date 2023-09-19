@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class LocationLog extends Model
+class LocationProductLog extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -17,7 +17,7 @@ class LocationLog extends Model
      * @var string
      */
 
-    protected $table = 'location_logs';
+    protected $table = 'location_product_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -46,6 +46,6 @@ class LocationLog extends Model
 
     public function statusLog()
     {
-        return $this->belongsTo(StatusLog::class);
+        return $this->belongsTo(StatusProductLog::class);
     }
 }
