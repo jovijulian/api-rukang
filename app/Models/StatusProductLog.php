@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StatusLog extends Model
+class StatusProductLog extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -16,7 +16,7 @@ class StatusLog extends Model
      * @var string
      */
 
-    protected $table = 'status_logs';
+    protected $table = 'status_product_logs';
     protected $primaryKey = 'id';
 
     /**
@@ -52,13 +52,13 @@ class StatusLog extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // public function statuses()
-    // {
-    //     return $this->hasMany(Status::class);
-    // }
+    public function statuses()
+    {
+        return $this->hasMany(StatusProduct::class);
+    }
 
     public function locationLogs()
     {
-        return $this->hasMany(LocationLog::class);
+        return $this->hasMany(LocationProductLog::class);
     }
 }

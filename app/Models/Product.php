@@ -36,15 +36,14 @@ class Product extends Model
         'category',
         'segment_id',
         'segment_name',
+        'segment_place',
         'barcode',
         'module_id',
         'module_number',
         'bilah_number',
         'production_date',
-        'shelf_number',
-        'quantity',
-        'nut_bolt',
-        'description_id',
+        'shelf_id',
+        'shelf_name',
         'description',
         'delivery_date',
         'status_id',
@@ -53,23 +52,18 @@ class Product extends Model
         'note',
         'shipping_id',
         'shipping_name',
+        'number_plate',
         'current_location',
         'group_id',
         'group_name',
         'created_by',
         'updated_by',
         'deleted_by',
-        'deleted_flag',
     ];
 
     public function segment()
     {
         return $this->belongsTo(Segment::class);
-    }
-
-    public function description()
-    {
-        return $this->belongsTo(Description::class);
     }
 
     public function category()
@@ -89,6 +83,6 @@ class Product extends Model
 
     public function logs()
     {
-        return $this->hasMany(StatusLog::class);
+        return $this->hasMany(StatusProductLog::class);
     }
 }
