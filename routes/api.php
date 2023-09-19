@@ -45,142 +45,132 @@ Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::post('/reset-password', 'resetPassword');
-            Route::get('/user-inactive', 'getUserInactive')->middleware(['auth:api', 'check_admin']);
-            Route::put('/update-status-user/{id}', 'setActiveUser')->middleware(['auth:api', 'check_admin']);
-            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin']);
-            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin']);
-            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin']);
-            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin']);
-            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin']);
-            Route::post('/datatable-inactive', 'datatableInactive')->middleware(['auth:api', 'check_admin']);
+            Route::get('/user-inactive', 'getUserInactive')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::put('/update-status-user/{id}', 'setActiveUser')->middleware(['auth:api', 'check_admin:1']);
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::post('/datatable-inactive', 'datatableInactive')->middleware(['auth:api', 'check_admin:1,5']);
         });
     });
     Route::prefix('group')->group(function () {
         Route::controller(GroupController::class)->group(function () {
             Route::get('/group', 'getGroups');
-            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin']);
-            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin']);
-            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin']);
-            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin']);
-            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin']);
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,5']);
         });
     });
     Route::prefix('segment')->group(function () {
         Route::controller(SegmentController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
-        });
-    });
-    Route::prefix('description')->group(function () {
-        Route::controller(DescriptionController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('category')->group(function () {
         Route::controller(CategoryController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('status-product')->group(function () {
         Route::controller(StatusProductController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('product')->group(function () {
         Route::controller(ProductController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/update-status/{id}', 'setStatusLogProduct')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
-            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::post('/update-status/{id}', 'setStatusLogProduct')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
         });
     });
     Route::prefix('shipping')->group(function () {
         Route::controller(ShippingController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('module')->group(function () {
         Route::controller(ModuleController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('shelf')->group(function () {
         Route::controller(ShelfController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('status-tool-material')->group(function () {
         Route::controller(StatusToolMaterialController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
     Route::prefix('tool')->group(function () {
         Route::controller(ToolController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/update-status/{id}', 'setStatusLogTool')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
-            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::post('/update-status/{id}', 'setStatusLogTool')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3']);
         });
     });
     Route::prefix('material')->group(function () {
         Route::controller(MaterialController::class)->group(function () {
-            Route::get('/index', 'index')->middleware('auth:api');
-            Route::post('/create', 'store')->middleware('auth:api');
-            Route::get('/detail/{id}', 'show')->middleware('auth:api');
-            Route::put('/update/{id}', 'update')->middleware('auth:api');
-            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
-            Route::post('/update-status/{id}', 'setStatusLogMaterial')->middleware('auth:api');
-            Route::post('/datatable', 'datatable')->middleware('auth:api');
-            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::post('/update-status/{id}', 'setStatusLogMaterial')->middleware(['auth:api', 'check_admin:1,2,3']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,5']);
+            Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3']);
         });
     });
 });
