@@ -47,6 +47,7 @@ class StatusToolLog extends Model
         'status_photo7',
         'status_photo8',
         'status_photo9',
+        'status_photo10',
         'note',
         'shipping_id',
         'shipping_name',
