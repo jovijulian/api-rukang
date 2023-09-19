@@ -610,4 +610,109 @@ class MaterialController extends Controller
 
         return $locationLog;
     }
+
+    protected function validateMultipleImages(array $data)
+    {
+        $arrayValidator = [
+            'status_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
+        ];
+        return Validator::make($data, $arrayValidator);
+    }
+
+    public function addMultipleImagesStatus($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validate = $this->validateMultipleImages($request->all());
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
+            }
+            $data = $this->insertMultipleImageStatus($id, $request->all(), $request);
+
+            DB::commit();
+            $single = new StatusMaterialLogResource($data);
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else if ($e instanceof BadRequestHttpException) {
+                    return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
+                } else {
+                    return ResponseStd::fail($e->getMessage());
+                }
+            }
+        }
+    }
+
+    protected function insertMultipleImageStatus($id, array $data, Request $request)
+    {
+        $timeNow = Carbon::now();
+
+        $statusLog = StatusMaterialLog::find($id);
+        if (empty($statusLog)) {
+            throw new \Exception("Invalid status material log id", 406);
+        }
+
+        $statusLog->status_id;
+        $statusLog->status_name;
+        // Input data multiple image
+        foreach ($request->file() as $key => $file) {
+            if ($request->hasFile($key)) {
+                if ($request->file($key)->isValid()) {
+                    $image_url = $data[$key];
+                    if ($data[$key]) {
+                        $image = Storage::putFile('material', $data[$key], 'public');
+                        $image_url = Storage::url($image);
+                        //hapus picture sebelumnya
+                        if (isset($statusLog->$key)) {
+                            $old = parse_url($statusLog->$key);
+                            if (Storage::exists($old['path'])) {
+                                Storage::delete($old['path']);
+                            }
+                        }
+                    }
+                    if ($key == 'status_photo') {
+                        $statusLog->status_photo = $image_url;
+                    } elseif ($key == 'status_photo2') {
+                        $statusLog->status_photo2 = $image_url ?? '';
+                    } elseif ($key == 'status_photo3') {
+                        $statusLog->status_photo3 = $image_url ?? '';
+                    } elseif ($key == 'status_photo4') {
+                        $statusLog->status_photo4 = $image_url ?? '';
+                    } elseif ($key == 'status_photo5') {
+                        $statusLog->status_photo5 =  $image_url ?? '';
+                    } elseif ($key == 'status_photo6') {
+                        $statusLog->status_photo6 = $image_url ?? '';
+                    } elseif ($key == 'status_photo7') {
+                        $statusLog->status_photo7 = $image_url ?? '';
+                    } elseif ($key == 'status_photo8') {
+                        $statusLog->status_photo8 = $image_url ?? '';
+                    } elseif ($key == 'status_photo9') {
+                        $statusLog->status_photo9 = $image_url ?? '';
+                    } elseif ($key == 'status_photo10') {
+                        $statusLog->status_photo10 = $image_url ?? '';
+                    }
+                } else {
+                    $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
+                    $statusLog->$key = $key_id;
+                }
+            }
+        }
+        $statusLog->note = $data['note'];
+        $statusLog->shipping_id = $data['shipping_id'];
+        $statusLog->shipping_name = $data['shipping_name'];
+        $statusLog->number_plate = $data['number_plate'];
+        $statusLog->updated_at = $timeNow;
+        $statusLog->updated_by = auth()->user()->fullname;
+        //Save
+        $statusLog->save();
+
+
+        return $statusLog;
+    }
 }
