@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DescriptionController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\ShelfController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\StatusProductController;
@@ -166,6 +167,18 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware('auth:api');
             Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
             Route::post('/update-status/{id}', 'setStatusLogTool')->middleware('auth:api');
+            Route::post('/datatable', 'datatable')->middleware('auth:api');
+            Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
+        });
+    });
+    Route::prefix('material')->group(function () {
+        Route::controller(MaterialController::class)->group(function () {
+            Route::get('/index', 'index')->middleware('auth:api');
+            Route::post('/create', 'store')->middleware('auth:api');
+            Route::get('/detail/{id}', 'show')->middleware('auth:api');
+            Route::put('/update/{id}', 'update')->middleware('auth:api');
+            Route::delete('/delete/{id}', 'destroy')->middleware('auth:api');
+            Route::post('/update-status/{id}', 'setStatusLogMaterial')->middleware('auth:api');
             Route::post('/datatable', 'datatable')->middleware('auth:api');
             Route::put('/edit-location/{id}', 'editLocation')->middleware('auth:api');
         });
