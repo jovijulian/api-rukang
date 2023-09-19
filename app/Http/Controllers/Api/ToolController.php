@@ -331,10 +331,13 @@ class ToolController extends Controller
         $statusLogs = StatusToolLog::where('tool_id', $id)->get();
 
         foreach ($statusLogs as $statusLog) {
-            if (isset($statusLog->status_photo)) {
-                $old = parse_url($statusLog->status_photo);
-                if (Storage::exists($old['path'])) {
-                    Storage::delete($old['path']);
+            for ($i = 1; $i <= 10; $i++) {
+                $columnName = "status_photo" . $i;
+                if (isset($statusLog->$columnName)) {
+                    $old = parse_url($statusLog->$columnName);
+                    if (Storage::exists($old['path'])) {
+                        Storage::delete($old['path']);
+                    }
                 }
             }
             $LocationLogs = LocationToolLog::where('status_tool_log_id', $statusLog->id)->get();
@@ -460,6 +463,8 @@ class ToolController extends Controller
                         $statusLog->status_photo8 = $image_url ?? '';
                     } elseif ($key == 'status_photo9') {
                         $statusLog->status_photo9 = $image_url ?? '';
+                    } elseif ($key == 'status_photo10') {
+                        $statusLog->status_photo10 = $image_url ?? '';
                     }
                 } else {
                     $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
