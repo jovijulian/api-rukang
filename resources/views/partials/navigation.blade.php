@@ -135,6 +135,8 @@
         <li class="submenu-open aset-data">
           <h6 class="submenu-hdr">Manajemen Aset</h6>
           <ul>
+            <li><a href="/tool" class="{{ request()->is('tool*') ? 'active' : '' }}"><i data-feather="tool"></i><span>Alat</span></a></li>
+            <li><a href="/tool" class="{{ request()->is('tool*') ? 'active' : '' }}"><i data-feather="layers"></i><span>Bahan</span></a></li>
             <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
             <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li>
           </ul>
