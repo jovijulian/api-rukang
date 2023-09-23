@@ -23,5 +23,3 @@
 <!-- Main CSS -->
 <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
 
-<!-- jQuery -->
-{{-- <script src="{{ url('assets/js/jquery-3.6.0.min.js') }}"></script> --}}

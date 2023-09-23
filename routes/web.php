@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DescriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
@@ -63,12 +62,6 @@ Route::controller(ShelfController::class)->group(function () {
     Route::get('shelf/', 'index');
     Route::get('shelf/insert', 'insert');
     Route::get('shelf/edit/{id}', 'edit');
-});
-
-Route::controller(DescriptionController::class)->group(function () {
-    Route::get('description/', 'index');
-    Route::get('description/insert', 'insert');
-    Route::get('description/edit/{id}', 'edit');
 });
 
 Route::controller(CategoryController::class)->group(function () {

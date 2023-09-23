@@ -112,7 +112,6 @@
               <tr>
                 <th>No</th>
                 <th>Nama</th>
-                <th>Tempat</th>
                 <th>Warna Barcode</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
@@ -205,7 +204,6 @@
               },
             },
             {data: 'segment_name'},
-            {data: 'segment_place'},
             {data: 'barcode_color'},
             {
               data: 'created_at',
