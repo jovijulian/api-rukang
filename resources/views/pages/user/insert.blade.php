@@ -45,6 +45,19 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                  <label class="col-lg-2 col-form-label">Role</label>
+                  <div class="col-lg-10">
+                    <select id="role" class="form-control select">
+                      <option selected="selected" disabled>Pilih role anda</option>
+                      <option value="1">Admin</option>
+                      <option value="2">Admin Produksi</option>
+                      <option value="3">Officer Produksi</option>
+                      <option value="4">Officer Monitoring</option>
+                      <option value="5">Owner</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Email</label>
                   <div class="col-lg-10">
                     <input type="email" id="email" class="form-control" placeholder="Masukan email" required>
@@ -149,6 +162,7 @@
           password: $('#password').val(),
           group_id: $('#group').val(),
           group_name: $('#group').find("option:selected").text(),
+          isAdmin: $('#role').val(),
         }
 
         // VALIDASI GROUP SELECT

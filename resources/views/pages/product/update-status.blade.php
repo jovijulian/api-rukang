@@ -47,6 +47,12 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Plat Nomor</label>
+                  <div class="col-lg-9">
+                    <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor" disabled>
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                   <div class="col-lg-9">
                     <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
@@ -59,10 +65,10 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-3 col-form-label">Upload Foto Status</label>
+                  <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                   <div class="col-lg-9">
-                    <input class="form-control" type="file" id="image-status" accept="image/*">
-                    <div id="image-preview" class="mt-2"></div>
+                    <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple>
+                    <div id="image-preview" class="mt-2 row"></div>
                   </div>
                 </div>
                 <div class="text-end">
@@ -87,15 +93,25 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
-      $('#image-status').change(function(){
-        const file = this.files[0]
-        if (file){
-          let reader = new FileReader()
-          reader.onload = function(event){
-            $('#image-preview img').remove()
-            $('#image-preview').append(`<img src="${event.target.result}" alt="" class="mx-auto" alt="" style="height: 150px; width: auto">`)
+      $('#image-status').change(function(event) {
+        if (this.files) {
+          let fileAmount = this.files.length
+          $('#image-preview img').remove()
+
+          if (fileAmount > 10) {
+            console.log('salah');
+            Swal.fire('Maksimal upload 10 foto', '', 'error')
+            $('#image-status').val('')
+            return
           }
-          reader.readAsDataURL(file)
+          
+          for (let i = 0; i < fileAmount; i++) {
+            let reader = new FileReader()
+            reader.onload = function(){
+              $('#image-preview').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+            }
+            reader.readAsDataURL(this.files[i])
+          }
         }
       })
 
@@ -116,7 +132,7 @@
         $('#status-product').select2({
           placeholder: 'Pilih status',
           ajax: {
-            url: "{{ url('api/v1/status/index') }}",
+            url: "{{ url('api/v1/status-product/index') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -149,16 +165,21 @@
         $('#status-product').on('change', function(e) {
           const needExpedition = $(this).select2('data')[0].location
 
-          console.log(needExpedition)
+          // console.log(needExpedition)
           
           if (needExpedition) {
             $('#shipping').removeAttr('disabled')
+
+            $('#number-plate').removeAttr('disabled')
 
             $('#current-location').removeAttr('disabled')
           } else {
             $('#shipping').select2("enable", false)
             $("#shipping").val(null).trigger("change")
             
+            $('#number-plate').attr('disabled', 'disabled')
+            $('#number-plate').val('')
+
             $('#current-location').attr('disabled', 'disabled')
             $('#current-location').val('')
           }
@@ -208,10 +229,20 @@
         const data = {
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
-          note: $('#note').val(),
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
+          status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
+          status_photo3: $('#image-status')[0].files[2] ? $('#image-status')[0].files[2] : '',
+          status_photo4: $('#image-status')[0].files[3] ? $('#image-status')[0].files[3] : '',
+          status_photo5: $('#image-status')[0].files[4] ? $('#image-status')[0].files[4] : '',
+          status_photo6: $('#image-status')[0].files[5] ? $('#image-status')[0].files[5] : '',
+          status_photo7: $('#image-status')[0].files[6] ? $('#image-status')[0].files[6] : '',
+          status_photo8: $('#image-status')[0].files[7] ? $('#image-status')[0].files[7] : '',
+          status_photo9: $('#image-status')[0].files[8] ? $('#image-status')[0].files[8] : '',
+          status_photo10: $('#image-status')[0].files[9] ? $('#image-status')[0].files[9] : '',
+          note: $('#note').val() ? $('#note').val() : '',
           shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
           shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 

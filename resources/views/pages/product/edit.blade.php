@@ -61,7 +61,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tempat Segmen</label>
                       <div class="col-lg-9">
-                        <input type="text" id="segment-place" class="form-control" placeholder="Pilih segmen" disabled>
+                        <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen">
                       </div>
                     </div>
                   </div>
@@ -99,7 +99,9 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Rak</label>
                       <div class="col-lg-9">
-                        <input type="text" id="shelf-number" class="form-control" placeholder="Masukan nomor rak">
+                        <select id="shelf" class="form-control select">
+                          <option selected="selected" disabled>Pilih rak</option>
+                        </select>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -108,48 +110,12 @@
                         <input type="date" id="production-date" class="form-control text-sm">
                       </div>
                     </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">1/0</label>
-                      <div class="col-lg-9 my-auto">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input io" name="io-radio" type="radio" id="io-yes" value=1>
-                          <label class="form-check-label" for="io-yes">
-                            1
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input io" type="radio" name="io-radio" id="io-no" value=0>
-                          <label class="form-check-label" for="io-no">
-                            0
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Dimur/dibaut?</label>
-                      <div class="col-lg-9 my-auto">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-yes" value=1>
-                          <label class="form-check-label" for="bolt-yes">
-                            Ya
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-no" value=0>
-                          <label class="form-check-label" for="bolt-no">
-                            Tidak
-                          </label>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   <div class="col-xl-6">
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Keterangan</label>
                       <div class="col-lg-9">
-                        <select id="description-product" class="form-control select">
-                          <option value="pilih keterangan" selected="selected" disabled>Pilih keterangan</option>
-                        </select>
+                        <textarea rows="3" cols="5" id="description" class="form-control" placeholder="Masukan keterangan"></textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -163,7 +129,6 @@
                       <div class="col-lg-9">
                         <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode" required>
                       </div>
-                      {{-- <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p> --}}
                     </div>
                     <div class="form-group row">
                       <svg id="barcode"></svg>
@@ -208,7 +173,7 @@
       getModule()
       getCategory()
       getSegment()
-      getDesc()
+      getShelf()
       getDetailProduct()
 
       barcode()
@@ -336,39 +301,59 @@
         })
       }
 
-      function getDesc() {
-        axios.get("{{ url('api/v1/description/index') }}", config)
-          .then(res => {
-            const descriptions = res.data.data.items
-            descriptions.map(description => {
-              $('#description-product').append(
-                `<option value=${description.id}>${description.description}</option>`)
-            })
+      function getShelf() {
+        $('#shelf').select2({
+          ajax: {
+            url: "{{ url('api/v1/shelf/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.shelf_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
+
+      
 
       function getDetailProduct() {
         axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
           .then(res => {
             const data = res.data.data.item
 
-            // $('#category-product').val(data.category_id).change()
-            // $('#segment-product').val(data.segment.id).change()
-            // $('#module-product').val(data.module.id).change()
+            console.log(data)
+
             $("#category-product").append(`<option value=${data.category_id} selected>${data.category}</option>`)
             $("#segment-product").append(`<option value=${data.segment.id} selected>${data.segment.segment_name}</option>`)
             $('#barcode-color').val(data.segment.barcode_color)
-            $('#segment-place').val(data.segment.segment_place)
+            $('#segment-place').val(data.segment_place)
             $("#module-product").append(`<option value=${data.module.id} selected>${data.module.module_number}</option>`)
             $('#no-bilah').val(data.bilah_number).change()
-            $('#shelf-number').val(data.shelf_number)
+            $("#shelf").append(`<option value=${data.shelf.id} selected>${data.shelf.shelf_name}</option>`)
             $('#production-date').val(data.production_date)
-            data.quantity ? $("[name='io-radio'][value='1']").prop("checked", true) : $("[name='io-radio'][value='0']").prop("checked", true)
-            data.nut_bolt ? $("[name='nut-bolt'][value='1']").prop("checked", true) : $("[name='nut-bolt'][value='0']").prop("checked", true)
+            $('#description').val(data.description)
+            $('#delivery-date').val(data.delivery_date)
             $('#barcode-product').val(data.barcode).trigger('input')
           })
           .catch(err => {
@@ -437,16 +422,15 @@
           category: $('#category-product').val() ? $('#category-product').find("option:selected").text() : '',
           segment_id: $('#segment-product').val() ? $('#segment-product').val() : '',
           segment_name: $('#segment-product').val() ? $('#segment-product').find("option:selected").text() : '',
+          segment_place: $('#segment-place').val() ? $('#segment-place').val() : '',
           barcode: $('#barcode-product').val(),
           module_id: $('#module-product').val() ? $('#module-product').val() : '',
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val(),
           production_date: $('#production-date').val(),
-          shelf_number: $('#shelf-number').val(),
-          quantity: $(".io:checked").val() ? $(".io:checked").val() : '',
-          nut_bolt: $('.nut-bolt:checked').val() ? $('.nut-bolt:checked').val() : '',
-          description_id: $('#description-product').val() ? $('#description-product').val() : "",
-          description: $('#description-product').val() ? $('#description-product').find("option:selected").text() : "",
+          shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
+          shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
+          description: $('#description').val() ? $('#description').val() : "",
           delivery_date: $('#delivery-date').val()
         }
 

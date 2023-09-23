@@ -37,12 +37,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tempat</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Warna Barcode</label>
                   <div class="col-lg-10">
                     <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
@@ -77,7 +71,6 @@
 
         const data = {
           segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
           barcode_color: $('#barcode-color').val(),
         }
 

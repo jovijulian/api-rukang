@@ -31,7 +31,20 @@
                 <label for="group">Kelompok</label>
                 <div class="form-addons">
                   <select id="group" class="form-control select">
-                    <option value="1" selected="selected" disabled>Pilih kelompok anda</option>
+                    <option selected="selected" disabled>Pilih kelompok anda</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-login">
+                <label for="role">Role</label>
+                <div class="form-addons">
+                  <select id="role" class="form-control select">
+                    <option selected="selected" disabled>Pilih role anda</option>
+                    <option value="1">Admin</option>
+                    <option value="2">Admin Produksi</option>
+                    <option value="3">Officer Produksi</option>
+                    <option value="4">Officer Monitoring</option>
+                    <option value="5">Owner</option>
                   </select>
                 </div>
               </div>
@@ -143,16 +156,11 @@
           }
         }
       })
-      // axios.get("{{ url('api/v1/group/group') }}")
-      //   .then(function(res) {
-      //     const groups = res.data.data.items
-      //     groups.forEach(group => {
-      //       $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)
-      //     });
-      //   })
-      //   .catch(function(err) {
-      //     console.log(err);
-      //   });
+
+      // $('#role').select2({
+      //   placeholder: 'Pilih role anda',
+      //   allowClear: true
+      // })
 
 
       // SUBMIT FORM
@@ -169,6 +177,7 @@
           password: $('#password').val(),
           group_id: $('#group').val(),
           group_name: $('#group').find("option:selected").text(),
+          isAdmin: $('#role').val(),
         }
 
         // VALIDASI GROUP SELECT
@@ -203,6 +212,9 @@
           }
         }
 
+        // console.log(data)
+        // return
+
 
         axios.post("{{ url('api/v1/auth/register') }}", data, config)
           .then(function(res) {
@@ -212,6 +224,8 @@
           .catch(function(err) {
             $('#global-loader').hide()
 
+            console.log(err);
+
             if (err.response.data.meta.code === 422) {
               const errMessage = err.response.data.errors[0]
 
@@ -219,7 +233,7 @@
                 Swal.fire({
                   icon: 'warning',
                   title: 'Oops...',
-                  text: 'Email Sudah digunakan'
+                  text: errMessage.email
                 })
                 return
               }
@@ -228,7 +242,7 @@
                 Swal.fire({
                   icon: 'warning',
                   title: 'Oops...',
-                  text: 'Nomor Sudah digunakan'
+                  text: errMessage.phone_number
                 })
               }
 
