@@ -12,6 +12,7 @@ use App\Http\Controllers\ShelfController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\StatusProductController;
 use App\Http\Controllers\StatusToolMaterialController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -107,4 +108,13 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/update-status/{id}', 'updateStatus');
     Route::get('product/edit/{id}', 'edit');
     Route::get('product/edit-location/{id}', 'editLocation');
+});
+
+Route::controller(ToolController::class)->group(function () {
+    Route::get('tool/', 'index');
+    Route::get('tool/detail/{id}', 'detail');
+    Route::get('tool/insert', 'insert');
+    Route::get('tool/update-status/{id}', 'updateStatus');
+    Route::get('tool/edit/{id}', 'edit');
+    Route::get('tool/edit-location/{id}', 'editLocation');
 });
