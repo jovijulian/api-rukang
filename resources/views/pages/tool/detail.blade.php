@@ -176,7 +176,7 @@
               `
                 <tr>
                   <td>
-                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
+                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
                   </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
                   <td>${statusLog.note ? statusLog.note : ''}</td>

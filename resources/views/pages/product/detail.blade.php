@@ -82,6 +82,8 @@
                     <tr>
                       <th>Foto Status</th>
                       <th>Status</th>
+                      <th>Ekspedisi</th>
+                      <th>Plat Nomor</th>
                       <th>Catatan</th>
                       <th>Dibuat Pada</th>
                       <th>Dibuat Oleh</th>
@@ -169,7 +171,7 @@
         .then(res => {
           const product = res.data.data.item
 
-          // console.log(product);
+          console.log(product);
 
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
@@ -196,9 +198,12 @@
               `
                 <tr>
                   <td>
-                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
+                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
+                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white">Ubah status</a>
                   </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
+                  <td>${statusLog.shipping_name ? statusLog.shipping_name : ''}</td>
+                  <td>${statusLog.number_plate ? statusLog.number_plate : ''}</td>
                   <td>${statusLog.note ? statusLog.note : ''}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by ? statusLog.created_by : ''}</td>
