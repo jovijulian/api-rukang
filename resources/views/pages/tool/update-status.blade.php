@@ -14,8 +14,8 @@
             <h3 class="page-title">Update Status</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/product') }}">Produk</a></li>
-              <li class="breadcrumb-item active">Update Status Produk</li>
+              <li class="breadcrumb-item"><a href="{{ url('/tool') }}">Alat</a></li>
+              <li class="breadcrumb-item active">Update Status Alat</li>
             </ul>
           </div>
         </div>
@@ -132,7 +132,7 @@
         $('#status-product').select2({
           placeholder: 'Pilih status',
           ajax: {
-            url: "{{ url('api/v1/status-product/index') }}",
+            url: "{{ url('api/v1/status-tool-material/index') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -249,15 +249,15 @@
         // console.log(data)
         // return
 
-        axios.post("{{ url('api/v1/product/update-status/' . $id) }}", data, config)
+        axios.post("{{ url('api/v1/tool/update-status/' . $id) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
-            sessionStorage.setItem("success", `Status produk berhasil diupdate`)
-            window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
+            sessionStorage.setItem("success", `Status alat berhasil diupdate`)
+            window.location.href = `{{ url('/tool/detail/${res.data.data.item.tool_id}') }}`
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Status produk gagal diupdate', '', 'error')
+            Swal.fire('Status alat gagal diupdate', '', 'error')
             console.log(err)
           })
 
