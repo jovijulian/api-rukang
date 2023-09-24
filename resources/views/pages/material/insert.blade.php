@@ -325,8 +325,8 @@
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
-        console.log(data)
-        return
+        // console.log(data)
+        // return
 
 
         axios.post("{{ url('api/v1/material/create') }}", data, config)
