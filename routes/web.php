@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SegmentController;
@@ -117,4 +118,13 @@ Route::controller(ToolController::class)->group(function () {
     Route::get('tool/update-status/{id}', 'updateStatus');
     Route::get('tool/edit/{id}', 'edit');
     Route::get('tool/edit-location/{id}', 'editLocation');
+});
+
+Route::controller(MaterialController::class)->group(function () {
+    Route::get('material/', 'index');
+    Route::get('material/detail/{id}', 'detail');
+    Route::get('material/insert', 'insert');
+    Route::get('material/update-status/{id}', 'updateStatus');
+    Route::get('material/edit/{id}', 'edit');
+    Route::get('material/edit-location/{id}', 'editLocation');
 });

@@ -107,6 +107,14 @@
           </div>
         </div>
       </div>
+      <div class="col-lg-4 col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <img src="{{ url('assets/img/product/product69.jpg') }}" id="photo" alt="img">
+            <p class="text-center mt-2">Foto terbaru</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- /add -->
@@ -144,9 +152,11 @@
         .then(res => {
           const product = res.data.data.item
 
-          console.log(product);
+          // console.log(product)
 
           $('.update-status').attr('href', '/tool/update-status/' + product.id)
+
+          $("#photo").attr("src", product.status_photo && product.status_photo)
 
           $('#category').text(product.category ? product.category : '')
           $('#type').text(product.type ? product.type : '')
@@ -180,7 +190,7 @@
           })
 
           product.location_tool_logs.map((locationLog, i) => {
-            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
+            const link = `<a href="{{ url('tool/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
 
             $('#location-table').append(
               `

@@ -1,18 +1,18 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Detail Produk</title>
+  <title>Detail Bahan</title>
 @endsection
 
 @section('content')
   <div class="content">
     <div class="page-header">
       <div class="page-title">
-        <h4>Detail Produk</h4>
-        <h6>Informasi detail produk</h6>
+        <h4>Detail Bahan</h4>
+        <h6>Informasi detail bahan</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added update-status">Update Status Produk</a>
+        <a href="/tool/update-status" class="btn btn-added update-status">Update Status Bahan</a>
       </div>
     </div>
     <!-- /add -->
@@ -27,36 +27,16 @@
                   <h6 id="category"></h6>
                 </li>
                 <li>
-                  <h4>Segmen</h4>
-                  <h6 id="segment"></h6>
-                </li>
-                <li>
-                  <h4>Nomor Modul</h4>
-                  <h6 id="module-number"></h6>
-                </li>
-                <li>
-                  <h4>Nomor Bilah</h4>
-                  <h6 id="bilah-number"></h6>
-                </li>
-                <li>
-                  <h4>Nomor Rak</h4>
-                  <h6 id="shelf-number"></h6>
-                </li>
-                <li>
-                  <h4>Deskripsi</h4>
-                  <h6 id="description"></h6>
-                </li>
-                <li>
-                  <h4>Tanggal Produksi</h4>
-                  <h6 id="production-date"></h6>
-                </li>
-                <li>
-                  <h4>Tanggal Pengiriman</h4>
-                  <h6 id="delivery-date"></h6>
+                  <h4>Nama Bahan</h4>
+                  <h6 id="material-name"></h6>
                 </li>
                 <li>
                   <h4>Catatan</h4>
-                  <h6 id="product-note"></h6>
+                  <h6 id="note"></h6>
+                </li>
+                <li>
+                  <h4>Status</h4>
+                  <h6 id="status"></h6>
                 </li>
                 <li>
                   <h4>Dibuat Pada</h4>
@@ -118,15 +98,6 @@
       <div class="col-lg-4 col-sm-12">
         <div class="card">
           <div class="card-body">
-            <div class="slider-product-details">
-              <div class="w-100 border mx-auto p-5">
-                <svg id="barcode" class="mx-auto w-100 h-16"></svg>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
             <img src="{{ url('assets/img/product/product69.jpg') }}" id="photo" alt="img">
             <p class="text-center mt-2">Foto terbaru</p>
           </div>
@@ -165,33 +136,26 @@
         }
       }
 
-      axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
+      axios.get("{{ url('api/v1/material/detail/' . $id) }}", config)
         .then(res => {
           const product = res.data.data.item
 
-          // console.log(product);
+          // console.log(product)
 
-          $('.update-status').attr('href', '/product/update-status/' + product.id)
-
-          JsBarcode("#barcode", product.barcode)
+          $('.update-status').attr('href', '/material/update-status/' + product.id)
 
           $("#photo").attr("src", product.status_photo && product.status_photo)
 
           $('#category').text(product.category ? product.category : '')
-          $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
-          $('#module-number').text(product.module.module_number ? product.module.module_number : '')
-          $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf.shelf_name ? product.shelf.shelf_name : '')
-          $('#description').text(product.description ? product.description : '')
-          $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
-          $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
-          $('#product-note').text(product.note ? product.note : '')
+          $('#material-name').text(product.material_name ? product.material_name : '')
+          $('#note').text(product.material_note ? product.material_note : '')
+          $('#status').text(product.status ? product.status : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#created-by').text(product.created_by)
           $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#updated-by').text(product.updated_by)
           
-          product.status_logs.map((statusLog, i) => {
+          product.status_mmaterial_logs.map((statusLog, i) => {
             $('#status-table').append(
               `
                 <tr>
@@ -209,8 +173,8 @@
             )
           })
 
-          product.location_logs.map((locationLog, i) => {
-            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
+          product.location_mmaterial_logs.map((locationLog, i) => {
+            const link = `<a href="{{ url('material/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
 
             $('#location-table').append(
               `
