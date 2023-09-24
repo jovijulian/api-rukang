@@ -75,11 +75,11 @@
         }
 
 
-        axios.put("{{ url('api/v1/product/edit-location/' . $id) }}", data, config)
+        axios.put("{{ url('api/v1/tool/edit-location/' . $id) }}", data, config)
           .then(res => {
             // console.log(res.data.data.item.product_id)
             sessionStorage.setItem("success", `Lokasi berhasil diupdate`)
-            window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
+            window.location.href = `{{ url('/tool/detail/${res.data.data.item.product_id}') }}`
           })
           .catch(err => {
             $('#global-loader').hide()
