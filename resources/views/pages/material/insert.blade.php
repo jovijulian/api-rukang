@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary px-5 py-3">Tambah Alat</button>
+                  <button type="submit" class="btn btn-primary px-5 py-3">Tambah Bahan</button>
                 </div>
               </form>
             </div>
@@ -314,7 +314,7 @@
           category_id: $('#category').val() ? $('#category').val() : '',
           category: $('#category').val() ? $('#category').find("option:selected").text() : '',
           material_name: $('#material-name').val() ? $('#material-name').val() : "",
-          note: $('#note').val() ? $('#note').val() : "",
+          material_note: $('#note').val() ? $('#note').val() : "",
           status_id: $('#status').val() ? $('#status').val() : '',
           status: $('#status').val() ? $('#status').find("option:selected").text() : '',
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
