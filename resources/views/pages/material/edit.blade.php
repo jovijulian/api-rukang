@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Alat</title>
+  <title>Edit Bahan</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Alat</h3>
+            <h3 class="page-title">Edit Data Bahan</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/tool') }}">Alat</a></li>
-              <li class="breadcrumb-item active">Edit Alat</li>
+              <li class="breadcrumb-item"><a href="{{ url('/material') }}">Bahan</a></li>
+              <li class="breadcrumb-item active">Edit Bahan</li>
             </ul>
           </div>
         </div>
@@ -47,33 +47,13 @@
                   </div>
                 </div>
 
-                <h5 class="card-title mb-4">Alat</h5>
+                <h5 class="card-title mb-4">Bahan</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tipe</label>
+                      <label class="col-lg-3 col-form-label">Nama Bahan</label>
                       <div class="col-lg-9">
-                        <input type="text" id="type" class="form-control" placeholder="Masukan tipe" required>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nama Alat</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="tool-name" class="form-control" placeholder="Masukan nama alat" required>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Jumlah</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="amount" class="form-control" placeholder="Masukan jumlah" required>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Seri</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="serial-number" class="form-control" placeholder="Masukan nomor seri" required>
+                        <input type="text" id="material-name" class="form-control" placeholder="Masukan nama bahan" required>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -83,10 +63,12 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-xl-6">
+                  </div>
                 </div>
 
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary px-5 py-3">Ubah Alat</button>
+                  <button type="submit" class="btn btn-primary px-5 py-3">Ubah Bahan</button>
                 </div>
               </form>
             </div>
@@ -172,21 +154,16 @@
         })
       }
 
-     
-
       function getDetailProduct() {
-        axios.get("{{ url('api/v1/tool/detail/' . $id) }}", config)
+        axios.get("{{ url('api/v1/material/detail/' . $id) }}", config)
           .then(res => {
             const data = res.data.data.item
 
             // console.log(data)
 
             $("#category").append(`<option value=${data.category_id} selected>${data.category}</option>`)
-            $('#type').val(data.type)
-            $('#tool-name').val(data.tool_name)
-            $('#amount').val(data.amount)
-            $('#serial-number').val(data.serial_number)
-            $('#note').val(data.note)
+            $('#material-name').val(data.material_name)
+            $('#note').val(data.material_note)
           })
           .catch(err => {
             console.log(err)
@@ -197,23 +174,20 @@
         const data = {
           category_id: $('#category').val() ? $('#category').val() : '',
           category: $('#category').val() ? $('#category').find("option:selected").text() : '',
-          type: $('#type').val() ? $('#type').val() : "",
-          tool_name: $('#tool-name').val() ? $('#tool-name').val() : "",
-          amount: $('#amount').val() ? $('#amount').val() : "",
-          serial_number: $('#serial-number').val() ? $('#serial-number').val() : "",
-          note: $('#note').val() ? $('#note').val() : "",
+          material_name: $('#material-name').val() ? $('#material-name').val() : "",
+          material_note: $('#note').val() ? $('#note').val() : "",
         }
 
         // console.log(data)
         // return
 
 
-        axios.put("{{ url('api/v1/tool/update/' . $id) }}", data, config)
+        axios.put("{{ url('api/v1/material/update/' . $id) }}", data, config)
           .then(res => {
             const product = res.data.data.item
 
             sessionStorage.setItem("success", `Alat berhasil diedit`)
-            window.location.href = "{{ url('/tool') }}"
+            window.location.href = "{{ url('/material') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
