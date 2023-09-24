@@ -703,10 +703,10 @@ class MaterialController extends Controller
                 }
             }
         }
-        $statusLog->note = $data['note'];
-        $statusLog->shipping_id = $data['shipping_id'];
-        $statusLog->shipping_name = $data['shipping_name'];
-        $statusLog->number_plate = $data['number_plate'];
+        $statusLog->note;
+        $statusLog->shipping_id;
+        $statusLog->shipping_name;
+        $statusLog->number_plate;
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
         //Save
