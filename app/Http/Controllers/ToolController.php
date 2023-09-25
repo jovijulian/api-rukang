@@ -30,8 +30,20 @@ class ToolController extends Controller
     {
         return view('pages.tool.edit', ['id' => $id]);
     }
+
     public function editLocation($id)
     {
         return view('pages.tool.update-location', ['id' => $id]);
+    }
+
+    public function editStatus(Request $request)
+    {
+        $idProduct = $request->idProduct;
+        $idStatus = $request->idStatus;
+
+        return view('pages.tool.edit-status', [
+            'idProduct' => $idProduct,
+            'idStatus' => $idStatus,
+        ]);
     }
 }

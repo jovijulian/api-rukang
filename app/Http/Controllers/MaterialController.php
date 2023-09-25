@@ -30,8 +30,20 @@ class MaterialController extends Controller
     {
         return view('pages.material.edit', ['id' => $id]);
     }
+
     public function editLocation($id)
     {
         return view('pages.material.update-location', ['id' => $id]);
+    }
+
+    public function editStatus(Request $request)
+    {
+        $idProduct = $request->idProduct;
+        $idStatus = $request->idStatus;
+
+        return view('pages.material.edit-status', [
+            'idProduct' => $idProduct,
+            'idStatus' => $idStatus,
+        ]);
     }
 }
