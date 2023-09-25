@@ -21,7 +21,6 @@ class Segment extends Model
 
     protected $fillable = [
         'segment_name',
-        'segment_place',
         'barcode_color',
         'created_by',
         'updated_by',

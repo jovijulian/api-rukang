@@ -12,7 +12,7 @@
         <h6>Manajemen Data Modul</h6>
       </div>
       <div class="page-btn">
-        <a href="/module/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Modul Baru</a>
+        <a href="/module/insert" class="btn btn-added remove-role"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Modul Baru</a>
       </div>
     </div>
 
@@ -131,6 +131,14 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
+
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
     
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     let config = {
@@ -222,7 +230,7 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                if (currentUser.isAdmin) {
+                if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                   return `
                     <a class="me-3" href="/module/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
@@ -233,7 +241,7 @@
                   `
                 } else {
                   return `
-                    <a class="me-3" href="/module/edit/` + data + `">
+                    <a class="me-3" href="/module/edit/` + data + `"  ${hiddenRole && 'hidden'}>
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                   `

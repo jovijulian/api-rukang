@@ -61,7 +61,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tempat Segmen</label>
                       <div class="col-lg-9">
-                        <input type="text" id="segment-place" class="form-control" placeholder="Pilih segmen" disabled>
+                        <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen">
                       </div>
                     </div>
                   </div>
@@ -70,12 +70,6 @@
                 <h5 class="card-title mb-4">Produk</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
-                    {{-- <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Modul</label>
-                      <div class="col-lg-9">
-                        <input type="text" id="module-number" class="form-control" placeholder="Masukan nomor modul">
-                      </div>
-                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Modul</label>
                       <div class="col-lg-9">
@@ -105,49 +99,21 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Nomor Rak</label>
                       <div class="col-lg-9">
-                        <input type="text" id="shelf-number" class="form-control" placeholder="Masukan nomor rak">
+                        <select id="shelf" class="form-control select">
+                          <option value="pilih modul" selected="selected" disabled>Pilih rak</option>
+                        </select>
                       </div>
                     </div>
+                    {{-- <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Nomor Rak</label>
+                      <div class="col-lg-9">
+                        <input type="text" id="shelf-number" class="form-control" placeholder="Masukan nomor rak">
+                      </div>
+                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tanggal Produksi</label>
                       <div class="col-lg-9">
                         <input type="date" id="production-date" class="form-control text-sm">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">1/0</label>
-                      <div class="col-lg-9 my-auto">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input io" name="io-radio" type="radio" id="io-yes" value=1>
-                          <label class="form-check-label" for="io-yes">
-                            1
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input io" type="radio" name="io-radio" id="io-no" value=0>
-                          <label class="form-check-label" for="io-no">
-                            0
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Dimur/dibaut?</label>
-                      <div class="col-lg-9 my-auto">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-yes"
-                            value=1>
-                          <label class="form-check-label" for="bolt-yes">
-                            Ya
-                          </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input nut-bolt" type="radio" name="nut-bolt" id="bolt-no"
-                            value=0>
-                          <label class="form-check-label" for="bolt-no">
-                            Tidak
-                          </label>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -155,9 +121,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Keterangan</label>
                       <div class="col-lg-9">
-                        <select id="description-product" class="form-control select">
-                          <option value="pilih keterangan" selected="selected" disabled>Pilih keterangan</option>
-                        </select>
+                        <textarea rows="3" cols="5" id="description" class="form-control" placeholder="Masukan keterangan"></textarea>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -172,7 +136,6 @@
                         <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode"
                           required>
                       </div>
-                      {{-- <p id="generate-barcode" class="col-lg-2 btn btn-primary">Acak</p> --}}
                     </div>
                     <div class="form-group row">
                       <svg id="barcode"></svg>
@@ -197,6 +160,12 @@
                         <select id="shipping" class="form-control select" disabled>
                           <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
                         </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Plat Nomor</label>
+                      <div class="col-lg-9">
+                        <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor" disabled>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -263,7 +232,7 @@
       getSegment()
       getStatus()
       getShipping()
-      getDesc()
+      getShelf()
 
       barcode()
 
@@ -404,14 +373,13 @@
           const selectedSegment = segments.find(obj => obj.id == $('#segment-product').val())
 
           $('#barcode-color').val(selectedSegment.barcode_color)
-          $('#segment-place').val(selectedSegment.segment_place)
         })
       }
 
-      function getDesc() {
-        $('#description-product').select2({
+      function getShelf() {
+        $('#shelf').select2({
           ajax: {
-            url: "{{ url('api/v1/description/index') }}",
+            url: "{{ url('api/v1/shelf/index') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -428,7 +396,7 @@
               return {
                 results: $.map(data.data.items, function(item) {
                   return {
-                    text: item.description,
+                    text: item.shelf_name,
                     id: item.id,
                   }
                 }),
@@ -445,7 +413,7 @@
       function getStatus() {
         $('#status-product').select2({
           ajax: {
-            url: "{{ url('api/v1/status/index') }}",
+            url: "{{ url('api/v1/status-product/index') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -481,11 +449,16 @@
           if (needExpedition) {
             $('#shipping').removeAttr('disabled')
 
+            $('#number-plate').removeAttr('disabled')
+
             $('#current-location').removeAttr('disabled')
           } else {
             $('#shipping').select2("enable", false)
             $("#shipping").val(null).trigger("change")
             
+            $('#number-plate').attr('disabled', 'disabled')
+            $('#number-plate').val('')
+
             $('#current-location').attr('disabled', 'disabled')
             $('#current-location').val('')
           }
@@ -534,6 +507,7 @@
         let category = ''
 
         const barcode = $('#barcode-product')
+
         barcode.on('input', () => {
           JsBarcode("#barcode", barcode.val())
         })
@@ -596,28 +570,28 @@
           category: $('#category-product').val() ? $('#category-product').find("option:selected").text() : '',
           segment_id: $('#segment-product').val() ? $('#segment-product').val() : '',
           segment_name: $('#segment-product').val() ? $('#segment-product').find("option:selected").text() : '',
+          segment_place: $('#segment-place').val() ? $('#segment-place').val() : '',
           barcode: $('#barcode-product').val(),
           module_id: $('#module-product').val() ? $('#module-product').val() : '',
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val() ? $('#no-bilah').val() : '',
           production_date: $('#production-date').val(),
-          shelf_number: $('#shelf-number').val(),
-          quantity: $(".io:checked").val() ? $(".io:checked").val() : '',
-          nut_bolt: $('.nut-bolt:checked').val() ? $('.nut-bolt:checked').val() : '',
-          description_id: $('#description-product').val() ? $('#description-product').val() : "",
-          description: $('#description-product').val() ? $('#description-product').find("option:selected").text() : "",
+          shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
+          shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
+          description: $('#description-product').val() ? $('#description-product').val() : "",
           delivery_date: $('#delivery-date').val(),
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
-          note: $('#note').val(),
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
+          note: $('#note').val(),
           shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
           shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
-        console.log(data)
-        return
+        // console.log(data)
+        // return
 
 
         axios.post("{{ url('api/v1/product/create') }}", data, config)

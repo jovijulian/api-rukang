@@ -12,7 +12,7 @@
         <h6>Informasi detail produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added update-status">Update Status Produk</a>
+        <a href="/product/update-status" class="btn btn-added update-status remove-role">Update Status Produk</a>
       </div>
     </div>
     <!-- /add -->
@@ -41,14 +41,6 @@
                 <li>
                   <h4>Nomor Rak</h4>
                   <h6 id="shelf-number"></h6>
-                </li>
-                <li>
-                  <h4>1/0</h4>
-                  <h6 id="quantity"></h6>
-                </li>
-                <li>
-                  <h4>Dibaut dan Dimur</h4>
-                  <h6 id="nut-bolt"></h6>
                 </li>
                 <li>
                   <h4>Deskripsi</h4>
@@ -90,6 +82,8 @@
                     <tr>
                       <th>Foto Status</th>
                       <th>Status</th>
+                      <th>Ekspedisi</th>
+                      <th>Plat Nomor</th>
                       <th>Catatan</th>
                       <th>Dibuat Pada</th>
                       <th>Dibuat Oleh</th>
@@ -130,11 +124,13 @@
               <div class="w-100 border mx-auto p-5">
                 <svg id="barcode" class="mx-auto w-100 h-16"></svg>
               </div>
-              <div class="slider-product mt-5 border p-3">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" id="image-status" alt="img">
-                <h4>Foto Status Terakhir</h4>
-              </div>
             </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <img src="{{ url('assets/img/product/product69.jpg') }}" id="photo" alt="img">
+            <p class="text-center mt-2">Foto terbaru</p>
           </div>
         </div>
       </div>
@@ -144,11 +140,29 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
 
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
+    
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -161,31 +175,24 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
         .then(res => {
           const product = res.data.data.item
 
+          // console.log(product);
+
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
           JsBarcode("#barcode", product.barcode)
 
+          $("#photo").attr("src", product.status_photo && product.status_photo)
+
           $('#category').text(product.category ? product.category : '')
-          $('#segment').text(product.segment ? product.segment : '')
-          $('#module-number').text(product.module ? product.module : '')
+          $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
+          $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf_number ? product.shelf_number : '')
-          $('#quantity').text(product.quantity ? product.quantity : '')
-          $('#nut-bolt').text(product.nut_bolt ? 'Ya' : 'Tidak')
+          $('#shelf-number').text(product.shelf.shelf_name ? product.shelf.shelf_name : '')
           $('#description').text(product.description ? product.description : '')
           $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
@@ -194,15 +201,18 @@
           $('#created-by').text(product.created_by)
           $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#updated-by').text(product.updated_by)
-
-          product.status_logs[0].status_photo && $("#image-status").attr("src", product.status_logs[0].status_photo)
           
           product.status_logs.map((statusLog, i) => {
             $('#status-table').append(
               `
                 <tr>
-                  <td><img class="cursor-pointer" src="${statusLog.status_photo ? statusLog.status_photo : "{{ url('assets/img/product/product1.jpg') }}"}" onclick="previewPhoto('${statusLog.status_photo ? statusLog.status_photo : "{{ url('assets/img/product/product1.jpg') }}"}')" width="40" alt="${statusLog.id + statusLog.status_date}"></td>
+                  <td>
+                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
+                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white"  ${hiddenRole && 'hidden'}>Ubah foto status</a>
+                  </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
+                  <td>${statusLog.shipping_name ? statusLog.shipping_name : ''}</td>
+                  <td>${statusLog.number_plate ? statusLog.number_plate : ''}</td>
                   <td>${statusLog.note ? statusLog.note : ''}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by ? statusLog.created_by : ''}</td>
@@ -214,7 +224,7 @@
           })
 
           product.location_logs.map((locationLog, i) => {
-            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
+            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'  ${hiddenRole && 'hidden'}>Update Lokasi</a>`
 
             $('#location-table').append(
               `
@@ -236,6 +246,45 @@
           console.log(err)
         })
     })
+
+    function detailPhoto(photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10) {
+      const photos = [
+        photo1 !== 'null' ? photo1 : null,
+        photo2 !== 'null' ? photo2 : null,
+        photo3 !== 'null' ? photo3 : null,
+        photo4 !== 'null' ? photo4 : null,
+        photo5 !== 'null' ? photo5 : null,
+        photo6 !== 'null' ? photo6 : null,
+        photo7 !== 'null' ? photo7 : null,
+        photo8 !== 'null' ? photo8 : null,
+        photo9 !== 'null' ? photo9 : null,
+        photo10 !== 'null' ? photo10 : null,
+      ]
+
+
+      const imagesContainer = document.createElement('div')
+      imagesContainer.classList.add('row', 'py-5', 'justify-content-center')
+
+      // Membuat gambar-gambar dalam perulangan
+      for (let i = 0; i < photos.length; i++) {
+        const imageUrl = photos[i] ? photos[i] : "{{ url('assets/img/product/product1.jpg') }}"
+
+        const image = document.createElement('img')
+        image.classList.add('cursor-pointer', 'col-2', 'p-3')
+        image.src = imageUrl
+        image.style.width = '120px'
+        image.onclick = () => previewPhoto(imageUrl)
+
+        imagesContainer.appendChild(image)
+      }
+
+      // Menampilkan gambar-gambar dalam Swal
+      Swal.fire({
+        showConfirmButton: false,
+        html: imagesContainer,
+        width: 600
+      })
+    }
 
     function previewPhoto(url) {
       Swal.fire({

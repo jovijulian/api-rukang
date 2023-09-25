@@ -2,12 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
+use App\Models\Shelf;
 use App\Models\Module;
 use App\Models\Segment;
-use App\Models\StatusLog;
-use App\Models\Description;
-use App\Models\LocationLog;
+use App\Models\StatusProductLog;
+use App\Models\LocationProductLog;
 use App\Http\Resources\ModuleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,23 +26,22 @@ class ProductResource extends JsonResource
             'category' => $this->category,
             'segment_id' => $this->segment_id,
             'segment' => new SegmentResource(Segment::where('id', $this->segment_id)->first()),
+            'segment_place' => $this->segment_place,
             'barcode' => $this->barcode,
             'module_id' => $this->module_id,
             'module' => new ModuleResource(Module::where('id', $this->module_id)->first()),
             'bilah_number' => $this->bilah_number,
             'production_date' => $this->production_date,
-            'shelf_number' => $this->shelf_number,
-            'quantity' => $this->quantity,
-            'nut_bolt' => $this->nut_bolt,
-            'description_id' => $this->description_id,
-            'description' => new DescriptionResource(Description::where('id', $this->description_id)->first()),
+            'shelf_id' => $this->shelf_id,
+            'shelf' => new ShelfResource(Shelf::where('id', $this->shelf_id)->first()),
+            'description' => $this->description,
             'delivery_date' => $this->delivery_date,
             'status_id' => $this->status_id,
             'status' => $this->status,
             'status_photo' => $this->status_photo,
             'note' => $this->note,
-            'status_logs' => StatusLogResource::collection(StatusLog::query()->where('product_id', $this->id)->get()),
-            'location_logs' => LocationLogResource::collection(LocationLog::query()->where('product_id', $this->id)->get()),
+            'status_logs' => StatusProductLogResource::collection(StatusProductLog::query()->where('product_id', $this->id)->orderBy('created_at', 'ASC')->get()),
+            'location_logs' => LocationProductLogResource::collection(LocationProductLog::query()->where('product_id', $this->id)->orderBy('created_at', 'ASC')->get()),
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
             'current_location' => $this->current_location,

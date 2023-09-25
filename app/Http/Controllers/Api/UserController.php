@@ -300,7 +300,7 @@ class UserController extends Controller
         try {
             $model = User::query()->find($id);
             if (empty($model)) {
-                throw new BadRequestHttpException("User tidak ada");
+                throw new \Exception("User tidak ada", 404);
             }
             $single = new UserResource($model);
             return ResponseStd::okSingle($single);
@@ -456,7 +456,7 @@ class UserController extends Controller
         $totalData = User::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', 0)->get();
+            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', '!=', 1)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');

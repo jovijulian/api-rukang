@@ -37,12 +37,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tempat</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="segment-place" class="form-control" placeholder="Masukan tempat segmen" required>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Warna Barcode</label>
                   <div class="col-lg-10">
                     <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
@@ -112,7 +106,6 @@
           .then(res => {
             const data = res.data.data.item
             $('#segment-name').val(data.segment_name)
-            $('#segment-place').val(data.segment_place)
             $('#barcode-color').val(data.barcode_color)
           })
           .catch(err => {

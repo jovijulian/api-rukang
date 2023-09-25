@@ -12,7 +12,7 @@
         <h6>Manajemen Data Kelompok</h6>
       </div>
       <div class="page-btn">
-        <a href="/group/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Kelompok Baru</a>
+        <a href="/group/insert" class="btn btn-added remove-role"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Kelompok Baru</a>
       </div>
     </div>
 
@@ -20,12 +20,6 @@
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
-            {{-- <div class="search-path">
-              <a class="btn btn-filter" id="filter_search">
-                <img src="{{ url('assets/img/icons/filter.svg') }}" alt="img">
-                <span><img src="{{ url('assets/img/icons/closes.svg') }}" alt="img"></span>
-              </a>
-            </div> --}}
             <div class="search-input">
               <a class="btn btn-searchset"><img src="{{ url('assets/img/icons/search-white.svg') }}" alt="img"></a>
             </div>
@@ -47,65 +41,6 @@
             </ul>
           </div>
         </div>
-        {{-- <!-- /Filter -->
-        <div class="card mb-0" id="filter_inputs">
-          <div class="card-body pb-0">
-            <div class="row">
-              <div class="col-lg-12 col-sm-12">
-                <div class="row">
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Product</option>
-                        <option>Macbook pro</option>
-                        <option>Orange</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Category</option>
-                        <option>Computers</option>
-                        <option>Fruits</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Choose Sub Category</option>
-                        <option>Computer</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Brand</option>
-                        <option>N/D</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg col-sm-6 col-12 ">
-                    <div class="form-group">
-                      <select class="select">
-                        <option>Price</option>
-                        <option>150.00</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-lg-1 col-sm-6 col-12">
-                    <div class="form-group">
-                      <a class="btn btn-filters ms-auto"><img src="{{ url('assets/img/icons/search-whites.svg') }}" alt="img"></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /Filter --> --}}
         <div class="table-responsive pb-4">
           <table id="group-table" class="table">
             <thead>
@@ -131,6 +66,15 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
+
+    let hiddenRole = false
+  
+    if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
+
 
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     let config = {
@@ -221,7 +165,7 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                if (currentUser.isAdmin) {
+                if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                   return `
                     <a class="me-3" href="/group/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
@@ -232,7 +176,7 @@
                   `
                 } else {
                   return `
-                    <a class="me-3" href="/group/edit/` + data + `">
+                    <a class="me-3" href="/group/edit/` + data + `" ${hiddenRole && 'hidden'}>
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                   `

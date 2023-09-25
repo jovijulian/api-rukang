@@ -14,12 +14,20 @@ class CheckAdminMiddleware extends Middleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, ...$guards)
+
+    public function handle($request, Closure $next, ...$roleCode)
     {
-        if (auth()->user() && auth()->user()->isAdmin()) {
+        $user = auth()->user();
+        if ($user && in_array($user->isAdmin(), $roleCode)) {
             return $next($request);
         }
-
+        /*
+            Super Admin = 1
+            Admin Produksi = 2
+            Officer Produksi = 3
+            Officer Monitoring = 4
+            Owner = 5
+            */
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 }

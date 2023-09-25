@@ -1,16 +1,19 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DescriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SegmentController;
+use App\Http\Controllers\ShelfController;
 use App\Http\Controllers\ShippingController;
-use App\Http\Controllers\StatusController;
+use App\Http\Controllers\StatusProductController;
+use App\Http\Controllers\StatusToolMaterialController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -57,10 +60,10 @@ Route::controller(SegmentController::class)->group(function () {
     Route::get('segment/edit/{id}', 'edit');
 });
 
-Route::controller(DescriptionController::class)->group(function () {
-    Route::get('description/', 'index');
-    Route::get('description/insert', 'insert');
-    Route::get('description/edit/{id}', 'edit');
+Route::controller(ShelfController::class)->group(function () {
+    Route::get('shelf/', 'index');
+    Route::get('shelf/insert', 'insert');
+    Route::get('shelf/edit/{id}', 'edit');
 });
 
 Route::controller(CategoryController::class)->group(function () {
@@ -69,10 +72,16 @@ Route::controller(CategoryController::class)->group(function () {
     Route::get('category/edit/{id}', 'edit');
 });
 
-Route::controller(StatusController::class)->group(function () {
-    Route::get('status/', 'index');
-    Route::get('status/insert', 'insert');
-    Route::get('status/edit/{id}', 'edit');
+Route::controller(StatusProductController::class)->group(function () {
+    Route::get('status-product/', 'index');
+    Route::get('status-product/insert', 'insert');
+    Route::get('status-product/edit/{id}', 'edit');
+});
+
+Route::controller(StatusToolMaterialController::class)->group(function () {
+    Route::get('status-tool-material/', 'index');
+    Route::get('status-tool-material/insert', 'insert');
+    Route::get('status-tool-material/edit/{id}', 'edit');
 });
 
 Route::controller(ModuleController::class)->group(function () {
@@ -99,5 +108,26 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/insert', 'insert');
     Route::get('product/update-status/{id}', 'updateStatus');
     Route::get('product/edit/{id}', 'edit');
+    Route::get('product/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('product/edit-location/{id}', 'editLocation');
+});
+
+Route::controller(ToolController::class)->group(function () {
+    Route::get('tool/', 'index');
+    Route::get('tool/detail/{id}', 'detail');
+    Route::get('tool/insert', 'insert');
+    Route::get('tool/update-status/{id}', 'updateStatus');
+    Route::get('tool/edit/{id}', 'edit');
+    Route::get('tool/edit-status/{idProduct}/{idStatus}', 'editStatus');
+    Route::get('tool/edit-location/{id}', 'editLocation');
+});
+
+Route::controller(MaterialController::class)->group(function () {
+    Route::get('material/', 'index');
+    Route::get('material/detail/{id}', 'detail');
+    Route::get('material/insert', 'insert');
+    Route::get('material/update-status/{id}', 'updateStatus');
+    Route::get('material/edit-status/{idProduct}/{idStatus}', 'editStatus');
+    Route::get('material/edit/{id}', 'edit');
+    Route::get('material/edit-location/{id}', 'editLocation');
 });
