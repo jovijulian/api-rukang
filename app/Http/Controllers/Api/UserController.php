@@ -456,7 +456,7 @@ class UserController extends Controller
         $totalData = User::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', 0)->get();
+            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', '!=', 1)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
