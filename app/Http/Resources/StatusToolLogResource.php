@@ -30,6 +30,7 @@ class StatusToolLogResource extends JsonResource
             'status_photo7' => $this->status_photo7,
             'status_photo8' => $this->status_photo8,
             'status_photo9' => $this->status_photo9,
+            'status_photo10' => $this->status_photo10,
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
             'number_plate' => $this->number_plate,
