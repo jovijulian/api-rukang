@@ -13,7 +13,7 @@
         <h6>Manajemen data produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/insert" class="btn btn-added"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Tambah produk baru</a>
+        <a href="/product/insert" class="btn btn-added remove-role"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Tambah produk baru</a>
       </div>
     </div>
 
@@ -68,11 +68,32 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+    
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 4) {
+      hiddenRole = true
+    } else if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
 
+    hiddenRole && $('.remove-role').remove()
+
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -87,16 +108,6 @@
 
       // GET DATA
       const table = $('#product-table')
-
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
 
       getData()
@@ -146,14 +157,32 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                return `
-                  <a class="me-3" href="product/detail/` + data + ` ">
-                    <img src="assets/img/icons/eye.svg" alt="img">
-                  </a>
-                  <a class="me-5" href="/product/edit/` + data + `">
-                    <img src="assets/img/icons/edit.svg" alt="img">
-                  </a>
-                `
+                if (currentUser.isAdmin == 1) {
+                  return `
+                    <div class="me-5">
+                      <a class="me-3" href="product/detail/` + data + ` ">
+                        <img src="assets/img/icons/eye.svg" alt="img">
+                      </a>
+                      <a class="me-3" href="/product/edit/` + data + `">
+                        <img src="assets/img/icons/edit.svg" alt="img">
+                      </a>
+                      <a class="me-3" onclick="deleteData('` + data + `')">
+                        <img src="assets/img/icons/delete.svg" alt="img">
+                      </a>
+                    </div>
+                  `                  
+                } else {
+                  return `
+                    <div class="me-5">
+                      <a class="me-3" href="product/detail/` + data + ` ">
+                        <img src="assets/img/icons/eye.svg" alt="img">
+                      </a>
+                      <a class="me-3" href="/product/edit/` + data + `" ${hiddenRole && 'hidden'}>
+                        <img src="assets/img/icons/edit.svg" alt="img">
+                      </a>
+                    </div>
+                  `
+                }
               }
             },
             {data: 'category'},
@@ -186,5 +215,30 @@
         })
       }
     })
+
+    function deleteData(id) {
+      Swal.fire({
+        title: 'Yakin ingin menghapus produk?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Kembali'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#global-loader').show()
+
+          axios.delete(`{{ url('api/v1/product/delete/${id}') }}`, config)
+            .then(res => {
+              sessionStorage.setItem("success", "Produk berhasil dihapus")
+              location.reload()
+            })
+            .catch(err => {
+              $('#global-loader').hide()
+              Swal.fire('Produk gagal dihapus!', '', 'error')
+              console.log(err)
+            })
+        }
+      })
+    }
   </script>
 @endsection

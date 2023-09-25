@@ -88,7 +88,13 @@
         axios.post("{{ url('oauth/token') }}", data, config)
           .then(function(res) {
             const data = res.data.data.item
-            const currentUser = data.user
+            const currentUser = {
+              id: data.user.id,
+              fullname: data.user.fullname,
+              isAdmin: data.user.isAdmin,
+              isActive: data.user.isActive,
+              address: data.user.address,
+            }
             const expiresIn = data.expires_in
             const expirationTime = Date.now() + (expiresIn * 1000)
 

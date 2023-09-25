@@ -12,7 +12,7 @@
         <h6>Manajemen Data Rak</h6>
       </div>
       <div class="page-btn">
-        <a href="/shelf/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Rak Baru</a>
+        <a href="/shelf/insert" class="btn btn-added remove-role"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Rak Baru</a>
       </div>
     </div>
 
@@ -66,6 +66,14 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
+
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
 
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     let config = {
@@ -156,7 +164,7 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                if (currentUser.isAdmin) {
+                if (currentUser.isAdmin == 1) {
                   return `
                     <a class="me-3" href="/shelf/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
@@ -167,7 +175,7 @@
                   `
                 } else {
                   return `
-                    <a class="me-3" href="/shelf/edit/` + data + `">
+                    <a class="me-3" href="/shelf/edit/` + data + `"  ${hiddenRole && 'hidden'}>
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                   `
