@@ -14,8 +14,8 @@
             <h3 class="page-title">Ubah Foto Status</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/product') }}">Produk</a></li>
-              <li class="breadcrumb-item active">Ubah Foto Status Produk</li>
+              <li class="breadcrumb-item"><a href="{{ url('/tool') }}">Alat</a></li>
+              <li class="breadcrumb-item active">Ubah Foto Status Alat</li>
             </ul>
           </div>
         </div>
@@ -96,11 +96,11 @@
       getProduct()
 
       function getProduct() {
-        axios.get("{{ url('api/v1/product/detail/' . $idProduct) }}", config)
+        axios.get("{{ url('api/v1/tool/detail/' . $idProduct) }}", config)
           .then(res => {
             const product = res.data.data.item
-            const status = product.status_logs.find(stat => stat.id === '{{ $idStatus }}')
-            const location = product.location_logs.find(loc => loc.status_log_id === '{{ $idStatus }}')
+            const status = product.status_tool_logs.find(stat => stat.id === '{{ $idStatus }}')
+            const location = product.location_tool_logs.find(loc => loc.status_tool_log_id === '{{ $idStatus }}')
 
             // console.log(location);
           })
@@ -129,15 +129,15 @@
         // console.log(data)
         // return
 
-        axios.post("{{ url('api/v1/product/multiple-image-status/' . $idStatus) }}", data, config)
+        axios.post("{{ url('api/v1/tool/multiple-image-status/' . $idStatus) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
-            sessionStorage.setItem("success", `Status produk berhasil diubah`)
-            window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
+            sessionStorage.setItem("success", `Status alat berhasil diubah`)
+            window.location.href = `{{ url('/tool/detail/${res.data.data.item.tool_id}') }}`
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Status produk gagal diubah', '', 'error')
+            Swal.fire('Status alat gagal diubah', '', 'error')
             console.log(err)
           })
 

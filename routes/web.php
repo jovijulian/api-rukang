@@ -118,6 +118,7 @@ Route::controller(ToolController::class)->group(function () {
     Route::get('tool/insert', 'insert');
     Route::get('tool/update-status/{id}', 'updateStatus');
     Route::get('tool/edit/{id}', 'edit');
+    Route::get('tool/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('tool/edit-location/{id}', 'editLocation');
 });
 
@@ -126,6 +127,7 @@ Route::controller(MaterialController::class)->group(function () {
     Route::get('material/detail/{id}', 'detail');
     Route::get('material/insert', 'insert');
     Route::get('material/update-status/{id}', 'updateStatus');
+    Route::get('material/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('material/edit/{id}', 'edit');
     Route::get('material/edit-location/{id}', 'editLocation');
 });
