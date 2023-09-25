@@ -177,7 +177,7 @@
               orderable: false,
               searchable: false,
               render: function(data) {
-                if (currentUser.isAdmin == 1) {
+                if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                   return `
                     <a class="me-3" href="/status-tool-material/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
