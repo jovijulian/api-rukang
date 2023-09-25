@@ -12,7 +12,7 @@
         <h6>Informasi detail produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added update-status">Update Status Produk</a>
+        <a href="/product/update-status" class="btn btn-added update-status remove-role">Update Status Produk</a>
       </div>
     </div>
     <!-- /add -->
@@ -140,11 +140,29 @@
   </div>
 
   <script>
-    $(document).ready(function() {
-      const currentUser = JSON.parse(localStorage.getItem('current_user'))
-      const tokenType = localStorage.getItem('token_type')
-      const accessToken = localStorage.getItem('access_token')
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
 
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
+    
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+    $(document).ready(function() {
       // NOTIF VERIFY USER
       const success = sessionStorage.getItem("success")
       if (success) {
@@ -157,21 +175,12 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      let config = {
-        headers: {
-          'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `${tokenType} ${accessToken}`
-        }
-      }
 
       axios.get("{{ url('api/v1/product/detail/' . $id) }}", config)
         .then(res => {
           const product = res.data.data.item
 
-          console.log(product);
+          // console.log(product);
 
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
@@ -199,7 +208,7 @@
                 <tr>
                   <td>
                     <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
-                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white">Ubah foto status</a>
+                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white"  ${hiddenRole && 'hidden'}>Ubah foto status</a>
                   </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
                   <td>${statusLog.shipping_name ? statusLog.shipping_name : ''}</td>
@@ -215,7 +224,7 @@
           })
 
           product.location_logs.map((locationLog, i) => {
-            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'>Update Lokasi</a>`
+            const link = `<a href="{{ url('product/edit-location/` + locationLog.status_log_id + `') }}" class='p-2 btn btn-submit text-white'  ${hiddenRole && 'hidden'}>Update Lokasi</a>`
 
             $('#location-table').append(
               `

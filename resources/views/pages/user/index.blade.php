@@ -12,7 +12,7 @@
         <h6>Manajemen Data User</h6>
       </div>
       <div class="page-btn">
-        <a href="/user/insert" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah User Baru</a>
+        <a href="/user/insert" class="btn btn-added remove-role"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah User Baru</a>
       </div>
     </div>
 
@@ -118,6 +118,7 @@
                 <th>Tanggal Lahir</th>
                 <th>Nama Kelompok</th>
                 <th>Aktif</th>
+                <th>Role</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -137,6 +138,16 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
+
+    let hiddenRole = false
+    
+    if (currentUser.isAdmin == 4) {
+      hiddenRole = true
+    } else if (currentUser.isAdmin == 5) {
+      hiddenRole = true
+    }
+
+    hiddenRole && $('.remove-role').remove()
     
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     let config = {
@@ -217,6 +228,24 @@
               data: 'isActive', 
               render: function(data) {
                 return data ? '<span class="badges bg-lightgreen">Aktif</span>' : '<span class="badges bg-lightred">Tidak</span>'
+              }
+            },
+            {
+              data: 'isAdmin',
+              render: function (data) {
+                if (currentUser.isAdmin == 1) {
+                  return 'Admin'
+                } else if (data == 2) {
+                  return 'Admin Produksi'
+                } else if (data == 3) {
+                  return 'Officer Produksi'
+                } else if (data == 4) {
+                  return 'Officer Monitoring'
+                } else if (data == 5) {
+                  return 'Owner'
+                }
+
+                return 'Pegawai'
               }
             },
             {

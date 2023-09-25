@@ -145,7 +145,7 @@
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
             <li><a href="/user" class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>User</span></a></li>
-            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
+            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active verif-role' : 'verif-role' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">
@@ -201,9 +201,19 @@
         // code block
     }
 
+    // Untuk semua user kecuali admin dan owner
     currentUser.isAdmin !== 1 && currentUser.isAdmin !== 5 && $('.user-data').remove()
-    currentUser.isAdmin == 3 && currentUser.isAdmin == 4 && $('.master-data').remove()
-    currentUser.isAdmin == 4 && currentUser.isAdmin == 5 && $('.insert-product').remove()
+
+    // officer produksi
+    currentUser.isAdmin == 3 && $('.master-data').remove()
+
+    // officer monitoring
+    currentUser.isAdmin == 4 && $('.master-data').remove()
+    currentUser.isAdmin == 4 && $('.insert-product').remove()
+
+    // owner
+    currentUser.isAdmin == 5 && $('.insert-product').remove()
+    currentUser.isAdmin == 5 && $('.verif-role').remove()
 
 
     $('#btnFullscreen').on('click', () => {
