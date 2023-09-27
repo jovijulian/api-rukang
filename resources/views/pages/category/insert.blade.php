@@ -33,7 +33,7 @@
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Kategori</label>
                   <div class="col-lg-10">
-                    <input type="text" id="category" class="form-control" placeholder="Masukan kategori" required>
+                    <input type="text" id="category" class="form-control" placeholder="Masukan kategori">
                   </div>
                 </div>
                 <div class="text-end">
@@ -85,8 +85,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Kategori gagal ditambahkan', '', 'error')
-            console.log(err)
+
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Kategori gagal ditambahkan',
+              text: errorMessage
+            })
           })
 
       })

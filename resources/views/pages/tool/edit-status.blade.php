@@ -137,8 +137,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Status alat gagal diubah', '', 'error')
-            console.log(err)
+
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Status alat gagal diubah',
+              text: errorMessage
+            })
           })
 
       })

@@ -37,7 +37,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Kategori</label>
                       <div class="col-lg-9">
-                        <select id="category" class="form-control select">
+                        <select id="category" class="form-control select" disabled>
                           <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
                         </select>
                       </div>
@@ -191,8 +191,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Alat gagal diedit', '', 'error')
-            console.log(err)
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Bahan gagal diubah',
+              text: errorMessage
+            })
           })
       }
 

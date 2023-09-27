@@ -33,10 +33,6 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                    src="{{ url('assets/img/icons/pdf.svg') }}" alt="img"></a>
-              </li>
-              <li>
                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
                     src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
