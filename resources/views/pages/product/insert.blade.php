@@ -300,7 +300,7 @@
       function getCategory() {
         $('#category-product').select2({
           ajax: {
-            url: "{{ url('api/v1/category/index') }}",
+            url: "{{ url('api/v1/category/indexForProduct') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
