@@ -262,4 +262,47 @@ class CategoryController extends Controller
         );
         return json_encode($json_data);
     }
+
+    public function indexForProduct(Request $request)
+    {
+        try {
+            $search_term = $request->input('search');
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
+            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $conditions = '1 = 1';
+            // Jika dari frontend memaksa limit besar.
+            if ($limit > 10) {
+                $limit = 10;
+            }
+            if (empty($search_term)) {
+                $conditions .= " AND (categories.category NOT LIKE '%Alat%' AND categories.category NOT LIKE '%Bahan%')";
+            }
+
+
+            $paginate = Category::query()->select(['categories.*'])
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+
+            $countAll = Category::query()
+                ->count();
+
+            // paging response.
+            $response = CategoryResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
 }
