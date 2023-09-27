@@ -37,7 +37,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Kategori</label>
                       <div class="col-lg-9">
-                        <select id="category" class="form-control select">
+                        <select id="category" class="form-control select" disabled>
                           <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
                         </select>
                       </div>
@@ -195,38 +195,50 @@
       })
 
       function getCategory() {
-        $('#category').select2({
-          minimumResultsForSearch: -1,
-          ajax: {
-            url: "{{ url('api/v1/category/index?search=Alat') }}",
-            headers: config.headers,
-            dataType: 'json',
-            type: "GET",
-            data: function(params) {
-              var query = {
-                search: params.term,
-                page: params.page || 1
-              }
-              return query
-            },
-            processResults: function(data, params) {
-              params.page = params.page || 1
+        axios.get("{{ url('api/v1/category/index?search=Alat') }}", config)
+          .then(res => {
+            const data = res.data.data.items[0]
 
-              return {
-                results: $.map(data.data.items, function(item) {
-                  return {
-                    text: item.category,
-                    id: item.id,
-                  }
-                }),
-                pagination: {
-                    more: data.page_info.last_page != params.page
-                }
-              }
-            },
-            cache: true
-          }
-        })
+            console.log(data)
+
+            $("#category").append(`<option value=${data.id} selected>${data.category}</option>`)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+        // $('#category').select2({
+        //   minimumResultsForSearch: -1,
+        //   ajax: {
+        //     url: "{{ url('api/v1/category/index?search=Alat') }}",
+        //     headers: config.headers,
+        //     dataType: 'json',
+        //     type: "GET",
+        //     data: function(params) {
+        //       var query = {
+        //         search: params.term,
+        //         page: params.page || 1
+        //       }
+        //       return query
+        //     },
+        //     processResults: function(data, params) {
+        //       params.page = params.page || 1
+
+        //       return {
+        //         results: $.map(data.data.items, function(item) {
+        //           return {
+        //             text: item.category,
+        //             id: item.id,
+        //           }
+        //         }),
+        //         pagination: {
+        //             more: data.page_info.last_page != params.page
+        //         }
+        //       }
+        //     },
+        //     cache: true
+        //   }
+        // })
       }
 
       function getStatus() {
@@ -359,8 +371,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Alat gagal ditambahkan', '', 'error')
-            console.log(err)
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Alat gagal ditambahkan',
+              text: errorMessage
+            })
           })
       }
 
