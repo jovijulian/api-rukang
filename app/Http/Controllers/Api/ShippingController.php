@@ -85,8 +85,8 @@ class ShippingController extends Controller
         // input data shipping
         $shippingData->shipping_name = $data['shipping_name'];
         $shippingData->created_at = $timeNow;
-        $shippingData->updated_at = $timeNow;
         $shippingData->created_by = auth()->user()->fullname;
+        $shippingData->updated_at = null;
         $shippingData->updated_by = null;
 
         // save shipping

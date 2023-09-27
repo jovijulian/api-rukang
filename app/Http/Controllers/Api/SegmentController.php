@@ -86,7 +86,7 @@ class SegmentController extends Controller
         $segment->segment_name = $data['segment_name'];
         $segment->barcode_color = $data['barcode_color'];
         $segment->created_at = $timeNow;
-        $segment->updated_at = $timeNow;
+        $segment->updated_at = null;
         $segment->created_by = auth()->user()->fullname;
         $segment->updated_by = null;
 

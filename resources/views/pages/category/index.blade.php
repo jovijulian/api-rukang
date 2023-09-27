@@ -33,10 +33,6 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                    src="{{ url('assets/img/icons/pdf.svg') }}" alt="img"></a>
-              </li>
-              <li>
                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
                     src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
@@ -233,9 +229,6 @@
                   return `
                     <a class="me-3" href="/category/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
-                    </a>
-                    <a class="me-3" onclick="deleteData('` + data + `')">
-                      <img src="assets/img/icons/delete.svg" alt="img">
                     </a>
                   `
                 } else {

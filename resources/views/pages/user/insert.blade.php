@@ -39,7 +39,7 @@
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Kelompok</label>
                   <div class="col-lg-10">
-                    <select id="group" class="form-control select">
+                    <select id="group" class="form-control select" required>
                       <option value="1" selected="selected" disabled>Pilih kelompok anda</option>
                     </select>
                   </div>
@@ -47,7 +47,7 @@
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Role</label>
                   <div class="col-lg-10">
-                    <select id="role" class="form-control select">
+                    <select id="role" class="form-control select" required>
                       <option selected="selected" disabled>Pilih role anda</option>
                       <option value="1">Admin</option>
                       <option value="2">Admin Produksi</option>
@@ -195,8 +195,24 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('User gagal ditambahkan', '', 'error')
-            console.log(err)
+
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Interbal server error'
+            }
+
+
+            Swal.fire({
+              icon: 'error',
+              title: 'User gagal ditambahkan',
+              text: errorMessage
+            })
           })
 
       })

@@ -28,9 +28,6 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="assets/img/icons/pdf.svg" alt="img"></a>
-              </li>
-              <li>
                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
               </li>
               <li>
@@ -48,11 +45,11 @@
                 <th>Action</th>
                 <th>Kategori</th>
                 <th>Segmen</th>
-                <th>Nomor Module</th>
+                <th>Nomor Modul</th>
                 <th>Nomor Bilah</th>
                 <th>Nomor Rak</th>
                 <th>Tanggal Produksi</th>
-                <th>Deskripsi</th>
+                <th>Keterangan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
                 <th>Dibuat Pada</th>

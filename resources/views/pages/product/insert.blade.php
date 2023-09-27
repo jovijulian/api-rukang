@@ -300,7 +300,7 @@
       function getCategory() {
         $('#category-product').select2({
           ajax: {
-            url: "{{ url('api/v1/category/index') }}",
+            url: "{{ url('api/v1/category/indexForProduct') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -602,8 +602,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Produk gagal ditambahkan', '', 'error')
-            console.log(err)
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Produk gagal ditambahkan',
+              text: errorMessage
+            })
           })
       }
 

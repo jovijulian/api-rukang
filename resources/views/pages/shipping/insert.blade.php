@@ -84,8 +84,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Ekspedisi gagal ditambahkan', '', 'error')
-            console.log(err)
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Ekspedisi gagal ditambahkan',
+              text: errorMessage
+            })
           })
 
       })

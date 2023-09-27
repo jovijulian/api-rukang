@@ -131,7 +131,7 @@ class ProductController extends Controller
         $productData->group_name = auth()->user()->group_name;
 
         $productData->created_at = $timeNow;
-        $productData->updated_at = $timeNow;
+        $productData->updated_at = null;
         $productData->created_by = auth()->user()->fullname;
         $productData->updated_by = null;
 
@@ -150,7 +150,7 @@ class ProductController extends Controller
         $statusLogData->shipping_name = $productData->shipping_name;
         $statusLogData->number_plate = $data['number_plate'];
         $statusLogData->created_at = $timeNow;
-        $statusLogData->updated_at = $timeNow;
+        $statusLogData->updated_at = null;
         $statusLogData->created_by = auth()->user()->fullname;
         $statusLogData->updated_by = null;
 
@@ -164,7 +164,7 @@ class ProductController extends Controller
         $locationLogData->product_id = $productData->id;
         $locationLogData->current_location = $productData->current_location;
         $locationLogData->created_at = $timeNow;
-        $locationLogData->updated_at = $timeNow;
+        $locationLogData->updated_at = null;
         $locationLogData->created_by = auth()->user()->fullname;
         $locationLogData->updated_by = null;
 
@@ -505,8 +505,8 @@ class ProductController extends Controller
         $statusLog->number_plate = $data['number_plate'];
         $statusLog->created_at = $timeNow;
         $statusLog->created_by = auth()->user()->fullname;
-        $statusLog->updated_at = $timeNow;
-        $statusLog->updated_by = auth()->user()->fullname;
+        $statusLog->updated_at = null;
+        $statusLog->updated_by = null;
 
         //Save
         $statusLog->save();
@@ -526,10 +526,10 @@ class ProductController extends Controller
         $locationLog->status_product_log_id = $statusLog->id;
         $locationLog->product_id = $id;
         $locationLog->current_location = $data['current_location'];
-        $locationLog->updated_at = $timeNow;
-        $statusLog->created_at = $timeNow;
-        $statusLog->created_by = auth()->user()->fullname;
-        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->created_at = $timeNow;
+        $locationLog->created_by = auth()->user()->fullname;
+        $locationLog->updated_at = null;
+        $locationLog->updated_by = null;
         $locationLog->save();
 
         return $statusLog;

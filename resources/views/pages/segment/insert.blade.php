@@ -33,7 +33,7 @@
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Nama</label>
                   <div class="col-lg-10">
-                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen" required>
+                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -92,8 +92,23 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            Swal.fire('Segmen gagal ditambahkan', '', 'error')
-            console.log(err)
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Segmen gagal ditambahkan',
+              text: errorMessage
+            })
           })
 
       })

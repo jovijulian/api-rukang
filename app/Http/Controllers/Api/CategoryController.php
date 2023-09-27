@@ -71,7 +71,7 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category' => ['required', 'string', 'min:1', 'max:20'],
+            'category' => ['required', 'string', 'min:1', 'max:20', 'unique:categories,category,NULL,id',],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -86,6 +86,7 @@ class CategoryController extends Controller
         $categoryData->category = $data['category'];
         $categoryData->created_at = $timeNow;
         $categoryData->created_by = auth()->user()->fullname;
+        $categoryData->updated_at = null;
         $categoryData->updated_by = null;
 
         // save category
@@ -217,53 +218,6 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    protected function delete($id)
-    {
-
-        $category = Category::find($id);
-        if ($category == null) {
-            throw new \Exception("Kategori tidak ada", 404);
-        }
-
-        $product = Product::query()->where('category_id', $category->id)->first();
-
-        if ($product != null) {
-            return throw new \Exception("Data Kategori digunakan oleh Produk", 409);
-        }
-
-        $category->deleted_by = auth()->user()->fullname;
-        $category->save();
-
-        $category->delete();
-
-        return $category;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Kategori berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
-
     public function datatable(Request $request)
     {
         //SETUP
@@ -308,5 +262,48 @@ class CategoryController extends Controller
             "data"            => $data
         );
         return json_encode($json_data);
+    }
+
+    public function indexForProduct(Request $request)
+    {
+        try {
+            $search_term = $request->input('search');
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
+            $sort = $request->has('sort') ? $request->input('sort') : 'id';
+            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $conditions = '1 = 1';
+            // Jika dari frontend memaksa limit besar.
+            if ($limit > 10) {
+                $limit = 10;
+            }
+            if (empty($search_term)) {
+                $conditions .= " AND (categories.category NOT LIKE '%Alat%' AND categories.category NOT LIKE '%Bahan%')";
+            }
+
+
+            $paginate = Category::query()->select(['categories.*'])
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+
+            $countAll = Category::query()
+                ->count();
+
+            // paging response.
+            $response = CategoryResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
     }
 }

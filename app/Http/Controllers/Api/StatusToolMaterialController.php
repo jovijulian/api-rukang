@@ -87,7 +87,7 @@ class StatusToolMaterialController extends Controller
         $statusToolMaterialData->status = $data['status'];
         $statusToolMaterialData->need_expedition = $data['need_expedition'];
         $statusToolMaterialData->created_at = $timeNow;
-        $statusToolMaterialData->updated_at = $timeNow;
+        $statusToolMaterialData->updated_at = null;
         $statusToolMaterialData->created_by = auth()->user()->fullname;
         $statusToolMaterialData->updated_by = null;
 
