@@ -86,6 +86,7 @@ class ModuleController extends Controller
         $moduleData->module_number = $data['module_number'];
         $moduleData->created_at = $timeNow;
         $moduleData->created_by = auth()->user()->fullname;
+        $moduleData->updated_at = null;
         $moduleData->updated_by = null;
 
         // save module

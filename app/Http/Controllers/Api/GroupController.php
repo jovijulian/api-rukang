@@ -87,7 +87,7 @@ class GroupController extends Controller
         // input data process
         $groupData->group_name = $data['group_name'];
         $groupData->created_at = $timeNow;
-        $groupData->updated_at = $timeNow;
+        $groupData->updated_at = null;
         $groupData->created_by = auth()->user()->fullname;
         $groupData->updated_by = null;
 

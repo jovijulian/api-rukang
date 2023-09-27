@@ -86,6 +86,7 @@ class CategoryController extends Controller
         $categoryData->category = $data['category'];
         $categoryData->created_at = $timeNow;
         $categoryData->created_by = auth()->user()->fullname;
+        $categoryData->updated_at = null;
         $categoryData->updated_by = null;
 
         // save category

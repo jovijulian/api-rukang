@@ -87,8 +87,8 @@ class StatusProductController extends Controller
         $statusProductData->status = $data['status'];
         $statusProductData->need_expedition = $data['need_expedition'];
         $statusProductData->created_at = $timeNow;
-        $statusProductData->updated_at = $timeNow;
         $statusProductData->created_by = auth()->user()->fullname;
+        $statusProductData->updated_at = null;
         $statusProductData->updated_by = null;
 
         // save status

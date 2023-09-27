@@ -112,7 +112,7 @@ class MaterialController extends Controller
         $materialData->group_name = auth()->user()->group_name;
 
         $materialData->created_at = $timeNow;
-        $materialData->updated_at = $timeNow;
+        $materialData->updated_at = null;
         $materialData->created_by = auth()->user()->fullname;
         $materialData->updated_by = null;
 
@@ -131,7 +131,7 @@ class MaterialController extends Controller
         $statusLogData->shipping_name = $materialData->shipping_name;
         $statusLogData->number_plate =  $data['number_plate'];
         $statusLogData->created_at = $timeNow;
-        $statusLogData->updated_at = $timeNow;
+        $statusLogData->updated_at = null;
         $statusLogData->created_by = auth()->user()->fullname;
         $statusLogData->updated_by = null;
 
@@ -145,7 +145,7 @@ class MaterialController extends Controller
         $locationLogData->material_id = $materialData->id;
         $locationLogData->current_location = $materialData->current_location;
         $locationLogData->created_at = $timeNow;
-        $locationLogData->updated_at = $timeNow;
+        $locationLogData->updated_at = null;
         $locationLogData->created_by = auth()->user()->fullname;
         $locationLogData->updated_by = null;
 
@@ -462,8 +462,8 @@ class MaterialController extends Controller
         $statusLog->number_plate = $data['number_plate'];
         $statusLog->created_at = $timeNow;
         $statusLog->created_by = auth()->user()->fullname;
-        $statusLog->updated_at = $timeNow;
-        $statusLog->updated_by = auth()->user()->fullname;
+        $statusLog->updated_at = null;
+        $statusLog->updated_by = null;
 
         //Save
         $statusLog->save();
@@ -483,8 +483,8 @@ class MaterialController extends Controller
         $locationLog->current_location = $data['current_location'];
         $locationLog->created_at = $timeNow;
         $locationLog->created_by = auth()->user()->fullname;
-        $locationLog->updated_at = $timeNow;
-        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->updated_at = null;
+        $locationLog->updated_by = null;
         $locationLog->save();
 
         return $statusLog;

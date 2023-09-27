@@ -86,6 +86,7 @@ class ShelfController extends Controller
         $shelfData->shelf_name = $data['shelf_name'];
         $shelfData->created_at = $timeNow;
         $shelfData->created_by = auth()->user()->fullname;
+        $shelfData->updated_at = null;
         $shelfData->updated_by = null;
 
         // save category

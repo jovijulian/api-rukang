@@ -118,7 +118,7 @@ class ToolController extends Controller
         $toolData->group_name = auth()->user()->group_name;
 
         $toolData->created_at = $timeNow;
-        $toolData->updated_at = $timeNow;
+        $toolData->updated_at = null;
         $toolData->created_by = auth()->user()->fullname;
         $toolData->updated_by = null;
 
@@ -137,7 +137,7 @@ class ToolController extends Controller
         $statusLogData->shipping_name = $toolData->shipping_name;
         $statusLogData->number_plate =  $data['number_plate'];
         $statusLogData->created_at = $timeNow;
-        $statusLogData->updated_at = $timeNow;
+        $statusLogData->updated_at = null;
         $statusLogData->created_by = auth()->user()->fullname;
         $statusLogData->updated_by = null;
 
@@ -151,7 +151,7 @@ class ToolController extends Controller
         $locationLogData->tool_id = $toolData->id;
         $locationLogData->current_location = $toolData->current_location;
         $locationLogData->created_at = $timeNow;
-        $locationLogData->updated_at = $timeNow;
+        $locationLogData->updated_at = null;
         $locationLogData->created_by = auth()->user()->fullname;
         $locationLogData->updated_by = null;
 
@@ -474,8 +474,8 @@ class ToolController extends Controller
         $statusLog->number_plate = $data['number_plate'];
         $statusLog->created_at = $timeNow;
         $statusLog->created_by = auth()->user()->fullname;
-        $statusLog->updated_at = $timeNow;
-        $statusLog->updated_by = auth()->user()->fullname;
+        $statusLog->updated_at = null;
+        $statusLog->updated_by = null;
 
         //Save
         $statusLog->save();
@@ -495,8 +495,8 @@ class ToolController extends Controller
         $locationLog->current_location = $data['current_location'];
         $locationLog->created_at = $timeNow;
         $locationLog->created_by = auth()->user()->fullname;
-        $locationLog->updated_at = $timeNow;
-        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->updated_at = null;
+        $locationLog->updated_by = null;
         $locationLog->save();
 
         return $statusLog;
