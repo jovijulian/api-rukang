@@ -178,8 +178,9 @@
 
       function getCategory() {
         $('#category').select2({
+          minimumResultsForSearch: -1,
           ajax: {
-            url: "{{ url('api/v1/category/index') }}",
+            url: "{{ url('api/v1/category/index?search=Bahan') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",

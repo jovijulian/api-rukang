@@ -43,7 +43,7 @@
                   <h6 id="shelf-number"></h6>
                 </li>
                 <li>
-                  <h4>Deskripsi</h4>
+                  <h4>Keterangan</h4>
                   <h6 id="description"></h6>
                 </li>
                 <li>

@@ -48,11 +48,11 @@
                 <th>Action</th>
                 <th>Kategori</th>
                 <th>Segmen</th>
-                <th>Nomor Module</th>
+                <th>Nomor Modul</th>
                 <th>Nomor Bilah</th>
                 <th>Nomor Rak</th>
                 <th>Tanggal Produksi</th>
-                <th>Deskripsi</th>
+                <th>Keterangan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
                 <th>Dibuat Pada</th>
