@@ -217,53 +217,6 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    protected function delete($id)
-    {
-
-        $category = Category::find($id);
-        if ($category == null) {
-            throw new \Exception("Kategori tidak ada", 404);
-        }
-
-        $product = Product::query()->where('category_id', $category->id)->first();
-
-        if ($product != null) {
-            return throw new \Exception("Data Kategori digunakan oleh Produk", 409);
-        }
-
-        $category->deleted_by = auth()->user()->fullname;
-        $category->save();
-
-        $category->delete();
-
-        return $category;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Kategori berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
-
     public function datatable(Request $request)
     {
         //SETUP
