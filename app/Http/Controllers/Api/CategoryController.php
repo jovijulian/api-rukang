@@ -71,7 +71,7 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category' => ['required', 'string', 'min:1', 'max:20'],
+            'category' => ['required', 'string', 'min:1', 'max:20', 'unique:categories,category,NULL,id',],
         ];
 
         return Validator::make($data, $arrayValidator);
