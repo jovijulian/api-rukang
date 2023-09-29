@@ -9,16 +9,29 @@
     <div class="row">
       <div class="col-lg-3 col-sm-6 col-12">
         <div class="dash-widget">
-          <div class="dash-widgetimg">
-            <span><i data-feather="plus-square"></i></span>            
-          </div>
           <div class="dash-widgetcontent">
-            <h5><span class="counters" data-count="30.00"></span></h5>
+            <h3 style="font-weight: 700"><span class="counters" data-count="30.00"></span></h3>
             <h6>Total Produk Dikirim</h6>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetcontent">
+            <h3 style="font-weight: 700"><span class="counters" data-count="60.00"></span></h3>
+            <h6>Total Produk Selesai Diproduksi</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetcontent">
+            <h3 style="font-weight: 700"><span class="counters" data-count="15.00"></span></h3>
+            <h6>Total Produk Dikirim</h6>
+          </div>
+        </div>
+      </div>
+      {{-- <div class="col-lg-3 col-sm-6 col-12">
         <div class="dash-widget dash1">
           <div class="dash-widgetimg">
             <span><i data-feather="plus-square"></i></span>            
@@ -39,7 +52,7 @@
             <h6>Total Sale Amount</h6>
           </div>
         </div>
-      </div>
+      </div> --}}
       {{-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
         <div class="dash-count">
           <div class="dash-counts">
