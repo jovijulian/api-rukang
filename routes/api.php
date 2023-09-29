@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\SeederProductController;
@@ -181,6 +182,11 @@ Route::prefix('v1')->group(function () {
             Route::get('/create-module', 'storeModule');
             Route::get('/create-segment', 'storeSegment');
             Route::get('/create-product/segment/{id}', 'storeProduct');
+        });
+    });
+    Route::prefix('dashboard')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/index-status', 'countStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
 });
