@@ -6,52 +6,32 @@
 
 @section('content')
   <div class="content">
-    <div class="row">
+    <div class="row" id="status-product">
+      {{-- <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetcontent">
+            <h3 style="font-weight: 700"><span class="counters" data-count="30.00"></span></h3>
+            <h6>Total Produk Dikirim</h6>
+          </div>
+        </div>
+      </div>
       <div class="col-lg-3 col-sm-6 col-12">
         <div class="dash-widget">
-          <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash1.svg" alt="img"></span>
-          </div>
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="307144.00">$307,144.00</span></h5>
-            <h6>Total Purchase Due</h6>
+            <h3 style="font-weight: 700"><span class="counters" data-count="60.00"></span></h3>
+            <h6>Total Produk Selesai Diproduksi</h6>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash1">
-          <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash2.svg" alt="img"></span>
-          </div>
+        <div class="dash-widget">
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
-            <h6>Total Sales Due</h6>
+            <h3 style="font-weight: 700"><span class="counters" data-count="15.00"></span></h3>
+            <h6>Total Produk Dikirim</h6>
           </div>
         </div>
-      </div>
-      <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash2">
-          <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash3.svg" alt="img"></span>
-          </div>
-          <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="385656.50">385,656.50</span></h5>
-            <h6>Total Sale Amount</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash3">
-          <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash4.svg" alt="img"></span>
-          </div>
-          <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="40000.00">400.00</span></h5>
-            <h6>Total Sale Amount</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+      </div> --}}
+      {{-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
         <div class="dash-count">
           <div class="dash-counts">
             <h4>100</h4>
@@ -94,7 +74,71 @@
             <i data-feather="file"></i>
           </div>
         </div>
-      </div>
+      </div> --}}
     </div>
   </div>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem('current_user'))
+    const tokenType = localStorage.getItem('token_type')
+    const accessToken = localStorage.getItem('access_token')
+
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    let config = {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `${tokenType} ${accessToken}`
+      }
+    }
+
+
+    $(document).ready(function() {
+      axios.get("{{ url('api/v1/dashboard/index-status') }}", config)
+        .then(res => {
+          const datas = res.data.data
+          
+          
+          datas.map(data => {
+            const count = data.total + .00
+            const el = `
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="dash-widget">
+                  <div class="dash-widgetcontent">
+                    <h3 style="font-weight: 700"><span class="counters" data-count="${count}">${data.total}</span></h3>
+                    <h6>${data.title}</h6>
+                  </div>
+                </div>
+              </div>
+            `
+
+            $('#status-product').append(el)
+          })
+
+          $('.counters').each(function() {
+            var $this = $(this),
+                countTo = parseFloat($this.attr('data-count'))
+
+            $({ countNum: 0 }).animate({
+              countNum: countTo
+            },
+            {
+              duration: 2000,
+              easing: 'linear',
+              step: function() {
+                $this.text(Math.floor(this.countNum))
+              },
+              complete: function() {
+                $this.text(Math.floor(countTo))
+              }
+            })
+          })
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    })
+  </script>
 @endsection

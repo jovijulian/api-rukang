@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\MaterialExport;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Material;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LocationMaterialLog;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MaterialResource;
@@ -714,5 +716,11 @@ class MaterialController extends Controller
 
 
         return $statusLog;
+    }
+
+    public function export()
+    {
+        set_time_limit(300);
+        return Excel::download(new MaterialExport, 'laporan-bahan-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
 }

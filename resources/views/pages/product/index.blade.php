@@ -28,7 +28,7 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
+                <a onclick="toExcel()" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
               </li>
               <li>
                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg" alt="img"></a>
@@ -156,7 +156,7 @@
               render: function(data) {
                 if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                   return `
-                    <div class="me-5">
+                    <div class="ms-2 mb-2">
                       <a class="me-3" href="product/detail/` + data + ` ">
                         <img src="assets/img/icons/eye.svg" alt="img">
                       </a>
@@ -167,10 +167,12 @@
                         <img src="assets/img/icons/delete.svg" alt="img">
                       </a>
                     </div>
+                    <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `">Update Status</a>
+
                   `                  
                 } else {
                   return `
-                    <div class="me-5">
+                    <div class="ms-2 mb-2">
                       <a class="me-3" href="product/detail/` + data + ` ">
                         <img src="assets/img/icons/eye.svg" alt="img">
                       </a>
@@ -178,6 +180,7 @@
                         <img src="assets/img/icons/edit.svg" alt="img">
                       </a>
                     </div>
+                    <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}>Update Status</a>
                   `
                 }
               }
@@ -237,5 +240,69 @@
         }
       })
     }
+
+    function toExcel() {
+      Swal.fire({
+        // title: 'Pilih Segmen',
+        // icon: 'question',
+        padding: '3em',
+        html:
+          `
+            <select id="segment-product" class="form-control select text-start">
+              <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
+            </select>
+            <a href="{{ url('api/v1/product/report-product') }}" id="export-excel" class="w-100 mt-3 btn btn btn-submit">Eksport Segmen</a>
+          `,
+        // showCancelButton: true,
+        showConfirmButton: false,
+      })
+
+      getSegment()
+
+      function getSegment() {
+        $('#segment-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/segment/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              segments = data.data.items
+
+              $('#mySelect2').append(new Option('Semua Data', 0, false, false))
+
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.segment_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true,
+          }
+        })
+
+        $('#segment-product').on('change', () => {
+          const id = $('#segment-product').val()
+          const url = `{{ url('api/v1/product/report-product') }}?segment=${id}`
+          $('#export-excel').attr('href', url);
+        })
+      }
+    }
+
   </script>
 @endsection
