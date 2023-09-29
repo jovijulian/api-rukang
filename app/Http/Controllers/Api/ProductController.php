@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\ProductExport;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Status;
@@ -16,6 +17,7 @@ use App\Models\LocationProductLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -766,5 +768,11 @@ class ProductController extends Controller
 
 
         return $statusLog;
+    }
+
+    public function export()
+    {
+        set_time_limit(300);
+        return Excel::download(new ProductExport, 'products.xlsx');
     }
 }
