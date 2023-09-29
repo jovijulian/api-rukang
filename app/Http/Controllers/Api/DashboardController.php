@@ -30,21 +30,23 @@ class DashboardController extends Controller
         $perbaikan = Product::where('status_id', 23)->count();
         $pemasangan = Product::where('status_id', 24)->count();
         $belumDiproduksi = Product::where('status_id', 25)->count();
+        $data = [
+            (object)['title' => 'Belum Diproduksi', 'total' => $belumDiproduksi],
+            (object)['title' => 'Selesai Produksi', 'total' => $selesaiProduksi],
+            (object)['title' => 'Pengecekan', 'total' => $pengecekan],
+            (object)['title' => 'Siap Kirim', 'total' => $siapKirim],
+            (object)['title' => 'Pengiriman', 'total' => $pengiriman],
+            (object)['title' => 'Diterima', 'total' => $diterima],
+            (object)['title' => 'Disimpan', 'total' => $disimpan],
+            (object)['title' => 'Perakitan', 'total' => $perakitan],
+            (object)['title' => 'Perbaikan', 'total' => $perbaikan],
+            (object)['title' => 'Pemasangan', 'total' => $pemasangan],
+
+        ];
         return response()->json([
             'status' => 'success',
             'message' => 'Jumlah produk berdasarkan status:',
-            'data' => [
-                'belum_diproduksi' => $belumDiproduksi,
-                'selesai_produksi' => $selesaiProduksi,
-                'pengecekan' => $pengecekan,
-                'siap_kirim' => $siapKirim,
-                'pengiriman' => $pengiriman,
-                'diterima' => $diterima,
-                'disimpan' => $disimpan,
-                'perakitan' => $perakitan,
-                'perbaikan' => $perbaikan,
-                'pemasangan' => $pemasangan,
-            ],
+            'data' => $data,
         ], 200);
     }
 }
