@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\MaterialController;
+use App\Http\Controllers\Api\SeederProductController;
 use App\Http\Controllers\Api\ShelfController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\StatusProductController;
@@ -173,6 +174,13 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+        });
+    });
+    Route::prefix('seeder-product')->group(function () {
+        Route::controller(SeederProductController::class)->group(function () {
+            Route::get('/create-module', 'storeModule');
+            Route::get('/create-segment', 'storeSegment');
+            Route::get('/create-product/segment/{id}', 'storeProduct');
         });
     });
 });
