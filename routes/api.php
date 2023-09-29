@@ -163,6 +163,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::get('/report-tool', 'export');
         });
     });
     Route::prefix('material')->group(function () {
@@ -176,6 +177,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::get('/report-material', 'export');
         });
     });
     Route::prefix('seeder-product')->group(function () {

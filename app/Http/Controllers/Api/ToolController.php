@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\ToolExport;
 use Carbon\Carbon;
 use App\Models\Tool;
 use Ramsey\Uuid\Uuid;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ToolResource;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -729,5 +731,11 @@ class ToolController extends Controller
 
 
         return $statusLog;
+    }
+
+    public function export()
+    {
+        set_time_limit(300);
+        return Excel::download(new ToolExport, 'laporan-alat-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
 }
