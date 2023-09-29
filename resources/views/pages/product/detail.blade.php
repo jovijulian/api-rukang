@@ -192,7 +192,7 @@
           $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
           $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf.shelf_name ? product.shelf.shelf_name : '')
+          $('#shelf-number').text(product.shelf ? product.shelf : '')
           $('#description').text(product.description ? product.description : '')
           $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')

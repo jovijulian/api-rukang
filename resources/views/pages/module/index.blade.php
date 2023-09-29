@@ -33,12 +33,10 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                    src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel" onclick="toExcel()"><img src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                    src="{{ url('assets/img/icons/printer.svg') }}" alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="{{ url('assets/img/icons/printer.svg') }}" alt="img"></a>
               </li>
             </ul>
           </div>
@@ -203,7 +201,7 @@
               orderable: false,
               searchable: false,
               render: function (data, type, row, meta) {
-                return meta.row + meta.settings._iDisplayStart + 1;
+                return meta.row + meta.settings._iDisplayStart + 1
               },
             },
             {data: 'module_number'},
@@ -271,6 +269,88 @@
             })
         }
       })
+    }
+
+    function toExcel() {
+      $('#global-loader').show()
+
+      let page = 1
+      let datas = []
+
+      function fetchData() {
+        axios.get(`{{ url('api/v1/module/index?page=${page}') }}`, config)
+          .then(res => {
+            // console.log(res.data.data.items)
+            datas = datas.concat(res.data.data.items)
+
+            if (res.data.page_info.next_page_url) {
+              page++
+              fetchData()
+            } else {
+              const rows = datas.map(row => ({
+                module_number: row.module_number,
+                created_at: new Date(row.created_at).toISOString().split('T')[0].split('-').reverse().join('-')
+              }))
+
+              const date = new Date().toISOString().split('T')[0].split('-').reverse().join('-')
+
+              let wb = new ExcelJS.Workbook()
+              let workbookName = `laporan-modul-${date}.xlsx`
+              let worksheetName = "Modul"
+              let ws = wb.addWorksheet(worksheetName)
+
+              ws.columns = [
+                { 
+                  key: "module_number", 
+                  header: "Nomor Modul", 
+                  width: 20,
+                  style: {
+                    alignment: { horizontal: "center" }
+                  }
+                },
+                { 
+                  key: "created_at", 
+                  header: "Dibuat Pada", 
+                  width: 30,
+                  style: {
+                    alignment: { horizontal: "center" }
+                  }
+                },
+              ]
+
+              ws.addRows(rows)
+              
+              ws.getRow(1).font = { bold: true }
+              ws.eachRow({ includeEmpty: false }, function(row, rowNumber) {
+                row.eachCell(function(cell) {
+                  cell.border = { 
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' },
+                  }
+                })
+              })
+
+              wb.xlsx.writeBuffer()
+                .then(function(buffer) {
+                  $('#global-loader').hide()
+
+                  saveAs(
+                    new Blob([buffer], { type: "application/octet-stream" }),
+                    workbookName
+                    )
+
+                  Swal.fire('Berhasil', 'Laporan modul berhasil didownload', 'success')
+                })
+
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+      fetchData()
     }
   </script>
 @endsection
