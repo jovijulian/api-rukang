@@ -39,3 +39,6 @@
 <script src="{{ url('assets/js/script.js') }}"></script>
 
 
+{{-- ExcelJS --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.1.1/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>

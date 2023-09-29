@@ -10,22 +10,22 @@
       <div class="col-lg-3 col-sm-6 col-12">
         <div class="dash-widget">
           <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash1.svg" alt="img"></span>
+            <span><i data-feather="plus-square"></i></span>            
           </div>
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="307144.00">$307,144.00</span></h5>
-            <h6>Total Purchase Due</h6>
+            <h5><span class="counters" data-count="30.00"></span></h5>
+            <h6>Total Produk Dikirim</h6>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-sm-6 col-12">
         <div class="dash-widget dash1">
           <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash2.svg" alt="img"></span>
+            <span><i data-feather="plus-square"></i></span>            
           </div>
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
-            <h6>Total Sales Due</h6>
+            <h5><span class="counters" data-count="12.00"></span></h5>
+            <h6>Total Produk Selesai Diproduksi</h6>
           </div>
         </div>
       </div>
@@ -40,18 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash3">
-          <div class="dash-widgetimg">
-            <span><img src="assets/img/icons/dash4.svg" alt="img"></span>
-          </div>
-          <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="40000.00">400.00</span></h5>
-            <h6>Total Sale Amount</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+      {{-- <div class="col-lg-3 col-sm-6 col-12 d-flex">
         <div class="dash-count">
           <div class="dash-counts">
             <h4>100</h4>
@@ -94,7 +83,7 @@
             <i data-feather="file"></i>
           </div>
         </div>
-      </div>
+      </div> --}}
     </div>
   </div>
 @endsection
