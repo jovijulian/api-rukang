@@ -17,6 +17,10 @@ class ProductExport implements FromCollection
 
     public function collection()
     {
-        return Product::where('segment_id', $this->segment)->get();
+        if ($this->segment != null) {
+            return Product::where('segment_id', $this->segment)->get();
+        } else {
+            return Product::all();
+        }
     }
 }

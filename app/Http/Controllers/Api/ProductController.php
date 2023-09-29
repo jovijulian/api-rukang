@@ -773,7 +773,7 @@ class ProductController extends Controller
     public function export(Request $request)
     {
         set_time_limit(300);
-        $segment = $request->input('segment');
+        $segment = $request->has('segment') ? $request->input('segment') : null;
         return Excel::download(new ProductExport($segment), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
 }
