@@ -770,9 +770,10 @@ class ProductController extends Controller
         return $statusLog;
     }
 
-    public function export()
+    public function export(Request $request)
     {
         set_time_limit(300);
-        return Excel::download(new ProductExport, 'products.xlsx');
+        $segment = $request->input('segment');
+        return Excel::download(new ProductExport($segment), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
 }
