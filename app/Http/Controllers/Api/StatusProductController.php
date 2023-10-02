@@ -226,48 +226,48 @@ class StatusProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $status = StatusProduct::find($id);
-        if ($status == null) {
-            throw new \Exception("Status Produk tidak ada", 404);
-        }
+    //     $status = StatusProduct::find($id);
+    //     if ($status == null) {
+    //         throw new \Exception("Status Produk tidak ada", 404);
+    //     }
 
-        // $product = Product::query()->where('status_id', $status->id)->first();
+    //     // $product = Product::query()->where('status_id', $status->id)->first();
 
-        // if ($product != null) {
-        //     return throw new \Exception("Data Status digunakan oleh Produk", 409);
-        // }
-        $status->deleted_by = auth()->user()->fullname;
-        $status->save();
+    //     // if ($product != null) {
+    //     //     return throw new \Exception("Data Status digunakan oleh Produk", 409);
+    //     // }
+    //     $status->deleted_by = auth()->user()->fullname;
+    //     $status->save();
 
-        $status->delete();
+    //     $status->delete();
 
-        return $status;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Status Produk berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $status;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Status Produk berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {

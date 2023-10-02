@@ -221,49 +221,49 @@ class ModuleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $module = Module::find($id);
-        if ($module == null) {
-            throw new \Exception("Modul tidak ada", 404);
-        }
+    //     $module = Module::find($id);
+    //     if ($module == null) {
+    //         throw new \Exception("Modul tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('module_id', $module->id)->first();
+    //     $product = Product::query()->where('module_id', $module->id)->first();
 
-        if ($product != null) {
-            return throw new \Exception("Data Modul digunakan oleh Produk", 409);
-        }
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Modul digunakan oleh Produk", 409);
+    //     }
 
-        $module->deleted_by = auth()->user()->fullname;
-        $module->save();
+    //     $module->deleted_by = auth()->user()->fullname;
+    //     $module->save();
 
-        $module->delete();
+    //     $module->delete();
 
-        return $module;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Modul berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $module;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Modul berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {

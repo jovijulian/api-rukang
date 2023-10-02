@@ -223,50 +223,50 @@ class SegmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $segment = Segment::find($id);
-        if ($segment == null) {
-            throw new \Exception("Segmen tidak ada", 404);
-        }
+    //     $segment = Segment::find($id);
+    //     if ($segment == null) {
+    //         throw new \Exception("Segmen tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('segment_id', $segment->id)->first();
+    //     $product = Product::query()->where('segment_id', $segment->id)->first();
 
-        if ($product != null) {
-            return throw new \Exception("Data Segmen digunakan oleh Produk", 409);
-        }
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Segmen digunakan oleh Produk", 409);
+    //     }
 
-        $segment->deleted_by = auth()->user()->fullname;
-        $segment->save();
+    //     $segment->deleted_by = auth()->user()->fullname;
+    //     $segment->save();
 
-        // Soft delete data.
-        $segment->delete();
+    //     // Soft delete data.
+    //     $segment->delete();
 
-        return $segment;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Segmen berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $segment;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Segmen berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {

@@ -223,48 +223,48 @@ class GroupController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $group = Group::find($id);
-        if ($group == null) {
-            throw new \Exception("Kelompok tidak ada", 404);
-        }
+    //     $group = Group::find($id);
+    //     if ($group == null) {
+    //         throw new \Exception("Kelompok tidak ada", 404);
+    //     }
 
-        $user = User::query()->where('group_id', $group->id)->first();
+    //     $user = User::query()->where('group_id', $group->id)->first();
 
-        if ($user != null) {
-            return throw new \Exception("Data Kelompok digunakan oleh User", 409);
-        }
-        $group->deleted_by = auth()->user()->fullname;
-        $group->save();
+    //     if ($user != null) {
+    //         return throw new \Exception("Data Kelompok digunakan oleh User", 409);
+    //     }
+    //     $group->deleted_by = auth()->user()->fullname;
+    //     $group->save();
 
-        $group->delete();
+    //     $group->delete();
 
-        return $group;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Kelompok berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $group;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Kelompok berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function getGroups(Request $request): JsonResponse
     {

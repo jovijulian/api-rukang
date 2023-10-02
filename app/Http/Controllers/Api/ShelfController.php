@@ -221,49 +221,49 @@ class ShelfController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $shelf = Shelf::find($id);
-        if ($shelf == null) {
-            throw new \Exception("Shelf tidak ada", 404);
-        }
+    //     $shelf = Shelf::find($id);
+    //     if ($shelf == null) {
+    //         throw new \Exception("Shelf tidak ada", 404);
+    //     }
 
-        // $product = Product::query()->where('shelf_id', $shelf->id)->first();
+    //     // $product = Product::query()->where('shelf_id', $shelf->id)->first();
 
-        // if ($product != null) {
-        //     return throw new \Exception("Data Rak digunakan oleh Produk", 409);
-        // }
+    //     // if ($product != null) {
+    //     //     return throw new \Exception("Data Rak digunakan oleh Produk", 409);
+    //     // }
 
-        $shelf->deleted_by = auth()->user()->fullname;
-        $shelf->save();
+    //     $shelf->deleted_by = auth()->user()->fullname;
+    //     $shelf->save();
 
-        $shelf->delete();
+    //     $shelf->delete();
 
-        return $shelf;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Shelf berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $shelf;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Shelf berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {

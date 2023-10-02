@@ -221,47 +221,47 @@ class ShippingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $shipping = Shipping::find($id);
-        if ($shipping == null) {
-            throw new \Exception("Ekspedisi tidak ada", 404);
-        }
+    //     $shipping = Shipping::find($id);
+    //     if ($shipping == null) {
+    //         throw new \Exception("Ekspedisi tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('shipping_id', $shipping->id)->first();
-        if ($product != null) {
-            return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
-        }
-        $shipping->deleted_by = auth()->user()->fullname;
-        $shipping->save();
+    //     $product = Product::query()->where('shipping_id', $shipping->id)->first();
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
+    //     }
+    //     $shipping->deleted_by = auth()->user()->fullname;
+    //     $shipping->save();
 
-        $shipping->delete();
+    //     $shipping->delete();
 
-        return $shipping;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Ekspedisi berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $shipping;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Ekspedisi berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {

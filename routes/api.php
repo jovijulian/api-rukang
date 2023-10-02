@@ -64,7 +64,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -74,7 +74,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -94,7 +94,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -118,7 +118,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -128,7 +128,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -138,7 +138,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
@@ -148,7 +148,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2']);
             Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,5']);
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
+            // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
         });
     });
