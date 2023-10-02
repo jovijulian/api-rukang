@@ -77,12 +77,12 @@ class SeederProductController extends Controller
     protected function createSegment()
     {
         $timeNow = Carbon::now();
-        for ($i = 1; $i <= 17; $i++) {
+        for ($i = 0; $i <= 17; $i++) {
             $segment = new Segment();
 
             $segment_code = 'S' . str_pad($i, 2, '0', STR_PAD_LEFT);
 
-            $segment->segment_name = 'Segmen ' . $i;
+            $segment->segment_name = 'Segmen ' . str_pad($i, 2, '0', STR_PAD_LEFT);
             $segment->barcode_color = null;
             $segment->segment_code = $segment_code;
             $segment->created_at = $timeNow;
