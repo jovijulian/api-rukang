@@ -231,8 +231,6 @@ class UserController extends Controller
                 'max:15',
                 'unique:users,phone_number,NULL,id'
             ],
-            'group_id' => ['required'],
-            'group_name' => ['required', 'string', 'between:1,100'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -249,9 +247,7 @@ class UserController extends Controller
         $user->phone_number = $data['phone_number'];
         $user->address = $data['address'];
         $user->birthdate = $data['birthdate'];
-        $user->group_id = $data['group_id'];
-        $user->group_name = $data['group_name'];
-        $user->isAdmin = 0;
+        $user->isAdmin = $data['isAdmin'];
         $user->email_verified_at = $timeNow;
         $user->created_at = $timeNow;
         $user->created_by = auth()->user()->fullname;
@@ -339,8 +335,6 @@ class UserController extends Controller
                 'min:9',
                 'max:15',
             ],
-            'group_id' => ['required'],
-            'group_name' => ['required', 'string', 'between:1,100'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -362,8 +356,6 @@ class UserController extends Controller
         $user->phone_number = $data['phone_number'];
         $user->address = $data['address'];
         $user->birthdate = $data['birthdate'];
-        $user->group_id = $data['group_id'];
-        $user->group_name = $data['group_name'];
         $user->updated_at = $timeNow;
         $user->updated_by = auth()->user()->fullname;
         //Save
@@ -465,7 +457,6 @@ class UserController extends Controller
                 $conditions .= " AND fullname LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR email LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR phone_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
@@ -515,7 +506,6 @@ class UserController extends Controller
                 $conditions .= " AND fullname LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR email LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR phone_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
