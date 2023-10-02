@@ -31,13 +31,13 @@
             <div class="card-body p-4">
               <form id="insert-status-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Status</label>
+                  <label class="col-lg-2 col-form-label">Status *</label>
                   <div class="col-lg-10">
                     <input type="text" id="status" class="form-control" placeholder="Masukan status" maxlength="40" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Butuh Ekspedisi?</label>
+                  <label class="col-lg-2 col-form-label">Butuh Ekspedisi? *</label>
                   <div class="col-lg-10 my-auto">
                     <div class="form-check form-check-inline">
                       <input class="form-check-input expedition" name="expedition-radio" type="radio" id="expedition-yes" value=1 required>

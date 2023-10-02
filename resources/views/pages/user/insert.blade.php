@@ -31,21 +31,13 @@
             <div class="card-body p-4">
               <form id="insert-user-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Lengkap</label>
+                  <label class="col-lg-2 col-form-label">Nama Lengkap *</label>
                   <div class="col-lg-10">
                     <input type="text" id="fullname" class="form-control" placeholder="Masukan nama lengkap" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Kelompok</label>
-                  <div class="col-lg-10">
-                    <select id="group" class="form-control select" required>
-                      <option value="1" selected="selected" disabled>Pilih kelompok anda</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Role</label>
+                  <label class="col-lg-2 col-form-label">Role *</label>
                   <div class="col-lg-10">
                     <select id="role" class="form-control select" required>
                       <option selected="selected" disabled>Pilih role anda</option>
@@ -58,31 +50,31 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Email</label>
+                  <label class="col-lg-2 col-form-label">Email *</label>
                   <div class="col-lg-10">
                     <input type="email" id="email" class="form-control" placeholder="Masukan email" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">No HP</label>
+                  <label class="col-lg-2 col-form-label">No HP *</label>
                   <div class="col-lg-10">
                     <input type="text" id="phone" class="form-control" placeholder="Masukan no hp" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Tanggal Lahir</label>
+                  <label class="col-lg-2 col-form-label">Tanggal Lahir *</label>
                   <div class="col-lg-10">
                     <input type="date" id="birthdate" class="form-control" placeholder="Masukan tanggal lahir" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Alamat</label>
+                  <label class="col-lg-2 col-form-label">Alamat *</label>
                   <div class="col-lg-10">
                     <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan alamat anda" required></textarea>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Password</label>
+                  <label class="col-lg-2 col-form-label">Password *</label>
                   <div class="col-lg-10">
                     <div class="pass-group">
                       <input type="password" id="password" class="pass-input " placeholder="Masukan password anda" required>
@@ -91,7 +83,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Konfirmasi Password</label>
+                  <label class="col-lg-2 col-form-label">Konfirmasi Password *</label>
                   <div class="col-lg-10">
                     <div class="pass-group">
                       <input type="password" id="password-confirm" class="pass-input" placeholder="Masukan konfirmasi password" required>
@@ -138,17 +130,6 @@
         }
       }
 
-      axios.get("{{ url('api/v1/group/group') }}")
-        .then(function(res) {
-          const groups = res.data.data.items
-          groups.forEach(group => {
-            $('#group').append(`<option value=${group.id}>${group.group_name}</option>`)
-          });
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
-
       $('#insert-user-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
@@ -160,8 +141,6 @@
           phone_number: $('#phone').val(),
           address: $('#address').val(),
           password: $('#password').val(),
-          group_id: $('#group').val(),
-          group_name: $('#group').find("option:selected").text(),
           isAdmin: $('#role').val(),
         }
 
