@@ -228,7 +228,7 @@ class CategoryController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'category'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Category::count();

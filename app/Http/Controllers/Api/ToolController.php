@@ -514,7 +514,7 @@ class ToolController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'type'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Tool::count();
