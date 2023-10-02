@@ -31,7 +31,7 @@
             <div class="card-body p-4">
               <form id="update-shelf-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Rak</label>
+                  <label class="col-lg-2 col-form-label">Nama Rak *</label>
                   <div class="col-lg-10">
                     <input type="text" id="shelf" class="form-control" placeholder="Masukan nama rak" required>
                   </div>

@@ -116,7 +116,6 @@
                 <th>No HP</th>
                 <th>Alamat</th>
                 <th>Tanggal Lahir</th>
-                <th>Nama Kelompok</th>
                 <th>Aktif</th>
                 <th>Role</th>
                 <th>Dibuat Pada</th>
@@ -223,7 +222,6 @@
             {data: 'phone_number'},
             {data: 'address'},
             {data: 'birthdate'},
-            {data: 'group_name'},
             {
               data: 'isActive', 
               render: function(data) {

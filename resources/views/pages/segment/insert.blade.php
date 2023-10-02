@@ -31,9 +31,9 @@
             <div class="card-body p-4">
               <form id="insert-segment-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama</label>
+                  <label class="col-lg-2 col-form-label">Nama Segmen *</label>
                   <div class="col-lg-10">
-                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen">
+                    <input type="text" id="segment-name" class="form-control" placeholder="Masukan nama segmen" required>
                   </div>
                 </div>
                 <div class="form-group row">

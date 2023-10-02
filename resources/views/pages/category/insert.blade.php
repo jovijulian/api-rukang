@@ -31,9 +31,9 @@
             <div class="card-body p-4">
               <form id="insert-category-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Kategori</label>
+                  <label class="col-lg-2 col-form-label">Nama Kategori *</label>
                   <div class="col-lg-10">
-                    <input type="text" id="category" class="form-control" placeholder="Masukan kategori">
+                    <input type="text" id="category" class="form-control" placeholder="Masukan nama kategori">
                   </div>
                 </div>
                 <div class="text-end">

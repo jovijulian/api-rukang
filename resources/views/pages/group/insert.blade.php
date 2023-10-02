@@ -31,7 +31,7 @@
             <div class="card-body p-4">
               <form id="insert-group-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Kelompok</label>
+                  <label class="col-lg-2 col-form-label">Nama Kelompok *</label>
                   <div class="col-lg-10">
                     <input type="text" id="group" class="form-control" placeholder="Masukan nama kelompok" required>
                   </div>

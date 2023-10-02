@@ -44,6 +44,14 @@
                     </div>
                   </div>
                   <div class="col-xl-6">
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Kelompok *</label>
+                      <div class="col-lg-9">
+                        <select id="group" class="form-control select">
+                          <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -127,6 +135,7 @@
       }
 
       getCategory()
+      getGroup()
       getDetailProduct()
 
 
@@ -172,6 +181,40 @@
         })
       }
 
+      function getGroup() {
+        $('#group').select2({
+          ajax: {
+            url: "{{ url('api/v1/group/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.group_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
+
      
 
       function getDetailProduct() {
@@ -182,6 +225,7 @@
             // console.log(data)
 
             $("#category").append(`<option value=${data.category_id} selected>${data.category}</option>`)
+            $("#group").append(`<option value=${data.group_id} selected>${data.group_name}</option>`)
             $('#type').val(data.type)
             $('#tool-name').val(data.tool_name)
             $('#amount').val(data.amount)
@@ -197,6 +241,8 @@
         const data = {
           category_id: $('#category').val() ? $('#category').val() : '',
           category: $('#category').val() ? $('#category').find("option:selected").text() : '',
+          group_id: $('#group').val() ? $('#group').val() : '',
+          group_name: $('#group').val() ? $('#group').find("option:selected").text() : '',
           type: $('#type').val() ? $('#type').val() : "",
           tool_name: $('#tool-name').val() ? $('#tool-name').val() : "",
           amount: $('#amount').val() ? $('#amount').val() : "",

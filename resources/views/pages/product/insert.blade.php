@@ -31,13 +31,13 @@
             </div> --}}
             <div class="card-body">
               <form id="insert-product-form">
-                <h5 class="card-title mb-4">Kategori & Segmen</h5>
+                <h5 class="card-title mb-4">Kategori, Segmen, Kelompok</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Kategori</label>
+                      <label class="col-lg-3 col-form-label">Kategori *</label>
                       <div class="col-lg-9">
-                        <select id="category-product" class="form-control select">
+                        <select id="category-product" class="form-control select" required>
                           <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
                         </select>
                       </div>
@@ -47,6 +47,14 @@
                       <div class="col-lg-9">
                         <select id="segment-product" class="form-control select">
                           <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Kelompok *</label>
+                      <div class="col-lg-9">
+                        <select id="group-product" class="form-control select">
+                          <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
                         </select>
                       </div>
                     </div>
@@ -131,10 +139,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Barcode</label>
+                      <label class="col-lg-3 col-form-label">Barcode *</label>
                       <div class="col-lg-9">
-                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode"
-                          required>
+                        <input type="text" id="barcode-product" class="form-control" placeholder="Masukan barcode" required>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -229,6 +236,7 @@
 
       getModule()
       getCategory()
+      getGroup()
       getSegment()
       getStatus()
       getShipping()
@@ -283,18 +291,6 @@
             cache: true
           }
         })
-
-        // axios.get("{{ url('api/v1/module/index') }}", config)
-        //   .then(res => {
-        //     const modules = res.data.data.items
-        //     modules.map(module => {
-        //       $('#module-product').append(`<option value=${module.id}>${module.module_number}</option>`)
-        //     })
-
-        //   })
-        //   .catch(err => {
-        //     console.log(err)
-        //   })
       }
 
       function getCategory() {
@@ -318,6 +314,40 @@
                 results: $.map(data.data.items, function(item) {
                   return {
                     text: item.category,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
+
+      function getGroup() {
+        $('#group-product').select2({
+          ajax: {
+            url: "{{ url('api/v1/group/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.group_name,
                     id: item.id,
                   }
                 }),
@@ -570,6 +600,8 @@
           category: $('#category-product').val() ? $('#category-product').find("option:selected").text() : '',
           segment_id: $('#segment-product').val() ? $('#segment-product').val() : '',
           segment_name: $('#segment-product').val() ? $('#segment-product').find("option:selected").text() : '',
+          group_id: $('#group-product').val() ? $('#group-product').val() : '',
+          group_name: $('#group-product').val() ? $('#group-product').find("option:selected").text() : '',
           segment_place: $('#segment-place').val() ? $('#segment-place').val() : '',
           barcode: $('#barcode-product').val(),
           module_id: $('#module-product').val() ? $('#module-product').val() : '',

@@ -31,19 +31,27 @@
             </div> --}}
             <div class="card-body">
               <form id="insert-tool-form">
-                <h5 class="card-title mb-4">Kategori</h5>
+                <h5 class="card-title mb-4">Kategori, Kelompok</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Kategori</label>
+                      <label class="col-lg-3 col-form-label">Kategori *</label>
                       <div class="col-lg-9">
-                        <select id="category" class="form-control select" disabled>
+                        <select id="category" class="form-control select" disabled required>
                           <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
                         </select>
                       </div>
                     </div>
                   </div>
                   <div class="col-xl-6">
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Kelompok *</label>
+                      <div class="col-lg-9">
+                        <select id="group" class="form-control select">
+                          <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -51,19 +59,19 @@
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tipe</label>
+                      <label class="col-lg-3 col-form-label">Tipe *</label>
                       <div class="col-lg-9">
                         <input type="text" id="type" class="form-control" placeholder="Masukan tipe" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nama Alat</label>
+                      <label class="col-lg-3 col-form-label">Nama Alat *</label>
                       <div class="col-lg-9">
                         <input type="text" id="tool-name" class="form-control" placeholder="Masukan nama alat" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Jumlah</label>
+                      <label class="col-lg-3 col-form-label">Jumlah *</label>
                       <div class="col-lg-9">
                         <input type="text" id="amount" class="form-control" placeholder="Masukan jumlah" required>
                       </div>
@@ -71,13 +79,13 @@
                   </div>
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Seri</label>
+                      <label class="col-lg-3 col-form-label">Nomor Seri *</label>
                       <div class="col-lg-9">
                         <input type="text" id="serial-number" class="form-control" placeholder="Masukan nomor seri" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Catatan</label>
+                      <label class="col-lg-3 col-form-label">Catatan *</label>
                       <div class="col-lg-9">
                         <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan" required></textarea>
                       </div>
@@ -176,6 +184,7 @@
       }
 
       getCategory()
+      getGroup()
       getStatus()
       getShipping()
 
@@ -199,7 +208,7 @@
           .then(res => {
             const data = res.data.data.items[0]
 
-            console.log(data)
+            // console.log(data)
 
             $("#category").append(`<option value=${data.id} selected>${data.category}</option>`)
           })
@@ -239,6 +248,40 @@
         //     cache: true
         //   }
         // })
+      }
+
+      function getGroup() {
+        $('#group').select2({
+          ajax: {
+            url: "{{ url('api/v1/group/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.group_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
       }
 
       function getStatus() {
@@ -344,6 +387,8 @@
         const data = {
           category_id: $('#category').val() ? $('#category').val() : '',
           category: $('#category').val() ? $('#category').find("option:selected").text() : '',
+          group_id: $('#group').val() ? $('#group').val() : '',
+          group_name: $('#group').val() ? $('#group').find("option:selected").text() : '',
           type: $('#type').val() ? $('#type').val() : "",
           tool_name: $('#tool-name').val() ? $('#tool-name').val() : "",
           amount: $('#amount').val() ? $('#amount').val() : "",
