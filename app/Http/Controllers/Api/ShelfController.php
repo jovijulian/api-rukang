@@ -71,7 +71,7 @@ class ShelfController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'shelf_name' => ['required', 'string', 'min:1', 'max:40'],
+            'shelf_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shelves,shelf_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);

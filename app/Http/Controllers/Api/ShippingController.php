@@ -71,7 +71,7 @@ class ShippingController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'shipping_name' => ['required', 'string', 'min:1', 'max:40'],
+            'shipping_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shippings,shipping_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);

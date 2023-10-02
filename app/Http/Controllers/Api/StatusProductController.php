@@ -72,7 +72,7 @@ class StatusProductController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'status' => ['required', 'string', 'min:1', 'max:40'],
+            'status' => ['required', 'string', 'min:1', 'max:40', 'unique:status_products,status,NULL,id'],
             'need_expedition' => ['required'],
         ];
 

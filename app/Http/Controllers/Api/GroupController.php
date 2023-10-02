@@ -162,7 +162,7 @@ class GroupController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'group_name' => ['required', 'string', 'min:1', 'max:100'],
+            'group_name' => ['required', 'string', 'min:1', 'max:100', 'unique:groups,group_name,NULL,id'],
         ];
         return Validator::make($data, $arrayValidator);
     }

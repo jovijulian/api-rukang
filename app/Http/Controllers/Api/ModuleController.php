@@ -71,7 +71,7 @@ class ModuleController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'module_number' => ['required', 'string', 'min:1', 'max:10'],
+            'module_number' => ['required', 'string', 'min:1', 'max:10', 'unique:modules,module_number,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);

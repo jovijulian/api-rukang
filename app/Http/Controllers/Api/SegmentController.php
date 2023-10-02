@@ -71,7 +71,7 @@ class SegmentController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'segment_name' => ['required', 'string', 'min:1', 'max:50'],
+            'segment_name' => ['required', 'string', 'min:1', 'max:50', 'unique:segments,segment_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
