@@ -129,8 +129,8 @@ class ProductController extends Controller
         $productData->shipping_id = $data['shipping_id'];
         $productData->shipping_name = $data['shipping_name'];
         $productData->current_location = $data['current_location'];
-        $productData->group_id = auth()->user()->group_id;
-        $productData->group_name = auth()->user()->group_name;
+        $productData->group_id = $data['group_id'];
+        $productData->group_name = $data['group_name'];
 
         $productData->created_at = $timeNow;
         $productData->updated_at = null;
@@ -296,8 +296,8 @@ class ProductController extends Controller
         $productData->shipping_name;
         $productData->number_plate;
         $productData->current_location;
-        $productData->group_id = auth()->user()->group_id;
-        $productData->group_name = auth()->user()->group_name;
+        $productData->group_id = $data['group_id'];
+        $productData->group_name  = $data['group_name'];
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save

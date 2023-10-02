@@ -116,8 +116,8 @@ class ToolController extends Controller
         $toolData->shipping_id = $data['shipping_id'];
         $toolData->shipping_name = $data['shipping_name'];
         $toolData->current_location = $data['current_location'];
-        $toolData->group_id = auth()->user()->group_id;
-        $toolData->group_name = auth()->user()->group_name;
+        $toolData->group_id = $data['group_id'];
+        $toolData->group_name = $data['group_name'];
 
         $toolData->created_at = $timeNow;
         $toolData->updated_at = null;
@@ -264,8 +264,8 @@ class ToolController extends Controller
         $toolData->shipping_id;
         $toolData->shipping_name;
         $toolData->current_location;
-        $toolData->group_id;
-        $toolData->group_name;
+        $toolData->group_id = $data['group_id'];
+        $toolData->group_name = $data['group_name'];
         $toolData->updated_at = $timeNow;
         $toolData->updated_by = auth()->user()->fullname;
         //Save

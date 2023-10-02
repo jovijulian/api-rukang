@@ -110,8 +110,8 @@ class MaterialController extends Controller
         $materialData->shipping_id = $data['shipping_id'];
         $materialData->shipping_name = $data['shipping_name'];
         $materialData->current_location = $data['current_location'];
-        $materialData->group_id = auth()->user()->group_id;
-        $materialData->group_name = auth()->user()->group_name;
+        $materialData->group_id = $data['group_id'];
+        $materialData->group_name = $data['group_name'];
 
         $materialData->created_at = $timeNow;
         $materialData->updated_at = null;
@@ -252,8 +252,8 @@ class MaterialController extends Controller
         $materialData->shipping_id;
         $materialData->shipping_name;
         $materialData->current_location;
-        $materialData->group_id;
-        $materialData->group_name;
+        $materialData->group_id = $data['group_id'];;
+        $materialData->group_name = $data['group_name'];;
         $materialData->updated_at = $timeNow;
         $materialData->updated_by = auth()->user()->fullname;
         //Save
