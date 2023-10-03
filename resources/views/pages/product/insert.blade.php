@@ -164,7 +164,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Ekspedisi</label>
                       <div class="col-lg-9">
-                        <select id="shipping" class="form-control select" disabled>
+                        <select id="shipping" class="form-control select">
                           <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
                         </select>
                       </div>
@@ -172,13 +172,13 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Plat Nomor</label>
                       <div class="col-lg-9">
-                        <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor" disabled>
+                        <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                       <div class="col-lg-9">
-                        <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
+                        <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -474,25 +474,25 @@
           }
         })
         
-        $('#status-product').on('change', function(e) {
-          const needExpedition = $(this).select2('data')[0].location
-          if (needExpedition) {
-            $('#shipping').removeAttr('disabled')
+        // $('#status-product').on('change', function(e) {
+        //   const needExpedition = $(this).select2('data')[0].location
+        //   if (needExpedition) {
+        //     $('#shipping').removeAttr('disabled')
 
-            $('#number-plate').removeAttr('disabled')
+        //     $('#number-plate').removeAttr('disabled')
 
-            $('#current-location').removeAttr('disabled')
-          } else {
-            $('#shipping').select2("enable", false)
-            $("#shipping").val(null).trigger("change")
+        //     $('#current-location').removeAttr('disabled')
+        //   } else {
+        //     $('#shipping').select2("enable", false)
+        //     $("#shipping").val(null).trigger("change")
             
-            $('#number-plate').attr('disabled', 'disabled')
-            $('#number-plate').val('')
+        //     $('#number-plate').attr('disabled', 'disabled')
+        //     $('#number-plate').val('')
 
-            $('#current-location').attr('disabled', 'disabled')
-            $('#current-location').val('')
-          }
-        })
+        //     $('#current-location').attr('disabled', 'disabled')
+        //     $('#current-location').val('')
+        //   }
+        // })
       }
 
       function getShipping() {

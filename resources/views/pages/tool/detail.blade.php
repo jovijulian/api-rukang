@@ -176,7 +176,7 @@
           $('#status').text(product.status ? product.status : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#created-by').text(product.created_by)
-          $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-'))
+          $('#updated-at').text(product.updated_at ? new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#updated-by').text(product.updated_by)
           
           product.status_tool_logs.map((statusLog, i) => {
@@ -191,7 +191,7 @@
                   <td>${statusLog.note ? statusLog.note : ''}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by ? statusLog.created_by : ''}</td>
-                  <td>${new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${statusLog.updated_at ? new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${statusLog.updated_by ? statusLog.updated_by : ''}</td>
                 </tr>
               `
@@ -206,10 +206,10 @@
                 <tr>
                   <td>${locationLog.current_location ? link : ''}</td>
                   <td>${locationLog.current_location ? locationLog.current_location : ''}</td>
-                  <td>${locationLog.status.status_name}</td>
+                  <td>${locationLog.status.status_name ? locationLog.status.status_name : ''}</td>
                   <td>${new Date(locationLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${locationLog.created_by ? locationLog.created_by : ''}</td>
-                  <td>${new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${locationLog.updated_at ? new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${locationLog.updated_by ? locationLog.updated_by : ''}</td>
                 </tr>
               `
