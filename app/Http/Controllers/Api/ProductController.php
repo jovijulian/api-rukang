@@ -586,6 +586,18 @@ class ProductController extends Controller
             $totalFiltered = Product::whereRaw($conditions)->count();
         }
 
+        // FILTER DATA
+        if ($request->input('category') != null) {
+            $data = Product::where('category_id', $request->category)->get();
+        }
+        if ($request->input('segment') != null) {
+            $data = Product::where('segment_id', $request->segment)->get();
+        }
+        if ($request->input('module') != null) {
+            $data = Product::where('module_id', $request->module)->get();
+        }
+
+
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
