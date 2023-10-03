@@ -418,7 +418,7 @@ class ProductController extends Controller
         return Validator::make($data, $arrayValidator);
     }
 
-    public function setStatusLogProduct($id, Request $request)
+    public function addStatusLogProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
@@ -553,7 +553,12 @@ class ProductController extends Controller
         $totalData = Product::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Product::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -570,13 +575,17 @@ class ProductController extends Controller
                 $conditions .= " OR description LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR status LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Product::whereRaw($conditions)
+            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })->whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
@@ -656,11 +665,23 @@ class ProductController extends Controller
         $productData->current_location = $data['current_location'];
         $productData->save();
 
-        $locationLog = LocationProductLog::where('status_product_log_id', $id)->first();
+
+        $locationLog = new LocationProductLog();
+        $locationLog->id = Uuid::uuid4()->toString();
+        $locationLog->status_product_log_id = $id;
+        $locationLog->product_id = $statusLog->product_id;
         $locationLog->current_location = $data['current_location'];
-        $locationLog->updated_at = $timeNow;
-        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->created_at = $timeNow;
+        $locationLog->created_by = auth()->user()->fullname;
+        $locationLog->updated_at = null;
+        $locationLog->updated_by = null;
         $locationLog->save();
+
+        // $locationLog = LocationProductLog::where('status_product_log_id', $id)->first();
+        // $locationLog->current_location = $data['current_location'];
+        // $locationLog->updated_at = $timeNow;
+        // $locationLog->updated_by = auth()->user()->fullname;
+        // $locationLog->save();
 
         return $locationLog;
     }
