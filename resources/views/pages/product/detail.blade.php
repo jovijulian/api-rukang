@@ -180,19 +180,19 @@
         .then(res => {
           const product = res.data.data.item
 
-          // console.log(product);
+          console.log(product);
 
           $('.update-status').attr('href', '/product/update-status/' + product.id)
 
           JsBarcode("#barcode", product.barcode)
 
-          $("#photo").attr("src", product.status_photo && product.status_photo)
+          $("#photo").attr("src", product.status_photo ? product.status_photo : "{{ url('assets/img/product/product69.jpg') }}")
 
           $('#category').text(product.category ? product.category : '')
           $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
           $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf ? product.shelf : '')
+          $('#shelf-number').text(product.shelf.shelf_name   ? product.shelf.shelf_name  : '')
           $('#description').text(product.description ? product.description : '')
           $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
@@ -216,7 +216,7 @@
                   <td>${statusLog.note ? statusLog.note : ''}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by ? statusLog.created_by : ''}</td>
-                  <td>${new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${statusLog.updated_at ? new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${statusLog.updated_by ? statusLog.updated_by : ''}</td>
                 </tr>
               `
@@ -231,10 +231,10 @@
                 <tr>
                   <td>${locationLog.current_location ? link : ''}</td>
                   <td>${locationLog.current_location ? locationLog.current_location : ''}</td>
-                  <td>${locationLog.status.status_name}</td>
+                  <td>${locationLog.status.status_name ? locationLog.status.status_name : ''}</td>
                   <td>${new Date(locationLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${locationLog.created_by ? locationLog.created_by : ''}</td>
-                  <td>${new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${locationLog.updated_at ? new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${locationLog.updated_by ? locationLog.updated_by : ''}</td>
                 </tr>
               `
