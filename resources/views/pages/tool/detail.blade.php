@@ -164,7 +164,7 @@
 
           $('.update-status').attr('href', '/tool/update-status/' + product.id)
 
-          $("#photo").attr("src", product.status_photo && product.status_photo)
+          $("#photo").attr("src", product.status_photo ? product.status_photo : "{{ url('assets/img/product/product69.jpg') }}")
 
           $('#category').text(product.category ? product.category : '')
           $('#type').text(product.type ? product.type : '')
