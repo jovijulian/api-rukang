@@ -194,7 +194,8 @@
             console.log(err)
           }
         },
-        columns: [{
+        columns: [
+          {
             data: 'id',
             orderable: false,
             searchable: false,

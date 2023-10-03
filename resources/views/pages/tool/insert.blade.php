@@ -107,7 +107,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Ekspedisi</label>
                       <div class="col-lg-9">
-                        <select id="shipping" class="form-control select">
+                        <select id="shipping" class="form-control select" disabled>
                           <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
                         </select>
                       </div>
@@ -115,7 +115,7 @@
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Plat Nomor</label>
                       <div class="col-lg-9">
-                        <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor">
+                        <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor" disabled>
                       </div>
                     </div>
                     <div class="form-group row">
@@ -318,25 +318,20 @@
           }
         })
         
-        // $('#status').on('change', function(e) {
-        //   const needExpedition = $(this).select2('data')[0].location
-        //   if (needExpedition) {
-        //     $('#shipping').removeAttr('disabled')
+        $('#status').on('change', function(e) {
+          const needExpedition = $(this).select2('data')[0].location
+          if (needExpedition) {
+            $('#shipping').removeAttr('disabled')
 
-        //     $('#number-plate').removeAttr('disabled')
-
-        //     $('#current-location').removeAttr('disabled')
-        //   } else {
-        //     $('#shipping').select2("enable", false)
-        //     $("#shipping").val(null).trigger("change")
+            $('#number-plate').removeAttr('disabled')
+          } else {
+            $('#shipping').select2("enable", false)
+            $("#shipping").val(null).trigger("change")
             
-        //     $('#number-plate').attr('disabled', 'disabled')
-        //     $('#number-plate').val('')
-
-        //     $('#current-location').attr('disabled', 'disabled')
-        //     $('#current-location').val('')
-        //   }
-        // })
+            $('#number-plate').attr('disabled', 'disabled')
+            $('#number-plate').val('')
+          }
+        })
       }
 
       function getShipping() {
