@@ -37,7 +37,8 @@ class StatusProductLog extends Model
     protected $fillable = [
         'product_id',
         'status_id',
-        'status',
+        'status_name',
+        'status_date',
         'status_photo',
         'status_photo2',
         'status_photo3',

@@ -96,14 +96,32 @@ class ProductController extends Controller
     }
     protected function create(array $data, Request $request)
     {
-
         $timeNow = Carbon::now();
         $productData = new Product();
         $image_url = null;
+
         Storage::exists('product') or Storage::makeDirectory('product');
         if ($data['status_photo']) {
             $image = Storage::putFile('product', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
+        }
+        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+            $productData->qty = 0;
+        } else {
+            $productData->qty = 1;
+        }
+
+
+        if ($data['status_id'] == 17) {
+            $productData->finish_production_date = $data['status_date'];
+        } else if ($data['status_id'] != 17 && $productData->qty == 1) {
+            $productData->finish_production_date = '2023-03-27';
+        } else {
+            $productData->finish_production_date = null;
+        }
+
+        if ($data['status_id'] == 20) {
+            $productData->delivery_date = $data['status_date'];
         }
 
         $productId = Uuid::uuid4()->toString();
@@ -117,11 +135,10 @@ class ProductController extends Controller
         $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
-        $productData->production_date = $data['production_date'];
+        $productData->start_production_date = $data['start_production_date'];
         $productData->shelf_id = $data['shelf_id'];
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
-        $productData->delivery_date = $data['delivery_date'];
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
         $productData->status_photo = $image_url;
@@ -146,6 +163,7 @@ class ProductController extends Controller
         $statusLogData->product_id = $productData->id;
         $statusLogData->status_id = $productData->status_id;
         $statusLogData->status_name = $productData->status;
+        $statusLogData->status_date =  $data['status_date'];;
         $statusLogData->status_photo = $productData->status_photo;
         $statusLogData->note = $productData->note;
         $statusLogData->shipping_id = $productData->shipping_id;
@@ -185,9 +203,11 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $validate = $this->validateCreate($request->all());
+
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
+            // dd($request->all());
             $model = $this->create($request->all(), $request);
             DB::commit();
 
@@ -454,13 +474,14 @@ class ProductController extends Controller
         $statusLog = new StatusProductLog();
 
         if (empty($statusLog)) {
-            throw new \Exception("Invalid status product log id", 406);
+            throw new \Exception("Invalid product id", 406);
         }
 
         $statusLog->id = Uuid::uuid4()->toString();
         $statusLog->product_id = $id;
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
+        $statusLog->status_date = $data['status_date'];
         // Input data multiple image
         foreach ($request->file() as $key => $file) {
             if ($request->hasFile($key)) {
@@ -514,6 +535,24 @@ class ProductController extends Controller
         $statusLog->save();
 
         $productData = Product::find($id);
+        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+            $productData->qty = 0;
+        } else {
+            $productData->qty = 1;
+        }
+
+
+        if ($data['status_id'] == 17) {
+            $productData->finish_production_date = $data['status_date'];
+        } else if ($data['status_id'] != 17 && $productData->qty == 1) {
+            $productData->finish_production_date = '2023-03-27';
+        } else {
+            $productData->finish_production_date = null;
+        }
+
+        if ($data['status_id'] == 20) {
+            $productData->delivery_date = $data['status_date'];
+        }
         $productData->status_id = $statusLog->status_id;
         $productData->status = $statusLog->status_name;
         $productData->status_photo = $statusLog->status_photo;
@@ -698,7 +737,7 @@ class ProductController extends Controller
         return $locationLog;
     }
 
-    protected function validateMultipleImages(array $data)
+    protected function validateStatusProduct(array $data)
     {
         $arrayValidator = [
             'status_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
@@ -706,15 +745,15 @@ class ProductController extends Controller
         return Validator::make($data, $arrayValidator);
     }
 
-    public function addMultipleImagesStatus($id, Request $request)
+    public function updateStatusProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateMultipleImages($request->all());
+            $validate = $this->validateStatusProduct($request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $data = $this->insertMultipleImageStatus($id, $request->all(), $request);
+            $data = $this->editStatusProduct($id, $request->all(), $request);
 
             DB::commit();
             $single = new StatusProductLogResource($data);
@@ -736,7 +775,7 @@ class ProductController extends Controller
         }
     }
 
-    protected function insertMultipleImageStatus($id, array $data, Request $request)
+    protected function editStatusProduct($id, array $data, Request $request)
     {
         $timeNow = Carbon::now();
 
@@ -747,6 +786,7 @@ class ProductController extends Controller
 
         $statusLog->status_id;
         $statusLog->status_name;
+        $statusLog->status_date = $data['status_date'] ? $data['status_date'] : $statusLog->status_date;
         // Input data multiple image
         foreach ($request->file() as $key => $file) {
             if ($request->hasFile($key)) {
@@ -790,14 +830,34 @@ class ProductController extends Controller
                 }
             }
         }
-        $statusLog->note;
-        $statusLog->shipping_id;
-        $statusLog->shipping_name;
-        $statusLog->number_plate;
+        $statusLog->note = $data['note'] ? $data['note'] : $statusLog->note;
+        $statusLog->shipping_id = $data['shipping_id'] ? $data['shipping_id'] : $statusLog->shipping_id;
+        $statusLog->shipping_name = $data['shipping_name'] ? $data['shipping_name'] : $statusLog->shipping_name;
+        $statusLog->number_plate = $data['number_plate'] ? $data['number_plate'] : $statusLog->number_plate;
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
         //Save
         $statusLog->save();
+
+        $productData = Product::where('id', $statusLog->product_id)->first();
+        $productData->current_location = $data['current_location'];
+        $productData->save();
+
+        $searchLocation = LocationProductLog::where('status_product_log_id', $id)->latest()->first();
+        if ($searchLocation->current_location != $data['current_location']) {
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
+            $locationLog->status_product_log_id = $id;
+            $locationLog->product_id = $statusLog->product_id;
+            $locationLog->current_location = $data['current_location'];
+            $locationLog->created_at = $timeNow;
+            $locationLog->created_by = auth()->user()->fullname;
+            $locationLog->updated_at = null;
+            $locationLog->updated_by = null;
+            $locationLog->save();
+        }
+
+
 
 
         return $statusLog;

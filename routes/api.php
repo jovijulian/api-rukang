@@ -108,7 +108,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/add-new-status/{id}', 'addStatusLogProduct')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
-            Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::post('/update-status-product/{id}', 'updateStatusProduct')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::get('/report-product', 'export');
             Route::post('/datatable-product-status', 'datatableProductPerStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
