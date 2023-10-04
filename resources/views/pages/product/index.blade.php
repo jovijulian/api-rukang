@@ -13,8 +13,7 @@
         <h6>Manajemen data produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/insert" class="btn btn-added remove-role"><img src="assets/img/icons/plus.svg" alt="img"
-            class="me-1">Tambah produk baru</a>
+        <a href="/product/insert" class="btn btn-added remove-role"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Tambah produk baru</a>
       </div>
     </div>
 
@@ -94,7 +93,9 @@
                 <th>Nomor Modul</th>
                 <th>Nomor Bilah</th>
                 <th>Nomor Rak</th>
-                <th>Tanggal Produksi</th>
+                <th>Barcode</th>
+                <th>Tanggal Mulai Produksi</th>
+                <th>Tanggal Selesai roduksi</th>
                 <th>Keterangan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
@@ -210,7 +211,7 @@
             render: function(data) {
               if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                 return `
-                  <div class="ms-2 mb-2">
+                  <div class="ms-2 mb-2 flex align-center">
                     <a class="me-3" href="product/detail/` + data + ` ">
                       <img src="assets/img/icons/eye.svg" alt="img">
                     </a>
@@ -221,12 +222,11 @@
                       <img src="assets/img/icons/delete.svg" alt="img">
                     </a>
                   </div>
-                  <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `">Update Status</a>
-
+                  <a class="btn btn-submit text-white p-1 flex align-center" style="width: 155px" href="product/add-status/` + data + `"><img src="assets/img/icons/plus1.svg" alt="img" class="me-1"> Tambah Status</a>
                 `
               } else {
                 return `
-                  <div class="ms-2 mb-2">
+                  <div class="ms-2 mb-2 flex align-center">
                     <a class="me-3" href="product/detail/` + data + ` ">
                       <img src="assets/img/icons/eye.svg" alt="img">
                     </a>
@@ -234,13 +234,13 @@
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
                   </div>
-                  <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}>Update Status</a>
+                  <a class="btn btn-submit text-white p-1 flex align-center" style="width: 170px" href="product/add-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}><img src="assets/img/icons/plus1.svg" alt="img" class="me-1"> Tambah Status</a>
                 `
               }
             }
           },
           {
-            data: 'category'
+            data: 'category',
           },
           {
             data: 'segment_name'
@@ -255,7 +255,16 @@
             data: 'shelf_name'
           },
           {
-            data: 'production_date',
+            data: 'barcode'
+          },
+          {
+            data: 'start_production_date',
+            render: function(data) {
+              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+            }
+          },
+          {
+            data: 'finish_production_date',
             render: function(data) {
               return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
             }
@@ -281,7 +290,7 @@
           {
             data: 'created_by'
           },
-        ],
+        ]
       })
       
 
@@ -494,5 +503,6 @@
         })
       }
     }
+
   </script>
 @endsection

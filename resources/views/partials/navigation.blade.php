@@ -124,8 +124,15 @@
           <ul>
             <li><a href="/tool" class="{{ request()->is('tool*') ? 'active' : '' }}"><i data-feather="tool"></i><span>Alat</span></a></li>
             <li><a href="/material" class="{{ request()->is('material*') ? 'active' : '' }}"><i data-feather="layers"></i><span>Bahan</span></a></li>
-            <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
-            <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li>
+            {{-- <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
+            <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li> --}}
+            <li class="submenu">
+              <a href="javascript:void(0);" class="{{ request()->is('product*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk</span><span class="menu-arrow"></span></a>
+              <ul>
+                <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}">Tambah Produk</a></li>
+                <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}">Semua Produk</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
         <li class="submenu-open master-data">
