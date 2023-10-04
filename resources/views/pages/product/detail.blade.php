@@ -12,7 +12,7 @@
         <h6>Informasi detail produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added update-status remove-role">Update Status Produk</a>
+        <a href="/product/add-status" class="btn btn-added update-status remove-role"><img src="{{ asset('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Status Produk</a>
       </div>
     </div>
     <!-- /add -->
@@ -182,7 +182,7 @@
 
           console.log(product);
 
-          $('.update-status').attr('href', '/product/update-status/' + product.id)
+          $('.update-status').attr('href', '/product/add-status/' + product.id)
 
           JsBarcode("#barcode", product.barcode)
 
@@ -206,9 +206,9 @@
             $('#status-table').append(
               `
                 <tr>
-                  <td>
-                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
-                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white"  ${hiddenRole && 'hidden'}>Ubah foto status</a>
+                  <td class="flex align-center">
+                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit me-3">Lihat Foto</button>
+                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 text-white" style="width: 50px" ${hiddenRole && 'hidden'}><img src="{{ asset('assets/img/icons/edit.svg') }}" alt="img" class="me-1"></a>
                   </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
                   <td>${statusLog.shipping_name ? statusLog.shipping_name : ''}</td>

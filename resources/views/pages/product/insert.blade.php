@@ -38,7 +38,7 @@
                       <label class="col-lg-3 col-form-label">Kategori *</label>
                       <div class="col-lg-9">
                         <select id="category-product" class="form-control select" required>
-                          <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
+                          {{-- <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option> --}}
                         </select>
                       </div>
                     </div>
@@ -46,15 +46,15 @@
                       <label class="col-lg-3 col-form-label">Segmen</label>
                       <div class="col-lg-9">
                         <select id="segment-product" class="form-control select">
-                          <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
+                          {{-- <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option> --}}
                         </select>
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Kelompok *</label>
                       <div class="col-lg-9">
-                        <select id="group-product" class="form-control select">
-                          <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
+                        <select id="group-product" class="form-control select" required>
+                          {{-- <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option> --}}
                         </select>
                       </div>
                     </div>
@@ -82,7 +82,7 @@
                       <label class="col-lg-3 col-form-label">Nomor Modul</label>
                       <div class="col-lg-9">
                         <select id="module-product" class="form-control select">
-                          <option value="pilih modul" selected="selected" disabled>Pilih modul</option>
+                          {{-- <option value="pilih modul" selected="selected" disabled>Pilih modul</option> --}}
                         </select>
                       </div>
                     </div>
@@ -112,7 +112,7 @@
                       <label class="col-lg-3 col-form-label">Nomor Rak</label>
                       <div class="col-lg-9">
                         <select id="shelf" class="form-control select">
-                          <option value="pilih modul" selected="selected" disabled>Pilih rak</option>
+                          {{-- <option value="pilih modul" selected="selected" disabled>Pilih rak</option> --}}
                         </select>
                       </div>
                     </div>
@@ -123,7 +123,7 @@
                       </div>
                     </div> --}}
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tanggal Produksi</label>
+                      <label class="col-lg-3 col-form-label">Tanggal Mulai Produksi</label>
                       <div class="col-lg-9">
                         <input type="date" id="production-date" class="form-control text-sm">
                       </div>
@@ -158,18 +158,24 @@
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Status</label>
+                      <label class="col-lg-3 col-form-label">Status *</label>
                       <div class="col-lg-9">
-                        <select id="status-product" class="form-control select">
-                          <option value="pilih status" selected="selected" disabled>Pilih status</option>
+                        <select id="status-product" class="form-control select" required>
+                          {{-- <option value="pilih status" selected="selected" disabled>Pilih status</option> --}}
                         </select>
                       </div>
                     </div>
                     <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Tanggal Status *</label>
+                      <div class="col-lg-9">
+                        <input type="date" id="status-date" class="form-control text-sm" required>
+                      </div>
+                    </div>                    
+                    <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Ekspedisi</label>
                       <div class="col-lg-9">
                         <select id="shipping" class="form-control select" disabled>
-                          <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
+                          {{-- <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option> --}}
                         </select>
                       </div>
                     </div>
@@ -265,6 +271,7 @@
 
       function getModule() {
         $('#module-product').select2({
+          placeholder: "Pilih modul",
           ajax: {
             url: "{{ url('api/v1/module/index') }}",
             headers: config.headers,
@@ -299,6 +306,7 @@
 
       function getCategory() {
         $('#category-product').select2({
+          placeholder: "Pilih kategori",
           ajax: {
             url: "{{ url('api/v1/category/indexForProduct') }}",
             headers: config.headers,
@@ -333,6 +341,7 @@
 
       function getGroup() {
         $('#group-product').select2({
+          placeholder: "Pilih kelompok",
           ajax: {
             url: "{{ url('api/v1/group/index') }}",
             headers: config.headers,
@@ -369,6 +378,7 @@
         let segments = []
 
         $('#segment-product').select2({
+          placeholder: "Pilih segmen",
           ajax: {
             url: "{{ url('api/v1/segment/index') }}",
             headers: config.headers,
@@ -412,6 +422,7 @@
 
       function getShelf() {
         $('#shelf').select2({
+          placeholder: "Pilih rak",
           ajax: {
             url: "{{ url('api/v1/shelf/index') }}",
             headers: config.headers,
@@ -446,6 +457,7 @@
 
       function getStatus() {
         $('#status-product').select2({
+          placeholder: "Pilih status",
           ajax: {
             url: "{{ url('api/v1/status-product/index') }}",
             headers: config.headers,
@@ -606,13 +618,14 @@
           module_id: $('#module-product').val() ? $('#module-product').val() : '',
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val() ? $('#no-bilah').val() : '',
-          production_date: $('#production-date').val(),
+          start_production_date: $('#production-date').val(),
           shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
           shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
           description: $('#description-product').val() ? $('#description-product').val() : "",
           delivery_date: $('#delivery-date').val(),
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
+          status_date: $('#status-date').val(),
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           note: $('#note').val(),
           shipping_id: $('#shipping').val() ? $('#shipping').val() : '',

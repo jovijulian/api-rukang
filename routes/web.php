@@ -106,7 +106,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/', 'index');
     Route::get('product/detail/{id}', 'detail');
     Route::get('product/insert', 'insert');
-    Route::get('product/update-status/{id}', 'updateStatus');
+    Route::get('product/add-status/{id}', 'addStatus');
     Route::get('product/edit/{id}', 'edit');
     Route::get('product/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('product/edit-location/{id}', 'editLocation');

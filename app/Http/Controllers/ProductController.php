@@ -16,9 +16,9 @@ class ProductController extends Controller
         return view('pages.product.detail', ['id' => $id]);
     }
 
-    public function updateStatus($id)
+    public function addStatus($id)
     {
-        return view('pages.product.update-status', ['id' => $id]);
+        return view('pages.product.add-status', ['id' => $id]);
     }
 
     public function insert()
