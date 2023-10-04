@@ -303,7 +303,8 @@ class ProductController extends Controller
         $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
-        $productData->production_date = $data['production_date'];
+        $productData->start_production_date = $data['start_production_date'];
+        $productData->finish_production_date = $data['finish_production_date'];
         $productData->shelf_id = $data['shelf_id'];
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
@@ -609,7 +610,8 @@ class ProductController extends Controller
                 $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR description LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
@@ -905,7 +907,8 @@ class ProductController extends Controller
                 $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR description LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
