@@ -809,4 +809,80 @@ class ProductController extends Controller
         $segment = $request->has('segment') ? $request->input('segment') : null;
         return Excel::download(new ProductExport($segment), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
+
+    public function datatableProductPerStatus(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->has('order.0.column')] ? 'barcode'  : $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Product::count();
+        $filterStatus = $request->input('status_id');
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->where('products.status_id', $filterStatus)
+                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND barcode LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR category LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR description LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->where('products.status_id', $filterStatus)
+                ->whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Product::whereRaw($conditions)->count();
+        }
+
+        // FILTER DATA
+
+
+
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
+    }
 }
