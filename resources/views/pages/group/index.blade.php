@@ -166,9 +166,6 @@
                     <a class="me-3" href="/group/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
-                    <a class="me-3" onclick="deleteData('` + data + `')">
-                      <img src="assets/img/icons/delete.svg" alt="img">
-                    </a>
                   `
                 } else {
                   return `

@@ -22,6 +22,7 @@ class StatusProductLogResource extends JsonResource
             'product_id' => $this->product_id,
             'status_id' => $this->status_id,
             'status_name' => $this->status_name,
+            'status_date' => $this->status_date,
             'status_photo' => $this->status_photo,
             'status_photo2' => $this->status_photo2,
             'status_photo3' => $this->status_photo3,

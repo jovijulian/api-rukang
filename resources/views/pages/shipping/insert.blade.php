@@ -31,7 +31,7 @@
             <div class="card-body p-4">
               <form id="insert-shipping-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Ekspedisi</label>
+                  <label class="col-lg-2 col-form-label">Nama Ekspedisi *</label>
                   <div class="col-lg-10">
                     <input type="text" id="shipping" class="form-control" placeholder="Masukan nama ekspedisi" required>
                   </div>

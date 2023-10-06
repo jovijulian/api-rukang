@@ -26,8 +26,8 @@ class SegmentController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'id';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'segment_name';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
@@ -71,7 +71,7 @@ class SegmentController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'segment_name' => ['required', 'string', 'min:1', 'max:50'],
+            'segment_name' => ['required', 'string', 'min:1', 'max:50', 'unique:segments,segment_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -223,50 +223,50 @@ class SegmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $segment = Segment::find($id);
-        if ($segment == null) {
-            throw new \Exception("Segmen tidak ada", 404);
-        }
+    //     $segment = Segment::find($id);
+    //     if ($segment == null) {
+    //         throw new \Exception("Segmen tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('segment_id', $segment->id)->first();
+    //     $product = Product::query()->where('segment_id', $segment->id)->first();
 
-        if ($product != null) {
-            return throw new \Exception("Data Segmen digunakan oleh Produk", 409);
-        }
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Segmen digunakan oleh Produk", 409);
+    //     }
 
-        $segment->deleted_by = auth()->user()->fullname;
-        $segment->save();
+    //     $segment->deleted_by = auth()->user()->fullname;
+    //     $segment->save();
 
-        // Soft delete data.
-        $segment->delete();
+    //     // Soft delete data.
+    //     $segment->delete();
 
-        return $segment;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Segmen berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $segment;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Segmen berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {
@@ -278,7 +278,7 @@ class SegmentController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'segment_name'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Segment::count();

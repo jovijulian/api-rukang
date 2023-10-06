@@ -31,6 +31,46 @@
             <div class="card-body p-4">
               <form id="update-status-form">
                 <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Status *</label>
+                  <div class="col-lg-9">
+                    <select id="status-product" class="form-control select" required>
+                      {{-- <option value="pilih status" selected="selected" disabled>Pilih status</option> --}}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Tanggal Status *</label>
+                  <div class="col-lg-9">
+                    <input type="date" id="status-date" class="form-control text-sm" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Ekspedisi</label>
+                  <div class="col-lg-9">
+                    <select id="shipping" class="form-control select" disabled>
+                      <option value="pilih ekspedisi" selected="selected" disabled>Pilih ekspedisi</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Plat Nomor</label>
+                  <div class="col-lg-9">
+                    <input type="text" id="number-plate" class="form-control" placeholder="Masukan plat nomor" disabled>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
+                  <div class="col-lg-9">
+                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Catatan</label>
+                  <div class="col-lg-9">
+                    <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                   <div class="col-lg-9">
                     <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple>
@@ -38,7 +78,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Update Status</button>
+                  <button type="submit" class="btn btn-primary">Ubah Status</button>
                 </div>
               </form>
             </div>
@@ -92,6 +132,95 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
+
+      getStatus()
+      getShipping()
+            
+      function getStatus() {
+        $('#status-product').select2({
+          placeholder: 'Pilih status',
+          ajax: {
+            url: "{{ url('api/v1/status-product/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.status,
+                    id: item.id,
+                    location: item.need_expedition
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            }
+          },
+          cache: true
+        })
+        
+        $('#status-product').on('change', function(e) {
+          const needExpedition = $(this).select2('data')[0].location
+
+          if (needExpedition) {
+            $('#shipping').removeAttr('disabled')
+
+            $('#number-plate').removeAttr('disabled')
+          } else {
+            $('#shipping').select2("enable", false)
+            $("#shipping").val(null).trigger("change")
+            
+            $('#number-plate').attr('disabled', 'disabled')
+            $('#number-plate').val('')
+          }
+        })
+      }
+
+      function getShipping() {
+        $('#shipping').select2({
+          placeholder: "Pilih ekspedisi",
+          ajax: {
+            url: "{{ url('api/v1/shipping/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.shipping_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
       
       getProduct()
 
@@ -102,7 +231,12 @@
             const status = product.status_logs.find(stat => stat.id === '{{ $idStatus }}')
             const location = product.location_logs.find(loc => loc.status_log_id === '{{ $idStatus }}')
 
-            // console.log(location);
+            $('#status-product').append(`<option value="${status.status_id}" selected="selected">${status.status_name}</option>`)
+            $('#status-date').val(status.status_date)
+            status.shipping_id && $('#shipping').append(`<option value="${status.shipping_id}" selected="selected">${status.shipping_name}</option>`)
+            status.number_plate && $('#number-plate').val(status.number_plate)
+            $('#current-location').val(location.current_location)
+            $('#note').val(status.note)
           })
           .catch(err => {
             console.log(err)
@@ -115,6 +249,14 @@
         $('#global-loader').show()
 
         const data = {
+          status_id: $('#status-product').val() ? $('#status-product').val() : '',
+          status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
+          status_date: $('#status-date').val(),
+          note: $('#note').val() ? $('#note').val() : '',
+          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
+          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
+          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val(),
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
           status_photo3: $('#image-status')[0].files[2] ? $('#image-status')[0].files[2] : '',
@@ -124,12 +266,13 @@
           status_photo7: $('#image-status')[0].files[6] ? $('#image-status')[0].files[6] : '',
           status_photo8: $('#image-status')[0].files[7] ? $('#image-status')[0].files[7] : '',
           status_photo9: $('#image-status')[0].files[8] ? $('#image-status')[0].files[8] : '',
+          status_photo10: $('#image-status')[0].files[9] ? $('#image-status')[0].files[9] : '',
         }
 
         // console.log(data)
         // return
 
-        axios.post("{{ url('api/v1/product/multiple-image-status/' . $idStatus) }}", data, config)
+        axios.post("{{ url('api/v1/product/update-status-product/' . $idStatus) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
             sessionStorage.setItem("success", `Status produk berhasil diubah`)

@@ -26,8 +26,8 @@ class StatusToolMaterialController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'id';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'status';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
@@ -71,7 +71,7 @@ class StatusToolMaterialController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'status' => ['required', 'string', 'min:1', 'max:40'],
+            'status' => ['required', 'string', 'min:1', 'max:40', 'unique:status_tool_products,status,NULL,id'],
             'need_expedition' => ['required'],
         ];
 
@@ -225,48 +225,48 @@ class StatusToolMaterialController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $status = StatusToolMaterial::find($id);
-        if ($status == null) {
-            throw new \Exception("Status Alat dan Bahan tidak ada", 404);
-        }
+    //     $status = StatusToolMaterial::find($id);
+    //     if ($status == null) {
+    //         throw new \Exception("Status Alat dan Bahan tidak ada", 404);
+    //     }
 
-        // $product = Product::query()->where('status_id', $status->id)->first();
+    //     // $product = Product::query()->where('status_id', $status->id)->first();
 
-        // if ($product != null) {
-        //     return throw new \Exception("Data Status digunakan oleh Produk", 409);
-        // }
-        $status->deleted_by = auth()->user()->fullname;
-        $status->save();
+    //     // if ($product != null) {
+    //     //     return throw new \Exception("Data Status digunakan oleh Produk", 409);
+    //     // }
+    //     $status->deleted_by = auth()->user()->fullname;
+    //     $status->save();
 
-        $status->delete();
+    //     $status->delete();
 
-        return $status;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Status Alat dan Bahan berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $status;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Status Alat dan Bahan berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {
@@ -278,7 +278,7 @@ class StatusToolMaterialController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'status'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = StatusToolMaterial::count();

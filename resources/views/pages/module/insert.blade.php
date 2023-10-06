@@ -31,7 +31,7 @@
             <div class="card-body p-4">
               <form id="insert-module-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Module</label>
+                  <label class="col-lg-2 col-form-label">No Modul *</label>
                   <div class="col-lg-10">
                     <input type="text" id="module" class="form-control" placeholder="Masukan nomor modul" required>
                   </div>

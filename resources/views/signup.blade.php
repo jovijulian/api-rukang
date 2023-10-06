@@ -21,22 +21,14 @@
             </div>
             <form id="signup-form">
               <div class="form-login">
-                <label for="fullname">Nama Lengkap</label>
+                <label for="fullname">Nama Lengkap *</label>
                 <div class="form-addons">
                   <input type="text" id="fullname" placeholder="Masukan nama lengkap anda" required>
                   <img src="assets/img/icons/users1.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
-                <label for="group">Kelompok</label>
-                <div class="form-addons">
-                  <select id="group" class="form-control select">
-                    <option selected="selected" disabled>Pilih kelompok anda</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-login">
-                <label for="role">Role</label>
+                <label for="role">Role *</label>
                 <div class="form-addons">
                   <select id="role" class="form-control select">
                     <option selected="selected" disabled>Pilih role anda</option>
@@ -49,28 +41,28 @@
                 </div>
               </div>
               <div class="form-login">
-                <label for="email">Email</label>
+                <label for="email">Email *</label>
                 <div class="form-addons">
                   <input type="email" id="email" placeholder="Masukan email anda" required>
                   <img src="assets/img/icons/mail.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
-                <label for="birthdate">Tanggal Lahir</label>
+                <label for="birthdate">Tanggal Lahir *</label>
                 <div class="form-addons">
                   <input type="date" id="birthdate" required>
                   {{-- <img src="assets/img/icons/mail.svg" alt="img"> --}}
                 </div>
               </div>
               <div class="form-login">
-                <label for="phone">Nomor Telepon</label>
+                <label for="phone">Nomor Telepon *</label>
                 <div class="form-addons">
                   <input type="text" id="phone" placeholder="Masukan nomor telepon anda" required>
                   <img src="assets/img/icons/phone.svg" alt="img">
                 </div>
               </div>
               <div class="form-login">
-                <label for="address">Alamat</label>
+                <label for="address">Alamat *</label>
                 <div class="form-addons">
                   {{-- <input type="text" id="address" placeholder="Masukan alamat anda" required> --}}
                   <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan alamat anda" required></textarea>
@@ -78,14 +70,14 @@
                 </div>
               </div>
               <div class="form-login">
-                <label for="password">Password</label>
+                <label for="password">Password *</label>
                 <div class="pass-group">
                   <input type="password" id="password" class="pass-input " placeholder="Masukan password anda" required>
                   <span class="fas toggle-password fa-eye-slash"></span>
                 </div>
               </div>
               <div class="form-login">
-                <label for="password-confirm">Konfirmasi Password</label>
+                <label for="password-confirm">Konfirmasi Password *</label>
                 <div class="pass-group">
                   <input type="password" id="password-confirm" class="pass-input "
                     placeholder="Masukan konfirmasi password" required>
@@ -126,43 +118,6 @@
         }
       })
 
-      // GET KELOMPOK
-      $('#group').select2({
-        ajax: {
-          url: "{{ url('api/v1/group/group') }}",
-          dataType: 'json',
-          type: "GET",
-          data: function(params) {
-            var query = {
-              search: params.term,
-              page: params.page || 1
-            }
-            return query
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1
-
-            return {
-              results: $.map(data.data.items, function(item) {
-                return {
-                  text: item.group_name,
-                  id: item.id,
-                }
-              }),
-              pagination: {
-                more: data.page_info.last_page != params.page
-              }
-            }
-          }
-        }
-      })
-
-      // $('#role').select2({
-      //   placeholder: 'Pilih role anda',
-      //   allowClear: true
-      // })
-
-
       // SUBMIT FORM
       $('#signup-form').on('submit', function() {
         event.preventDefault()
@@ -175,8 +130,6 @@
           phone_number: $('#phone').val(),
           address: $('#address').val(),
           password: $('#password').val(),
-          group_id: $('#group').val(),
-          group_name: $('#group').find("option:selected").text(),
           isAdmin: $('#role').val(),
         }
 

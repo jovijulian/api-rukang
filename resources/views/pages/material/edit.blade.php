@@ -31,14 +31,22 @@
             </div> --}}
             <div class="card-body">
               <form id="edit-product-form">
-                <h5 class="card-title mb-4">Kategori</h5>
+                <h5 class="card-title mb-4">Kategori, Kelompok</h5>
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Kategori</label>
+                      <label class="col-lg-3 col-form-label">Kategori *</label>
                       <div class="col-lg-9">
                         <select id="category" class="form-control select" disabled>
                           <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-form-label">Kelompok *</label>
+                      <div class="col-lg-9">
+                        <select id="group" class="form-control select">
+                          <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
                         </select>
                       </div>
                     </div>
@@ -51,13 +59,13 @@
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nama Bahan</label>
+                      <label class="col-lg-3 col-form-label">Nama Bahan *</label>
                       <div class="col-lg-9">
                         <input type="text" id="material-name" class="form-control" placeholder="Masukan nama bahan" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Catatan</label>
+                      <label class="col-lg-3 col-form-label">Catatan *</label>
                       <div class="col-lg-9">
                         <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan" required></textarea>
                       </div>
@@ -109,6 +117,7 @@
       }
 
       getCategory()
+      getGroup()
       getDetailProduct()
 
 
@@ -154,6 +163,40 @@
         })
       }
 
+      function getGroup() {
+        $('#group').select2({
+          ajax: {
+            url: "{{ url('api/v1/group/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.group_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
+
       function getDetailProduct() {
         axios.get("{{ url('api/v1/material/detail/' . $id) }}", config)
           .then(res => {
@@ -162,6 +205,7 @@
             // console.log(data)
 
             $("#category").append(`<option value=${data.category_id} selected>${data.category}</option>`)
+            $("#group").append(`<option value=${data.group_id} selected>${data.group_name}</option>`)
             $('#material-name').val(data.material_name)
             $('#note').val(data.material_note)
           })
@@ -174,6 +218,8 @@
         const data = {
           category_id: $('#category').val() ? $('#category').val() : '',
           category: $('#category').val() ? $('#category').find("option:selected").text() : '',
+          group_id: $('#group').val() ? $('#group').val() : '',
+          group_name: $('#group').val() ? $('#group').find("option:selected").text() : '',
           material_name: $('#material-name').val() ? $('#material-name').val() : "",
           material_note: $('#note').val() ? $('#note').val() : "",
         }

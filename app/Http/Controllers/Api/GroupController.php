@@ -28,8 +28,8 @@ class GroupController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'group_name';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
@@ -162,7 +162,7 @@ class GroupController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'group_name' => ['required', 'string', 'min:1', 'max:100'],
+            'group_name' => ['required', 'string', 'min:1', 'max:100', 'unique:groups,group_name,NULL,id'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -223,48 +223,48 @@ class GroupController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $group = Group::find($id);
-        if ($group == null) {
-            throw new \Exception("Kelompok tidak ada", 404);
-        }
+    //     $group = Group::find($id);
+    //     if ($group == null) {
+    //         throw new \Exception("Kelompok tidak ada", 404);
+    //     }
 
-        $user = User::query()->where('group_id', $group->id)->first();
+    //     $user = User::query()->where('group_id', $group->id)->first();
 
-        if ($user != null) {
-            return throw new \Exception("Data Kelompok digunakan oleh User", 409);
-        }
-        $group->deleted_by = auth()->user()->fullname;
-        $group->save();
+    //     if ($user != null) {
+    //         return throw new \Exception("Data Kelompok digunakan oleh User", 409);
+    //     }
+    //     $group->deleted_by = auth()->user()->fullname;
+    //     $group->save();
 
-        $group->delete();
+    //     $group->delete();
 
-        return $group;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Kelompok berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $group;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Kelompok berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function getGroups(Request $request): JsonResponse
     {
@@ -308,7 +308,7 @@ class GroupController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'group_name'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Group::count();

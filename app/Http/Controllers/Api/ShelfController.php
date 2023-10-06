@@ -26,8 +26,8 @@ class ShelfController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'id';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'shelf_name';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
@@ -71,7 +71,7 @@ class ShelfController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'shelf_name' => ['required', 'string', 'min:1', 'max:40'],
+            'shelf_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shelves,shelf_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -221,49 +221,49 @@ class ShelfController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $shelf = Shelf::find($id);
-        if ($shelf == null) {
-            throw new \Exception("Shelf tidak ada", 404);
-        }
+    //     $shelf = Shelf::find($id);
+    //     if ($shelf == null) {
+    //         throw new \Exception("Shelf tidak ada", 404);
+    //     }
 
-        // $product = Product::query()->where('shelf_id', $shelf->id)->first();
+    //     // $product = Product::query()->where('shelf_id', $shelf->id)->first();
 
-        // if ($product != null) {
-        //     return throw new \Exception("Data Rak digunakan oleh Produk", 409);
-        // }
+    //     // if ($product != null) {
+    //     //     return throw new \Exception("Data Rak digunakan oleh Produk", 409);
+    //     // }
 
-        $shelf->deleted_by = auth()->user()->fullname;
-        $shelf->save();
+    //     $shelf->deleted_by = auth()->user()->fullname;
+    //     $shelf->save();
 
-        $shelf->delete();
+    //     $shelf->delete();
 
-        return $shelf;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Shelf berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $shelf;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Shelf berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {
@@ -275,7 +275,7 @@ class ShelfController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'shelf_name'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Shelf::count();

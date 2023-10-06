@@ -12,7 +12,7 @@
         <h6>Informasi detail produk</h6>
       </div>
       <div class="page-btn">
-        <a href="/product/update-status" class="btn btn-added update-status remove-role">Update Status Produk</a>
+        <a href="/product/add-status" class="btn btn-added update-status remove-role"><img src="{{ asset('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Status Produk</a>
       </div>
     </div>
     <!-- /add -->
@@ -180,19 +180,19 @@
         .then(res => {
           const product = res.data.data.item
 
-          // console.log(product);
+          console.log(product);
 
-          $('.update-status').attr('href', '/product/update-status/' + product.id)
+          $('.update-status').attr('href', '/product/add-status/' + product.id)
 
           JsBarcode("#barcode", product.barcode)
 
-          $("#photo").attr("src", product.status_photo && product.status_photo)
+          $("#photo").attr("src", product.status_photo ? product.status_photo : "{{ url('assets/img/product/product69.jpg') }}")
 
           $('#category').text(product.category ? product.category : '')
           $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
           $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf ? product.shelf : '')
+          $('#shelf-number').text(product.shelf.shelf_name   ? product.shelf.shelf_name  : '')
           $('#description').text(product.description ? product.description : '')
           $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
@@ -206,9 +206,9 @@
             $('#status-table').append(
               `
                 <tr>
-                  <td>
-                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit">Lihat Foto</button>
-                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 btn btn-submit text-white"  ${hiddenRole && 'hidden'}>Ubah foto status</a>
+                  <td class="flex align-center">
+                    <button onclick="detailPhoto('${statusLog.status_photo}', '${statusLog.status_photo2}', '${statusLog.status_photo3}', '${statusLog.status_photo4}', '${statusLog.status_photo5}', '${statusLog.status_photo6}', '${statusLog.status_photo7}', '${statusLog.status_photo8}', '${statusLog.status_photo9}', '${statusLog.status_photo10}')" class="p-2 btn btn-submit me-3">Lihat Foto</button>
+                    <a href="/product/edit-status/${product.id}/${statusLog.id}" class="p-2 text-white" style="width: 50px" ${hiddenRole && 'hidden'}><img src="{{ asset('assets/img/icons/edit.svg') }}" alt="img" class="me-1"></a>
                   </td>
                   <td>${statusLog.status_name ? statusLog.status_name : ''}</td>
                   <td>${statusLog.shipping_name ? statusLog.shipping_name : ''}</td>
@@ -216,7 +216,7 @@
                   <td>${statusLog.note ? statusLog.note : ''}</td>
                   <td>${new Date(statusLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${statusLog.created_by ? statusLog.created_by : ''}</td>
-                  <td>${new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${statusLog.updated_at ? new Date(statusLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${statusLog.updated_by ? statusLog.updated_by : ''}</td>
                 </tr>
               `
@@ -231,10 +231,10 @@
                 <tr>
                   <td>${locationLog.current_location ? link : ''}</td>
                   <td>${locationLog.current_location ? locationLog.current_location : ''}</td>
-                  <td>${locationLog.status.status_name}</td>
+                  <td>${locationLog.status.status_name ? locationLog.status.status_name : ''}</td>
                   <td>${new Date(locationLog.created_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
                   <td>${locationLog.created_by ? locationLog.created_by : ''}</td>
-                  <td>${new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-')}</td>
+                  <td>${locationLog.updated_at ? new Date(locationLog.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : ''}</td>
                   <td>${locationLog.updated_by ? locationLog.updated_by : ''}</td>
                 </tr>
               `

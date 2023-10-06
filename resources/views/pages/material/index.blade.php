@@ -151,7 +151,7 @@
               render: function(data) {
                 if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
                   return `
-                    <div class="me-5">
+                    <div class="ms-2 mb-2">
                       <a class="me-3" href="material/detail/` + data + ` ">
                         <img src="assets/img/icons/eye.svg" alt="img">
                       </a>
@@ -162,10 +162,11 @@
                         <img src="assets/img/icons/delete.svg" alt="img">
                       </a>
                     </div>
+                    <a class="btn btn-submit text-white p-1" href="material/update-status/` + data + `">Update Status</a>
                   `
                 } else {
                   return `
-                    <div class="me-5">
+                    <div class="ms-2 mb-2">
                       <a class="me-3" href="material/detail/` + data + ` ">
                         <img src="assets/img/icons/eye.svg" alt="img">
                       </a>
@@ -173,6 +174,7 @@
                         <img src="assets/img/icons/edit.svg" alt="img">
                       </a>
                     </div>
+                    <a class="btn btn-submit text-white p-1" href="material/update-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}>Update Status</a>
                   `
                 }
               }

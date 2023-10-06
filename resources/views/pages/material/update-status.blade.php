@@ -55,7 +55,7 @@
                 <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                   <div class="col-lg-9">
-                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
+                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -171,17 +171,12 @@
             $('#shipping').removeAttr('disabled')
 
             $('#number-plate').removeAttr('disabled')
-
-            $('#current-location').removeAttr('disabled')
           } else {
             $('#shipping').select2("enable", false)
             $("#shipping").val(null).trigger("change")
             
             $('#number-plate').attr('disabled', 'disabled')
             $('#number-plate').val('')
-
-            $('#current-location').attr('disabled', 'disabled')
-            $('#current-location').val('')
           }
         })
       }

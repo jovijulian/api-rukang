@@ -21,6 +21,12 @@
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{{ url('assets/img/icons/filter.svg') }}" alt="img">
+                <span><img src="{{ url('assets/img/icons/closes.svg') }}" alt="img"></span>
+              </a>
+            </div>
             <div class="search-input">
               <a class="btn btn-searchset"><img src="assets/img/icons/search-white.svg" alt="img"></a>
             </div>
@@ -28,12 +34,51 @@
           <div class="wordset">
             <ul>
               <li>
-                <a onclick="toExcel()" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
+                <a onclick="toExcel()" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
+                    src="assets/img/icons/excel.svg" alt="img"></a>
               </li>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg" alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg"
+                    alt="img"></a>
               </li>
             </ul>
+          </div>
+        </div>
+
+        <div class="card mb-0" id="filter_inputs">
+          <div class="card-body pb-0">
+            <div class="row">
+              <div class="col-lg-12 col-sm-12">
+                <div class="row">
+                  <div class="col-lg col-sm-6 col-12">
+                    <div class="form-group">
+                      <select id="category-filter" class="form-control select filter-product">
+                        <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg col-sm-6 col-12">
+                    <div class="form-group">
+                      <select id="segment-filter" class="form-control select filter-product">
+                        <option value="pilih kategori" selected="selected" disabled>Pilih segmen</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg col-sm-6 col-12">
+                    <div class="form-group">
+                      <select id="module-filter" class="form-control select filter-product">
+                        <option value="pilih kategori" selected="selected" disabled>Pilih modul</option>
+                      </select>
+                    </div>
+                  </div>
+                  {{-- <div class="col-lg-1 col-sm-6 col-12">
+                    <div class="form-group">
+                      <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
+                    </div>
+                  </div> --}}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -48,7 +93,9 @@
                 <th>Nomor Modul</th>
                 <th>Nomor Bilah</th>
                 <th>Nomor Rak</th>
-                <th>Tanggal Produksi</th>
+                <th>Barcode</th>
+                <th>Tanggal Mulai Produksi</th>
+                <th>Tanggal Selesai roduksi</th>
                 <th>Keterangan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
@@ -68,9 +115,9 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
-    
+
     let hiddenRole = false
-    
+
     if (currentUser.isAdmin == 4) {
       hiddenRole = true
     } else if (currentUser.isAdmin == 5) {
@@ -104,114 +151,268 @@
       // }
 
       // GET DATA
-      const table = $('#product-table')
+      // const table = $('#product-table')
+
+      let categoryFilter = $('#category-filter').val()
+      let segmentFilter = $('#segment-filter').val()
+      let moduleFilter = $('#module-filter').val()
 
 
-      getData()
 
       // GET PRODUCT
-      function getData() {
-        table.DataTable({
-          responsive: true,
-          processing: true,
-          serverSide: true,
-          bInfo: true,
-          sDom: 'frBtlpi',
-          ordering: true, 
-			    pagingType: 'numbers', 
-          language: {
-            search: ' ',
-            sLengthMenu: '_MENU_',
-            searchPlaceholder: "Search...",
-            info: "_START_ - _END_ of _TOTAL_ items",
+      const table = $('#product-table').DataTable({
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        bInfo: true,
+        sDom: 'frBtlpi',
+        ordering: true,
+        pagingType: 'numbers',
+        language: {
+          search: ' ',
+          sLengthMenu: '_MENU_',
+          searchPlaceholder: "Search...",
+          info: "_START_ - _END_ of _TOTAL_ items",
+        },
+        initComplete: (settings, json) => {
+          $('.dataTables_filter').appendTo('.search-input')
+        },
+        ajax: {
+          url: "{{ url('api/v1/product/datatable') }}",
+          dataType: 'json',
+          type: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': token,
+            'Authorization': `${tokenType} ${accessToken}`
           },
-          initComplete: (settings, json)=>{
-            $('.dataTables_filter').appendTo('.search-input')
+          data: function(d) {
+            d.category = categoryFilter
+            d.segment = segmentFilter
+            d.module = moduleFilter
+            return d
           },
-          ajax: {
-            url: "{{ url('api/v1/product/datatable') }}",
-            dataType: 'json',
-            type: 'POST',
-            headers: {
-              'X-CSRF-TOKEN': token,
-              'Authorization': `${tokenType} ${accessToken}`
+          error: function(err) {
+            console.log(err)
+          }
+        },
+        columns: [
+          {
+            data: 'id',
+            orderable: false,
+            searchable: false,
+            render: function(data, type, row, meta) {
+              return meta.row + meta.settings._iDisplayStart + 1;
             },
-            error: function(err) {
-              console.log(err)
+          },
+          {
+            data: 'id',
+            orderable: false,
+            searchable: false,
+            render: function(data) {
+              if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
+                return `
+                  <div class="ms-2 mb-2 flex align-center">
+                    <a class="me-3" href="product/detail/` + data + ` ">
+                      <img src="assets/img/icons/eye.svg" alt="img">
+                    </a>
+                    <a class="me-3" href="/product/edit/` + data + `">
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                    <a class="me-3" onclick="deleteData('` + data + `')">
+                      <img src="assets/img/icons/delete.svg" alt="img">
+                    </a>
+                  </div>
+                  <a class="btn btn-submit text-white p-1 flex align-center" style="width: 155px" href="product/add-status/` + data + `"><img src="assets/img/icons/plus1.svg" alt="img" class="me-1"> Tambah Status</a>
+                `
+              } else {
+                return `
+                  <div class="ms-2 mb-2 flex align-center">
+                    <a class="me-3" href="product/detail/` + data + ` ">
+                      <img src="assets/img/icons/eye.svg" alt="img">
+                    </a>
+                    <a class="me-3" href="/product/edit/` + data + `" ${hiddenRole && 'hidden'}>
+                      <img src="assets/img/icons/edit.svg" alt="img">
+                    </a>
+                  </div>
+                  <a class="btn btn-submit text-white p-1 flex align-center" style="width: 170px" href="product/add-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}><img src="assets/img/icons/plus1.svg" alt="img" class="me-1"> Tambah Status</a>
+                `
+              }
             }
           },
-          columns: [
-            {
-              data: 'id',
-              orderable: false,
-              searchable: false,
-              render: function (data, type, row, meta) {
-                return meta.row + meta.settings._iDisplayStart + 1;
-              },
-            },
-            {
-              data: 'id',
-              orderable: false,
-              searchable: false,
-              render: function(data) {
-                if (currentUser.isAdmin == 1 || currentUser.isAdmin == 2) {
-                  return `
-                    <div class="ms-2 mb-2">
-                      <a class="me-3" href="product/detail/` + data + ` ">
-                        <img src="assets/img/icons/eye.svg" alt="img">
-                      </a>
-                      <a class="me-3" href="/product/edit/` + data + `">
-                        <img src="assets/img/icons/edit.svg" alt="img">
-                      </a>
-                      <a class="me-3" onclick="deleteData('` + data + `')">
-                        <img src="assets/img/icons/delete.svg" alt="img">
-                      </a>
-                    </div>
-                    <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `">Update Status</a>
+          {
+            data: 'category',
+          },
+          {
+            data: 'segment_name'
+          },
+          {
+            data: 'module_number'
+          },
+          {
+            data: 'bilah_number'
+          },
+          {
+            data: 'shelf_name'
+          },
+          {
+            data: 'barcode'
+          },
+          {
+            data: 'start_production_date',
+            render: function(data) {
+              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+            }
+          },
+          {
+            data: 'finish_production_date',
+            render: function(data) {
+              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+            }
+          },
+          {
+            data: 'description'
+          },
+          {
+            data: 'delivery_date',
+            render: function(data) {
+              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+            }
+          },
+          {
+            data: 'status'
+          },
+          {
+            data: 'created_at',
+            render: function(data) {
+              return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+            }
+          },
+          {
+            data: 'created_by'
+          },
+        ]
+      })
+      
 
-                  `                  
-                } else {
-                  return `
-                    <div class="ms-2 mb-2">
-                      <a class="me-3" href="product/detail/` + data + ` ">
-                        <img src="assets/img/icons/eye.svg" alt="img">
-                      </a>
-                      <a class="me-3" href="/product/edit/` + data + `" ${hiddenRole && 'hidden'}>
-                        <img src="assets/img/icons/edit.svg" alt="img">
-                      </a>
-                    </div>
-                    <a class="btn btn-submit text-white p-1" href="product/update-status/` + data + `" ${currentUser.isAdmin == 5 && 'hidden'}>Update Status</a>
-                  `
+      getCategory()
+      getSegment()
+      getModule()
+      filterData()
+
+      function getCategory() {
+        $('#category-filter').select2({
+          ajax: {
+            url: "{{ url('api/v1/category/indexForProduct') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.category,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
                 }
               }
             },
-            {data: 'category'},
-            {data: 'segment_name'},
-            {data: 'module_number'},
-            {data: 'bilah_number'},
-            {data: 'shelf_name'},
-            {
-              data: 'production_date',
-              render: function (data) {
-                return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+            cache: true
+          }
+        })
+      }
+
+      function getSegment() {
+        let segments = []
+
+        $('#segment-filter').select2({
+          ajax: {
+            url: "{{ url('api/v1/segment/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+              segments = data.data.items
+              
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.segment_name,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
               }
             },
-            {data: 'description'},
-            {
-              data: 'delivery_date',
-              render: function (data) {
-                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+            cache: true,
+          }
+        })
+      }
+
+      function getModule() {
+        $('#module-filter').select2({
+          ajax: {
+            url: "{{ url('api/v1/module/index') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.module_number,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
               }
             },
-            {data: 'status'},
-            {
-              data: 'created_at',
-              render: function (data) {
-                return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
-              }
-            },
-            {data: 'created_by'},
-          ],
+            cache: true
+          }
+        })
+      }
+
+      function filterData() {
+        $('.filter-product').on('change', () => {
+          categoryFilter = $('#category-filter').val()
+          segmentFilter = $('#segment-filter').val()
+          moduleFilter = $('#module-filter').val()
+          table.ajax.reload(null, false)
+
+          console.log(categoryFilter, segmentFilter, moduleFilter)
         })
       }
     })
@@ -246,8 +447,7 @@
         // title: 'Pilih Segmen',
         // icon: 'question',
         padding: '3em',
-        html:
-          `
+        html: `
             <select id="segment-product" class="form-control select text-start">
               <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
             </select>
@@ -288,7 +488,7 @@
                   }
                 }),
                 pagination: {
-                    more: data.page_info.last_page != params.page
+                  more: data.page_info.last_page != params.page
                 }
               }
             },

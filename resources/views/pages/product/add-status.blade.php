@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Update Status</title>
+  <title>Tambah Status</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Update Status</h3>
+            <h3 class="page-title">Tambah Status</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{ url('/product') }}">Produk</a></li>
-              <li class="breadcrumb-item active">Update Status Produk</li>
+              <li class="breadcrumb-item active">Tambah Status Produk</li>
             </ul>
           </div>
         </div>
@@ -31,13 +31,19 @@
             <div class="card-body p-4">
               <form id="update-status-form">
                 <div class="form-group row">
-                  <label class="col-lg-3 col-form-label">Status</label>
+                  <label class="col-lg-3 col-form-label">Status *</label>
                   <div class="col-lg-9">
-                    <select id="status-product" class="form-control select">
-                      <option value="pilih status" selected="selected" disabled>Pilih status</option>
+                    <select id="status-product" class="form-control select" required>
+                      {{-- <option value="pilih status" selected="selected" disabled>Pilih status</option> --}}
                     </select>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-lg-3 col-form-label">Tanggal Status *</label>
+                  <div class="col-lg-9">
+                    <input type="date" id="status-date" class="form-control text-sm" required>
+                  </div>
+                </div>    
                 <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Ekspedisi</label>
                   <div class="col-lg-9">
@@ -55,7 +61,7 @@
                 <div class="form-group row">
                   <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                   <div class="col-lg-9">
-                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini" disabled>
+                    <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -72,7 +78,7 @@
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Update Status</button>
+                  <button type="submit" class="btn btn-primary">Tambah Status</button>
                 </div>
               </form>
             </div>
@@ -165,23 +171,16 @@
         $('#status-product').on('change', function(e) {
           const needExpedition = $(this).select2('data')[0].location
 
-          // console.log(needExpedition)
-          
           if (needExpedition) {
             $('#shipping').removeAttr('disabled')
 
             $('#number-plate').removeAttr('disabled')
-
-            $('#current-location').removeAttr('disabled')
           } else {
             $('#shipping').select2("enable", false)
             $("#shipping").val(null).trigger("change")
             
             $('#number-plate').attr('disabled', 'disabled')
             $('#number-plate').val('')
-
-            $('#current-location').attr('disabled', 'disabled')
-            $('#current-location').val('')
           }
         })
       }
@@ -229,6 +228,12 @@
         const data = {
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status_name: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
+          status_date: $('#status-date').val(),
+          note: $('#note').val() ? $('#note').val() : '',
+          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
+          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
+          number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
+          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val(),
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
           status_photo3: $('#image-status')[0].files[2] ? $('#image-status')[0].files[2] : '',
@@ -239,20 +244,15 @@
           status_photo8: $('#image-status')[0].files[7] ? $('#image-status')[0].files[7] : '',
           status_photo9: $('#image-status')[0].files[8] ? $('#image-status')[0].files[8] : '',
           status_photo10: $('#image-status')[0].files[9] ? $('#image-status')[0].files[9] : '',
-          note: $('#note').val() ? $('#note').val() : '',
-          shipping_id: $('#shipping').val() ? $('#shipping').val() : '',
-          shipping_name: $('#shipping').val() ? $('#shipping').find("option:selected").text() : '',
-          number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
-          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val()
         }
 
         // console.log(data)
         // return
 
-        axios.post("{{ url('api/v1/product/update-status/' . $id) }}", data, config)
+        axios.post("{{ url('api/v1/product/add-new-status/' . $id) }}", data, config)
           .then(res => {
             const produk = res.data.data.item
-            sessionStorage.setItem("success", `Status produk berhasil diupdate`)
+            sessionStorage.setItem("success", `Status produk berhasil ditambahkan`)
             window.location.href = `{{ url('/product/detail/${res.data.data.item.product_id}') }}`
           })
           .catch(err => {
@@ -271,7 +271,7 @@
 
             Swal.fire({
               icon: 'error',
-              title: 'Status produk gagal diupdate',
+              title: 'Status produk gagal ditambahkan',
               text: errorMessage
             })
           })

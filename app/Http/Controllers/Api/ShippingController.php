@@ -26,8 +26,8 @@ class ShippingController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'id';
-            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $sort = $request->has('sort') ? $request->input('sort') : 'shipping_name';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
             if ($limit > 10) {
@@ -71,7 +71,7 @@ class ShippingController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'shipping_name' => ['required', 'string', 'min:1', 'max:40'],
+            'shipping_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shippings,shipping_name,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -221,47 +221,47 @@ class ShippingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $shipping = Shipping::find($id);
-        if ($shipping == null) {
-            throw new \Exception("Ekspedisi tidak ada", 404);
-        }
+    //     $shipping = Shipping::find($id);
+    //     if ($shipping == null) {
+    //         throw new \Exception("Ekspedisi tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('shipping_id', $shipping->id)->first();
-        if ($product != null) {
-            return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
-        }
-        $shipping->deleted_by = auth()->user()->fullname;
-        $shipping->save();
+    //     $product = Product::query()->where('shipping_id', $shipping->id)->first();
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
+    //     }
+    //     $shipping->deleted_by = auth()->user()->fullname;
+    //     $shipping->save();
 
-        $shipping->delete();
+    //     $shipping->delete();
 
-        return $shipping;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Ekspedisi berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $shipping;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Ekspedisi berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {
@@ -273,7 +273,7 @@ class ShippingController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'shipping_name'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Shipping::count();

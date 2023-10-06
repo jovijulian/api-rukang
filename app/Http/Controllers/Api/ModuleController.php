@@ -26,7 +26,7 @@ class ModuleController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'id';
+            $sort = $request->has('sort') ? $request->input('sort') : 'module_number';
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -71,7 +71,7 @@ class ModuleController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'module_number' => ['required', 'string', 'min:1', 'max:10'],
+            'module_number' => ['required', 'string', 'min:1', 'max:10', 'unique:modules,module_number,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -221,49 +221,49 @@ class ModuleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    protected function delete($id)
-    {
+    // protected function delete($id)
+    // {
 
-        $module = Module::find($id);
-        if ($module == null) {
-            throw new \Exception("Modul tidak ada", 404);
-        }
+    //     $module = Module::find($id);
+    //     if ($module == null) {
+    //         throw new \Exception("Modul tidak ada", 404);
+    //     }
 
-        $product = Product::query()->where('module_id', $module->id)->first();
+    //     $product = Product::query()->where('module_id', $module->id)->first();
 
-        if ($product != null) {
-            return throw new \Exception("Data Modul digunakan oleh Produk", 409);
-        }
+    //     if ($product != null) {
+    //         return throw new \Exception("Data Modul digunakan oleh Produk", 409);
+    //     }
 
-        $module->deleted_by = auth()->user()->fullname;
-        $module->save();
+    //     $module->deleted_by = auth()->user()->fullname;
+    //     $module->save();
 
-        $module->delete();
+    //     $module->delete();
 
-        return $module;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Modul berhasil dihapus.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
+    //     return $module;
+    // }
+    // public function destroy(string $id)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $this->delete($id);
+    //         DB::commit();
+    //         // return
+    //         return ResponseStd::okNoOutput("Modul berhasil dihapus.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         if ($e instanceof ValidationException) {
+    //             return ResponseStd::validation($e->validator);
+    //         } else {
+    //             Log::error($e->getMessage());
+    //             if ($e instanceof QueryException) {
+    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
+    //             } else {
+    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
+    //             }
+    //         }
+    //     }
+    // }
 
     public function datatable(Request $request)
     {
@@ -275,7 +275,7 @@ class ModuleController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'module_number'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Module::count();

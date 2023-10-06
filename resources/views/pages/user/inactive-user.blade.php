@@ -58,7 +58,6 @@
                 <th>No HP</th>
                 <th>Alamat</th>
                 <th>Tanggal Lahir</th>
-                <th>Nama Kelompok</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -153,7 +152,6 @@
             {data: 'phone_number'},
             {data: 'address'},
             {data: 'birthdate'},
-            {data: 'group_name'},
             {
               data: 'created_at',
               render: function (data) {

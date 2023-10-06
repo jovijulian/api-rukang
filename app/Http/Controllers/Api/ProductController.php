@@ -96,14 +96,32 @@ class ProductController extends Controller
     }
     protected function create(array $data, Request $request)
     {
-
         $timeNow = Carbon::now();
         $productData = new Product();
         $image_url = null;
+
         Storage::exists('product') or Storage::makeDirectory('product');
         if ($data['status_photo']) {
             $image = Storage::putFile('product', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
+        }
+        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+            $productData->qty = 0;
+        } else {
+            $productData->qty = 1;
+        }
+
+
+        if ($data['status_id'] == 17) {
+            $productData->finish_production_date = $data['status_date'];
+        } else if ($data['status_id'] != 17 && $productData->qty == 1) {
+            $productData->finish_production_date = '2023-03-27';
+        } else {
+            $productData->finish_production_date = null;
+        }
+
+        if ($data['status_id'] == 20) {
+            $productData->delivery_date = $data['status_date'];
         }
 
         $productId = Uuid::uuid4()->toString();
@@ -117,11 +135,10 @@ class ProductController extends Controller
         $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
-        $productData->production_date = $data['production_date'];
+        $productData->start_production_date = $data['start_production_date'];
         $productData->shelf_id = $data['shelf_id'];
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
-        $productData->delivery_date = $data['delivery_date'];
         $productData->status_id = $data['status_id'];
         $productData->status = $data['status'];
         $productData->status_photo = $image_url;
@@ -129,8 +146,8 @@ class ProductController extends Controller
         $productData->shipping_id = $data['shipping_id'];
         $productData->shipping_name = $data['shipping_name'];
         $productData->current_location = $data['current_location'];
-        $productData->group_id = auth()->user()->group_id;
-        $productData->group_name = auth()->user()->group_name;
+        $productData->group_id = $data['group_id'];
+        $productData->group_name = $data['group_name'];
 
         $productData->created_at = $timeNow;
         $productData->updated_at = null;
@@ -146,6 +163,7 @@ class ProductController extends Controller
         $statusLogData->product_id = $productData->id;
         $statusLogData->status_id = $productData->status_id;
         $statusLogData->status_name = $productData->status;
+        $statusLogData->status_date =  $data['status_date'];;
         $statusLogData->status_photo = $productData->status_photo;
         $statusLogData->note = $productData->note;
         $statusLogData->shipping_id = $productData->shipping_id;
@@ -185,9 +203,11 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $validate = $this->validateCreate($request->all());
+
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
+            // dd($request->all());
             $model = $this->create($request->all(), $request);
             DB::commit();
 
@@ -283,7 +303,8 @@ class ProductController extends Controller
         $productData->module_id = $data['module_id'];
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
-        $productData->production_date = $data['production_date'];
+        $productData->start_production_date = $data['start_production_date'];
+        $productData->finish_production_date = $data['finish_production_date'];
         $productData->shelf_id = $data['shelf_id'];
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
@@ -296,8 +317,8 @@ class ProductController extends Controller
         $productData->shipping_name;
         $productData->number_plate;
         $productData->current_location;
-        $productData->group_id = auth()->user()->group_id;
-        $productData->group_name = auth()->user()->group_name;
+        $productData->group_id = $data['group_id'];
+        $productData->group_name  = $data['group_name'];
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
         //Save
@@ -418,7 +439,7 @@ class ProductController extends Controller
         return Validator::make($data, $arrayValidator);
     }
 
-    public function setStatusLogProduct($id, Request $request)
+    public function addStatusLogProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
@@ -454,13 +475,14 @@ class ProductController extends Controller
         $statusLog = new StatusProductLog();
 
         if (empty($statusLog)) {
-            throw new \Exception("Invalid status product log id", 406);
+            throw new \Exception("Invalid product id", 406);
         }
 
         $statusLog->id = Uuid::uuid4()->toString();
         $statusLog->product_id = $id;
         $statusLog->status_id = $data['status_id'];
         $statusLog->status_name = $data['status_name'];
+        $statusLog->status_date = $data['status_date'];
         // Input data multiple image
         foreach ($request->file() as $key => $file) {
             if ($request->hasFile($key)) {
@@ -514,6 +536,24 @@ class ProductController extends Controller
         $statusLog->save();
 
         $productData = Product::find($id);
+        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+            $productData->qty = 0;
+        } else {
+            $productData->qty = 1;
+        }
+
+
+        if ($data['status_id'] == 17) {
+            $productData->finish_production_date = $data['status_date'];
+        } else if ($data['status_id'] != 17 && $productData->qty == 1) {
+            $productData->finish_production_date = '2023-03-27';
+        } else {
+            $productData->finish_production_date = null;
+        }
+
+        if ($data['status_id'] == 20) {
+            $productData->delivery_date = $data['status_date'];
+        }
         $productData->status_id = $statusLog->status_id;
         $productData->status = $statusLog->status_name;
         $productData->status_photo = $statusLog->status_photo;
@@ -547,13 +587,18 @@ class ProductController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'barcode'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Product::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Product::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -565,18 +610,23 @@ class ProductController extends Controller
                 $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR description LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR status LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Product::whereRaw($conditions)
+            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })->whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
@@ -585,6 +635,18 @@ class ProductController extends Controller
             //QUERI CUSTOM
             $totalFiltered = Product::whereRaw($conditions)->count();
         }
+
+        // FILTER DATA
+        if ($request->input('category') != null) {
+            $data = Product::where('category_id', $request->category)->get();
+        }
+        if ($request->input('segment') != null) {
+            $data = Product::where('segment_id', $request->segment)->get();
+        }
+        if ($request->input('module') != null) {
+            $data = Product::where('module_id', $request->module)->get();
+        }
+
 
         $json_data = array(
             "draw"            => intval($request->input('draw')),
@@ -656,16 +718,28 @@ class ProductController extends Controller
         $productData->current_location = $data['current_location'];
         $productData->save();
 
-        $locationLog = LocationProductLog::where('status_product_log_id', $id)->first();
+
+        $locationLog = new LocationProductLog();
+        $locationLog->id = Uuid::uuid4()->toString();
+        $locationLog->status_product_log_id = $id;
+        $locationLog->product_id = $statusLog->product_id;
         $locationLog->current_location = $data['current_location'];
-        $locationLog->updated_at = $timeNow;
-        $locationLog->updated_by = auth()->user()->fullname;
+        $locationLog->created_at = $timeNow;
+        $locationLog->created_by = auth()->user()->fullname;
+        $locationLog->updated_at = null;
+        $locationLog->updated_by = null;
         $locationLog->save();
+
+        // $locationLog = LocationProductLog::where('status_product_log_id', $id)->first();
+        // $locationLog->current_location = $data['current_location'];
+        // $locationLog->updated_at = $timeNow;
+        // $locationLog->updated_by = auth()->user()->fullname;
+        // $locationLog->save();
 
         return $locationLog;
     }
 
-    protected function validateMultipleImages(array $data)
+    protected function validateStatusProduct(array $data)
     {
         $arrayValidator = [
             'status_photo' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
@@ -673,15 +747,15 @@ class ProductController extends Controller
         return Validator::make($data, $arrayValidator);
     }
 
-    public function addMultipleImagesStatus($id, Request $request)
+    public function updateStatusProduct($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateMultipleImages($request->all());
+            $validate = $this->validateStatusProduct($request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $data = $this->insertMultipleImageStatus($id, $request->all(), $request);
+            $data = $this->editStatusProduct($id, $request->all(), $request);
 
             DB::commit();
             $single = new StatusProductLogResource($data);
@@ -703,7 +777,7 @@ class ProductController extends Controller
         }
     }
 
-    protected function insertMultipleImageStatus($id, array $data, Request $request)
+    protected function editStatusProduct($id, array $data, Request $request)
     {
         $timeNow = Carbon::now();
 
@@ -714,6 +788,7 @@ class ProductController extends Controller
 
         $statusLog->status_id;
         $statusLog->status_name;
+        $statusLog->status_date = $data['status_date'] ? $data['status_date'] : $statusLog->status_date;
         // Input data multiple image
         foreach ($request->file() as $key => $file) {
             if ($request->hasFile($key)) {
@@ -757,14 +832,34 @@ class ProductController extends Controller
                 }
             }
         }
-        $statusLog->note;
-        $statusLog->shipping_id;
-        $statusLog->shipping_name;
-        $statusLog->number_plate;
+        $statusLog->note = $data['note'] ? $data['note'] : $statusLog->note;
+        $statusLog->shipping_id = $data['shipping_id'] ? $data['shipping_id'] : $statusLog->shipping_id;
+        $statusLog->shipping_name = $data['shipping_name'] ? $data['shipping_name'] : $statusLog->shipping_name;
+        $statusLog->number_plate = $data['number_plate'] ? $data['number_plate'] : $statusLog->number_plate;
         $statusLog->updated_at = $timeNow;
         $statusLog->updated_by = auth()->user()->fullname;
         //Save
         $statusLog->save();
+
+        $productData = Product::where('id', $statusLog->product_id)->first();
+        $productData->current_location = $data['current_location'];
+        $productData->save();
+
+        $searchLocation = LocationProductLog::where('status_product_log_id', $id)->latest()->first();
+        if ($searchLocation->current_location != $data['current_location']) {
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
+            $locationLog->status_product_log_id = $id;
+            $locationLog->product_id = $statusLog->product_id;
+            $locationLog->current_location = $data['current_location'];
+            $locationLog->created_at = $timeNow;
+            $locationLog->created_by = auth()->user()->fullname;
+            $locationLog->updated_at = null;
+            $locationLog->updated_by = null;
+            $locationLog->save();
+        }
+
+
 
 
         return $statusLog;
@@ -775,5 +870,82 @@ class ProductController extends Controller
         set_time_limit(300);
         $segment = $request->has('segment') ? $request->input('segment') : null;
         return Excel::download(new ProductExport($segment), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
+    }
+
+    public function datatableProductPerStatus(Request $request)
+    {
+        //SETUP
+        $columns = array();
+
+        foreach ($request->columns as $columnData) {
+            $columns[] = $columnData['data'];
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->has('order.0.column')] ? 'barcode'  : $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        //QUERI CUSTOM
+        $totalData = Product::count();
+        $filterStatus = $request->input('status_id');
+        if (empty($request->input('search.value'))) {
+            //QUERI CUSTOM
+            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->where('products.status_id', $filterStatus)
+                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = $totalData;
+        } else {
+            $search = $request->input('search.value');
+            $conditions = '1 = 1';
+            if (!empty($search)) {
+                $conditions .= " AND barcode LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR category LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR description LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
+            }
+            //QUERI CUSTOM
+            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
+                ->join('status_product_logs', function ($join) {
+                    $join->on('products.id', '=', 'status_product_logs.product_id')
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                })
+                ->where('products.status_id', $filterStatus)
+                ->whereRaw($conditions)
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            //QUERI CUSTOM
+            $totalFiltered = Product::whereRaw($conditions)->count();
+        }
+
+        // FILTER DATA
+
+
+
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return json_encode($json_data);
     }
 }
