@@ -638,13 +638,37 @@ class ProductController extends Controller
 
         // FILTER DATA
         if ($request->input('category') != null) {
-            $data = Product::where('category_id', $request->category)->get();
+            $query =  Product::where('category_id', $request->category);
+
+            $totalData = $query->count();
+            $totalFiltered = $totalData;
+
+            $data = $query->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
         }
         if ($request->input('segment') != null) {
-            $data = Product::where('segment_id', $request->segment)->get();
+            $query = Product::where('segment_id', $request->segment);
+
+            $totalData = $query->count();
+            $totalFiltered = $totalData;
+
+            $data = $query->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
         }
         if ($request->input('module') != null) {
-            $data = Product::where('module_id', $request->module)->get();
+            $query = Product::where('module_id', $request->module);
+
+            $totalData = $query->count();
+            $totalFiltered = $totalData;
+
+            $data = $query->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
         }
 
 

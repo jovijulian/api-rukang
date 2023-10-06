@@ -14,6 +14,8 @@ use App\Models\StatusProductLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Imports\SeederProductImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\ModuleResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\SegmentResource;
@@ -127,7 +129,8 @@ class SeederProductController extends Controller
 
     protected function createProduct($id, array $data, Request $request)
     {
-        $timeNow = Carbon::now();
+        set_time_limit(3000);
+        $timeNow = now();
         $moduleData = Module::select('id', 'module_number', 'module_code')->get();
         $categoryData = Category::select('id', 'category')
             ->where('category', 'LIKE', '%Kulit%')
@@ -135,78 +138,81 @@ class SeederProductController extends Controller
             ->get();
         $bilahData = ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "B11", "B12", "B13", "B14", "B15"];
         $segmentCode = str_pad($id, 2, '0', STR_PAD_LEFT);
-        $timeNow = now();
         $productData = [];
+        $statusLogData = [];
 
-        foreach ($moduleData as $md) {
-            foreach ($bilahData as $bd) {
-                foreach ($categoryData as $cd) {
-                    $categoryCode = substr($cd->category, 0, 1);
-                    $productId = Uuid::uuid4()->toString();
+        DB::transaction(function () use (&$productData, &$statusLogData, $moduleData, $bilahData, $categoryData, $segmentCode, $timeNow, $id) {
+            foreach ($moduleData as $md) {
+                foreach ($bilahData as $bd) {
+                    foreach ($categoryData as $cd) {
+                        $categoryCode = substr($cd->category, 0, 1);
+                        $barcode = 'S' . $segmentCode . $md->module_code . $bd . $categoryCode;
+                        $getExistBarcode = Product::select('barcode')->where('barcode', $barcode)->first();
+                        if ($getExistBarcode == null) {
+                            $productId = Uuid::uuid4()->toString();
+                            $productData[] = [
+                                'id' => $productId,
+                                'category_id' => $cd->id,
+                                'category' => $cd->category,
+                                'segment_id' => $id,
+                                'segment_name' => 'Segmen ' . $id,
+                                'segment_place' => null,
+                                'barcode' => $barcode,
+                                'module_id' => $md->id,
+                                'module_number' => $md->module_number,
+                                'bilah_number' => $bd,
+                                'start_production_date' => null,
+                                'finish_production_date' => null,
+                                'shelf_id' => null,
+                                'shelf_name' => null,
+                                'description' => null,
+                                'delivery_date' => null,
+                                'status_id' => 25,
+                                'status' => '00. Belum Diproduksi',
+                                'status_photo' => null,
+                                'note' => null,
+                                'shipping_id' => null,
+                                'shipping_name' => null,
+                                'current_location' => null,
+                                'group_id' => 1,
+                                'group_name' => 'Kelompok 1',
+                                'created_at' => $timeNow,
+                                'updated_at' => null,
+                                'created_by' => 'Admin',
+                                'updated_by' => null,
+                            ];
 
-                    $productData[] = [
-                        'id' => $productId,
-                        'category_id' => $cd->id,
-                        'category' => $cd->category,
-                        'segment_id' => $id,
-                        'segment_name' => 'Segmen ' . $id,
-                        'segment_place' => null,
-                        'barcode' => 'S' . $segmentCode . $md->module_code . $bd . $categoryCode,
-                        'module_id' => $md->id,
-                        'module_number' => $md->module_number,
-                        'bilah_number' => $bd,
-                        'production_date' => null,
-                        'shelf_id' => null,
-                        'shelf_name' => null,
-                        'description' => null,
-                        'delivery_date' => null,
-                        'status_id' => 25,
-                        'status' => '00. Belum Diproduksi',
-                        'status_photo' => null,
-                        'note' => null,
-                        'shipping_id' => null,
-                        'shipping_name' => null,
-                        'current_location' => null,
-                        'group_id' => 1,
-                        'group_name' => 'Kelompok 1',
-                        'created_at' => $timeNow,
-                        'updated_at' => null,
-                        'created_by' => 'Admin',
-                        'updated_by' => null,
-                    ];
+                            $statusLogId = Uuid::uuid4()->toString();
+                            $statusLogData[] = [
+                                'id' => $statusLogId,
+                                'product_id' => $productId,
+                                'status_id' => 25, // Sesuaikan dengan status_id yang sesuai
+                                'status_name' => '00. Belum Diproduksi', // Sesuaikan dengan status_name yang sesuai
+                                'status_photo' => null,
+                                'note' => null,
+                                'shipping_id' => null,
+                                'shipping_name' => null,
+                                'number_plate' => null,
+                                'created_at' => $timeNow,
+                                'updated_at' => null,
+                                'created_by' => 'Admin',
+                                'updated_by' => null,
+                            ];
+                        }
+                    }
                 }
             }
-        }
 
-        // Mass insert data produk
-        Product::insert($productData);
+            // Mass insert data produk
+            Product::insert($productData);
 
-        // Buat status log untuk setiap produk
-        $statusLogData = [];
-        foreach ($productData as $product) {
-            $statusLogId = Uuid::uuid4()->toString();
-            $statusLogData[] = [
-                'id' => $statusLogId,
-                'product_id' => $product['id'],
-                'status_id' => $product['status_id'],
-                'status_name' => $product['status'],
-                'status_photo' => $product['status_photo'],
-                'note' => $product['note'],
-                'shipping_id' => $product['shipping_id'],
-                'shipping_name' => $product['shipping_name'],
-                'number_plate' => null,
-                'created_at' => $timeNow,
-                'updated_at' => null,
-                'created_by' => 'Admin',
-                'updated_by' => null,
-            ];
-        }
-
-        // Mass insert data status log
-        StatusProductLog::insert($statusLogData);
+            // Mass insert data status log
+            StatusProductLog::insert($statusLogData);
+        });
 
         return $productData;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -238,5 +244,26 @@ class SeederProductController extends Controller
                 }
             }
         }
+    }
+
+    public function importExcel(Request $request)
+    {
+
+        // Validasi file
+        $request->validate([
+            'excel_file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        // Ambil file Excel yang diunggah
+        $file = $request->file('excel_file');
+
+        // Proses impor
+        Excel::import(new SeederProductImport, $file);
+
+        // Redirect dengan pesan sukses
+        return response()->json([
+            'status' => 'success', // Ganti ini dengan status yang sesuai
+            'message' => 'Data berhasil diimport.', // Ganti ini dengan pesan yang sesuai
+        ], 200);
     }
 }

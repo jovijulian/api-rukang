@@ -186,6 +186,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/create-module', 'storeModule');
             Route::get('/create-segment', 'storeSegment');
             Route::get('/create-product/segment/{id}', 'storeProduct');
+            Route::post('/create-product', 'importExcel');
         });
     });
     Route::prefix('dashboard')->group(function () {
