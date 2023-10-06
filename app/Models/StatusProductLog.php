@@ -35,6 +35,7 @@ class StatusProductLog extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'id',
         'product_id',
         'status_id',
         'status_name',
