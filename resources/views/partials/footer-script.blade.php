@@ -13,6 +13,7 @@
 <!-- Datatable JS -->
 <script src="{{ url('assets/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('assets/js/dataTables.bootstrap4.min.js') }}"></script>
+{{-- <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script> --}}
 
 <!-- Bootstrap Core JS -->
 <script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>

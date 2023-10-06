@@ -47,8 +47,12 @@
                   <h6 id="description"></h6>
                 </li>
                 <li>
-                  <h4>Tanggal Produksi</h4>
+                  <h4>Tanggal Mulai Produksi</h4>
                   <h6 id="production-date"></h6>
+                </li>
+                <li>
+                  <h4>Tanggal Selesai Produksi</h4>
+                  <h6 id="production-finish-date"></h6>
                 </li>
                 <li>
                   <h4>Tanggal Pengiriman</h4>
@@ -190,11 +194,12 @@
 
           $('#category').text(product.category ? product.category : '')
           $('#segment').text(product.segment.segment_name ? product.segment.segment_name : '')
-          $('#module-number').text(product.module ? product.module : '')
+          $('#module-number').text(product.module.module_number ? product.module.module_number : '')
           $('#bilah-number').text(product.bilah_number ? product.bilah_number : '')
-          $('#shelf-number').text(product.shelf   ? product.shelf  : '')
+          $('#shelf-number').text(product.shelf   ? product.shelf.shelf_name  : '')
           $('#description').text(product.description ? product.description : '')
-          $('#production-date').text(product.production_date ? new Date(product.production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
+          $('#production-date').text(product.start_production_date ? new Date(product.start_production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
+          $('#production-finish-date').text(product.finish_production_date ? new Date(product.finish_production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#product-note').text(product.note ? product.note : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0].split('-').reverse().join('-'))

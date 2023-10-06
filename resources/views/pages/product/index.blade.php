@@ -53,29 +53,29 @@
                   <div class="col-lg col-sm-6 col-12">
                     <div class="form-group">
                       <select id="category-filter" class="form-control select filter-product">
-                        <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option>
+                        {{-- <option value="pilih kategori" selected="selected" disabled>Pilih kategori</option> --}}
                       </select>
                     </div>
                   </div>
                   <div class="col-lg col-sm-6 col-12">
                     <div class="form-group">
                       <select id="segment-filter" class="form-control select filter-product">
-                        <option value="pilih kategori" selected="selected" disabled>Pilih segmen</option>
+                        {{-- <option value="pilih kategori" selected="selected" disabled>Pilih segmen</option> --}}
                       </select>
                     </div>
                   </div>
                   <div class="col-lg col-sm-6 col-12">
                     <div class="form-group">
                       <select id="module-filter" class="form-control select filter-product">
-                        <option value="pilih kategori" selected="selected" disabled>Pilih modul</option>
+                        {{-- <option value="pilih kategori" selected="selected" disabled>Pilih modul</option> --}}
                       </select>
                     </div>
                   </div>
-                  {{-- <div class="col-lg-1 col-sm-6 col-12">
+                  <div class="col-lg-1 col-sm-6 col-12">
                     <div class="form-group">
-                      <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
+                      <a id="delete-filter-data" class="btn btn-filters bg-danger w-100"><img src="assets/img/icons/closes.svg" alt="img"></a>
                     </div>
-                  </div> --}}
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,7 +95,7 @@
                 <th>Nomor Rak</th>
                 <th>Barcode</th>
                 <th>Tanggal Mulai Produksi</th>
-                <th>Tanggal Selesai roduksi</th>
+                <th>Tanggal Selesai Produksi</th>
                 <th>Keterangan</th>
                 <th>Tanggal Pengiriman</th>
                 <th>Status</th>
@@ -301,6 +301,7 @@
 
       function getCategory() {
         $('#category-filter').select2({
+          placeholder: 'Pilih kategori',
           ajax: {
             url: "{{ url('api/v1/category/indexForProduct') }}",
             headers: config.headers,
@@ -337,6 +338,7 @@
         let segments = []
 
         $('#segment-filter').select2({
+          placeholder: 'Pilih segmen',
           ajax: {
             url: "{{ url('api/v1/segment/index') }}",
             headers: config.headers,
@@ -373,6 +375,7 @@
 
       function getModule() {
         $('#module-filter').select2({
+          placeholder: 'Pilih modul',
           ajax: {
             url: "{{ url('api/v1/module/index') }}",
             headers: config.headers,
@@ -412,9 +415,17 @@
           moduleFilter = $('#module-filter').val()
           table.ajax.reload(null, false)
 
-          console.log(categoryFilter, segmentFilter, moduleFilter)
+          // console.log(categoryFilter, segmentFilter, moduleFilter)
         })
       }
+
+      $('#delete-filter-data').on('click', () => {
+        categoryFilter = ''
+        segmentFilter = ''
+        moduleFilter = ''
+        $('.filter-product').val(null).trigger('change')
+        table.ajax.reload(null, false)
+      })
     })
 
     function deleteData(id) {
