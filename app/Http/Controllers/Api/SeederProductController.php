@@ -248,7 +248,7 @@ class SeederProductController extends Controller
 
     public function importExcel(Request $request)
     {
-
+        set_time_limit(3000);
         // Validasi file
         $request->validate([
             'excel_file' => 'required|mimes:xls,xlsx'
