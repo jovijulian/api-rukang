@@ -43,9 +43,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Segmen</label>
+                      <label class="col-lg-3 col-form-label">Segmen *</label>
                       <div class="col-lg-9">
-                        <select id="segment-product" class="form-control select">
+                        <select id="segment-product" class="form-control select" required>
                           {{-- <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option> --}}
                         </select>
                       </div>
@@ -79,27 +79,27 @@
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Modul</label>
+                      <label class="col-lg-3 col-form-label">Nomor Modul *</label>
                       <div class="col-lg-9">
-                        <select id="module-product" class="form-control select">
+                        <select id="module-product" class="form-control select" required>
                           {{-- <option value="pilih modul" selected="selected" disabled>Pilih modul</option> --}}
                         </select>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Bilah</label>
+                      <label class="col-lg-3 col-form-label">Nomor Bilah *</label>
                       <div class="col-lg-9">
-                        <select id="no-bilah" class="form-control select">
+                        <select id="no-bilah" class="form-control select" required>
                           <option value="pilih bilah" selected="selected" disabled>Pilih nomor bilah</option>
-                          <option value="B1">B1</option>
-                          <option value="B2">B2</option>
-                          <option value="B3">B3</option>
-                          <option value="B4">B4</option>
-                          <option value="B5">B5</option>
-                          <option value="B6">B6</option>
-                          <option value="B7">B7</option>
-                          <option value="B8">B8</option>
-                          <option value="B9">B9</option>
+                          <option value="B01">B01</option>
+                          <option value="B02">B02</option>
+                          <option value="B03">B03</option>
+                          <option value="B04">B04</option>
+                          <option value="B05">B05</option>
+                          <option value="B06">B06</option>
+                          <option value="B07">B07</option>
+                          <option value="B08">B08</option>
+                          <option value="B09">B09</option>
                           <option value="B10">B10</option>
                           <option value="B11">B11</option>
                           <option value="B12">B12</option>
@@ -243,6 +243,8 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
+
+      $('#no-bilah').select2()
 
       getModule()
       getCategory()
@@ -621,7 +623,7 @@
           start_production_date: $('#production-date').val(),
           shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
           shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
-          description: $('#description-product').val() ? $('#description-product').val() : "",
+          description: $('#description').val() ? $('#description').val() : "",
           delivery_date: $('#delivery-date').val(),
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',

@@ -43,9 +43,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Segmen</label>
+                      <label class="col-lg-3 col-form-label">Segmen *</label>
                       <div class="col-lg-9">
-                        <select id="segment-product" class="form-control select">
+                        <select id="segment-product" class="form-control select" required>
                           <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
                         </select>
                       </div>
@@ -79,28 +79,32 @@
                 <div class="row mb-4 gx-lg-5">
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Modul</label>
+                      <label class="col-lg-3 col-form-label">Nomor Modul *</label>
                       <div class="col-lg-9">
-                        <select id="module-product" class="form-control select">
+                        <select id="module-product" class="form-control select" required>
                           <option value="pilih modul" selected="selected" disabled>Pilih modul</option>
                         </select>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Nomor Bilah</label>
+                      <label class="col-lg-3 col-form-label">Nomor Bilah *</label>
                       <div class="col-lg-9">
                         <select id="no-bilah" class="form-control select">
-                          <option value="pilih bilah" selected="selected" disabled>Pilih nomor bilah</option>
-                          <option value="B1">B1</option>
-                          <option value="B2">B2</option>
-                          <option value="B3">B3</option>
-                          <option value="B4">B4</option>
-                          <option value="B5">B5</option>
-                          <option value="B6">B6</option>
-                          <option value="B7">B7</option>
-                          <option value="B8">B8</option>
-                          <option value="B9">B9</option>
+                          <option value="pilih bilah" disabled>Pilih nomor bilah</option>
+                          <option value="B01">B01</option>
+                          <option value="B02">B02</option>
+                          <option value="B03">B03</option>
+                          <option value="B04">B04</option>
+                          <option value="B05">B05</option>
+                          <option value="B06">B06</option>
+                          <option value="B07">B07</option>
+                          <option value="B08">B08</option>
+                          <option value="B09">B09</option>
                           <option value="B10">B10</option>
+                          <option value="B11">B11</option>
+                          <option value="B12">B12</option>
+                          <option value="B13">B13</option>
+                          <option value="B14">B14</option>
                         </select>
                       </div>
                     </div>
@@ -177,6 +181,8 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
+
+      $('#no-bilah').select2()
 
       getModule()
       getCategory()
@@ -337,7 +343,9 @@
 
         $('#segment-product').on('change', () => {
           const id = $('#segment-product').val()
-          const selectedSegment = segments.find(obj => obj.id == $('#segment-product').val())
+          const selectedSegment = segments.length && segments.find(obj => obj.id == $('#segment-product').val())
+
+          // console.log(segments.length);
 
           $('#barcode-color').val(selectedSegment.barcode_color)
           $('#segment-place').val(selectedSegment.segment_place)
@@ -385,14 +393,21 @@
           .then(res => {
             const data = res.data.data.item
 
+            // console.log(data);
+
             $("#category-product").append(`<option value=${data.category_id} selected>${data.category}</option>`)
+            $("#category-product").trigger("change")
             $("#segment-product").append(`<option value=${data.segment.id} selected>${data.segment.segment_name}</option>`)
-            $("#group-product").append(`<option value=${data.group.id} selected>${data.group.group_name}</option>`)
+            $("#segment-product").trigger("change")
+            $("#group-product").append(`<option value=${data.group_id} selected>${data.group_name}</option>`)
             $('#barcode-color').val(data.segment.barcode_color)
             $('#segment-place').val(data.segment_place)
             $("#module-product").append(`<option value=${data.module.id} selected>${data.module.module_number}</option>`)
-            $('#no-bilah').val(data.bilah_number).change()
-            $("#shelf").append(`<option value=${data.shelf.id} selected>${data.shelf.shelf_name}</option>`)
+            $("#module-product").trigger("change")
+            // $("#no-bilah").append(`<option value=${data.bilah_number} selected>${data.bilah_number}</option>`)
+            $('#no-bilah').val(data.bilah_number)
+            $("#no-bilah").trigger("change")
+            data.shelf && $("#shelf").append(`<option value=${data.shelf.id} selected>${data.shelf.shelf_name}</option>`)
             $('#production-date').val(data.production_date)
             $('#description').val(data.description)
             $('#delivery-date').val(data.delivery_date)
@@ -439,6 +454,7 @@
           bilah[0] = bilah[0][0]
           bilah[1] = bilah[1].length === 1 ? '0' + bilah[1] : bilah[1]
           bilah = bilah.join('')
+          
 
           generateBarcode(segment, module, bilah, category)
         })

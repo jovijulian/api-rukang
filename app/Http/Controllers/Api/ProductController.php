@@ -596,7 +596,7 @@ class ProductController extends Controller
             $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
                 ->join('status_product_logs', function ($join) {
                     $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))->whereNull('products.deleted_at');
                 })
                 ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
@@ -625,7 +625,7 @@ class ProductController extends Controller
             $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
                 ->join('status_product_logs', function ($join) {
                     $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
+                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))->whereNull('products.deleted_at');
                 })->whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
