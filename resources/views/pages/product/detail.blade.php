@@ -63,6 +63,10 @@
                   <h6 id="product-note"></h6>
                 </li>
                 <li>
+                  <h4>Kelompok</h4>
+                  <h6 id="product-group"></h6>
+                </li>
+                <li>
                   <h4>Dibuat Pada</h4>
                   <h6 id="created-at"></h6>
                 </li>
@@ -202,9 +206,10 @@
           $('#production-finish-date').text(product.finish_production_date ? new Date(product.finish_production_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#delivery-date').text(product.delivery_date ? new Date(product.delivery_date).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#product-note').text(product.note ? product.note : '')
+          $('#product-group').text(product.group_name ? product.group_name : '')
           $('#created-at').text(new Date(product.created_at).toISOString().split('T')[0].split('-').reverse().join('-'))
           $('#created-by').text(product.created_by)
-          $('#updated-at').text(new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-'))
+          $('#updated-at').text(product.updated_at ? new Date(product.updated_at).toISOString().split('T')[0].split('-').reverse().join('-') : '')
           $('#updated-by').text(product.updated_by)
           
           product.status_logs.map((statusLog, i) => {
