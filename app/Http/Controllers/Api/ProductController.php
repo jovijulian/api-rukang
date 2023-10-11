@@ -292,7 +292,6 @@ class ProductController extends Controller
         //         }
         //     }
         // }
-
         $productData->id = $id;
         $productData->category_id = $data['category_id'];
         $productData->category = $data['category'];
@@ -309,18 +308,19 @@ class ProductController extends Controller
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
         $productData->delivery_date = $data['delivery_date'];
+        $productData->qty;
         $productData->status_id;
         $productData->status;
         $productData->status_photo;
         $productData->note;
         $productData->shipping_id;
         $productData->shipping_name;
-        $productData->number_plate;
         $productData->current_location;
         $productData->group_id = $data['group_id'];
         $productData->group_name  = $data['group_name'];
         $productData->updated_at = $timeNow;
         $productData->updated_by = auth()->user()->fullname;
+
         //Save
         $productData->save();
 
@@ -402,6 +402,7 @@ class ProductController extends Controller
             $statusLog->delete();
         }
 
+        $product->barcode = 'deleted at ' . Carbon::now();
         $product->deleted_by = auth()->user()->fullname;
         $product->save();
         $product->delete();
@@ -636,40 +637,28 @@ class ProductController extends Controller
             $totalFiltered = Product::whereRaw($conditions)->count();
         }
 
+        $query = Product::select('*');
+
         // FILTER DATA
         if ($request->input('category') != null) {
-            $query =  Product::where('category_id', $request->category);
-
-            $totalData = $query->count();
-            $totalFiltered = $totalData;
-
-            $data = $query->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+            $query->where('category_id', $request->category);
         }
+
         if ($request->input('segment') != null) {
-            $query = Product::where('segment_id', $request->segment);
-
-            $totalData = $query->count();
-            $totalFiltered = $totalData;
-
-            $data = $query->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+            $query->where('segment_id', $request->segment);
         }
+
         if ($request->input('module') != null) {
-            $query = Product::where('module_id', $request->module);
-
-            $totalData = $query->count();
-            $totalFiltered = $totalData;
-
-            $data = $query->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+            $query->where('module_id', $request->module);
         }
+
+        $totalData = $query->count();
+        $totalFiltered = $totalData;
+
+        $data = $query->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir)
+            ->get();
 
 
         $json_data = array(
