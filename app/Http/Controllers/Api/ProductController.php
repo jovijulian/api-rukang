@@ -303,11 +303,11 @@ class ProductController extends Controller
         $productData->module_number = $data['module_number'];
         $productData->bilah_number = $data['bilah_number'];
         $productData->start_production_date = $data['start_production_date'];
-        $productData->finish_production_date = $data['finish_production_date'];
+        $productData->finish_production_date;
         $productData->shelf_id = $data['shelf_id'];
         $productData->shelf_name = $data['shelf_name'];
         $productData->description = $data['description'];
-        $productData->delivery_date = $data['delivery_date'];
+        $productData->delivery_date;
         $productData->qty;
         $productData->status_id;
         $productData->status;
