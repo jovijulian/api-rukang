@@ -117,7 +117,7 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Tanggal Produksi</label>
+                      <label class="col-lg-3 col-form-label">Tanggal Mulai Produksi</label>
                       <div class="col-lg-9">
                         <input type="date" id="production-date" class="form-control text-sm">
                       </div>
@@ -130,12 +130,12 @@
                         <textarea rows="3" cols="5" id="description" class="form-control" placeholder="Masukan keterangan"></textarea>
                       </div>
                     </div>
-                    <div class="form-group row">
+                    {{-- <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tanggal Pengiriman</label>
                       <div class="col-lg-9">
                         <input type="date" id="delivery-date" class="form-control text-sm">
                       </div>
-                    </div>
+                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode *</label>
                       <div class="col-lg-9">
@@ -183,6 +183,8 @@
       }
 
       $('#no-bilah').select2()
+
+      let finishProductionDate = ''
 
       getModule()
       getCategory()
@@ -239,7 +241,7 @@
       function getCategory() {
         $('#category-product').select2({
           ajax: {
-            url: "{{ url('api/v1/category/index') }}",
+            url: "{{ url('api/v1/category/indexForProduct') }}",
             headers: config.headers,
             dataType: 'json',
             type: "GET",
@@ -393,7 +395,7 @@
           .then(res => {
             const data = res.data.data.item
 
-            // console.log(data);
+            console.log(data);
 
             $("#category-product").append(`<option value=${data.category_id} selected>${data.category}</option>`)
             $("#category-product").trigger("change")
@@ -408,7 +410,8 @@
             $('#no-bilah').val(data.bilah_number)
             $("#no-bilah").trigger("change")
             data.shelf && $("#shelf").append(`<option value=${data.shelf.id} selected>${data.shelf.shelf_name}</option>`)
-            $('#production-date').val(data.production_date)
+            $('#production-date').val(data.start_production_date)
+            finishProductionDate = data.finish_production_date
             $('#description').val(data.description)
             $('#delivery-date').val(data.delivery_date)
             $('#barcode-product').val(data.barcode).trigger('input')
@@ -487,11 +490,12 @@
           module_id: $('#module-product').val() ? $('#module-product').val() : '',
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val(),
-          production_date: $('#production-date').val(),
+          start_production_date: $('#production-date').val(),
+          finish_production_date: finishProductionDate,
           shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
           shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
           description: $('#description').val() ? $('#description').val() : "",
-          delivery_date: $('#delivery-date').val()
+          // delivery_date: $('#delivery-date').val()
         }
 
         // console.log(data)
