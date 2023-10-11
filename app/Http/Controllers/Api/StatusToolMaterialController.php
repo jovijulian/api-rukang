@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use App\Models\StatusToolMaterial;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +70,7 @@ class StatusToolMaterialController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'status' => ['required', 'string', 'min:1', 'max:40', 'unique:status_tool_products,status,NULL,id'],
+            'status' => ['required', 'string', 'min:1', 'max:40', 'unique:status_tools_materials,status,NULL,id'],
             'need_expedition' => ['required'],
         ];
 
