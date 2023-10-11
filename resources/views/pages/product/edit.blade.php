@@ -184,6 +184,8 @@
 
       $('#no-bilah').select2()
 
+      let finishProductionDate = ''
+
       getModule()
       getCategory()
       getGroup()
@@ -409,6 +411,7 @@
             $("#no-bilah").trigger("change")
             data.shelf && $("#shelf").append(`<option value=${data.shelf.id} selected>${data.shelf.shelf_name}</option>`)
             $('#production-date').val(data.start_production_date)
+            finishProductionDate = data.finish_production_date
             $('#description').val(data.description)
             $('#delivery-date').val(data.delivery_date)
             $('#barcode-product').val(data.barcode).trigger('input')
@@ -488,6 +491,7 @@
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val(),
           start_production_date: $('#production-date').val(),
+          finish_production_date: finishProductionDate,
           shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
           shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
           description: $('#description').val() ? $('#description').val() : "",
