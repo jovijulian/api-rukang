@@ -136,12 +136,12 @@
                         <textarea rows="3" cols="5" id="description" class="form-control" placeholder="Masukan keterangan"></textarea>
                       </div>
                     </div>
-                    <div class="form-group row">
+                    {{-- <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Tanggal Pengiriman</label>
                       <div class="col-lg-9">
                         <input type="date" id="delivery-date" class="form-control text-sm">
                       </div>
-                    </div>
+                    </div> --}}
                     <div class="form-group row">
                       <label class="col-lg-3 col-form-label">Barcode *</label>
                       <div class="col-lg-9">
@@ -621,10 +621,11 @@
           module_number: $('#module-product').val() ? $('#module-product').find("option:selected").text() : '',
           bilah_number: $('#no-bilah').val() ? $('#no-bilah').val() : '',
           start_production_date: $('#production-date').val(),
+          finish_production_date: '',
           shelf_id: $('#shelf').val() ? $('#shelf').val() : '',
           shelf_name: $('#shelf').val() ? $('#shelf').find("option:selected").text() : '',
           description: $('#description').val() ? $('#description').val() : "",
-          delivery_date: $('#delivery-date').val(),
+          // delivery_date: $('#delivery-date').val(),
           status_id: $('#status-product').val() ? $('#status-product').val() : '',
           status: $('#status-product').val() ? $('#status-product').find("option:selected").text() : '',
           status_date: $('#status-date').val(),
