@@ -979,8 +979,9 @@ class ProductController extends Controller
         $current_status = $request->input('current_status');
         foreach ($selected_product as $sp) {
             $timeNow = Carbon::now();
-            $statusLogData = StatusProductLog::where('product_id', $sp)->first();
-            $statusLogData->id;
+            $statusLogData = new StatusProductLog();
+            $statusLogId = Uuid::uuid4()->toString();
+            $statusLogData->id = $statusLogId;
             $statusLogData->product_id = $sp;
 
             $newStatus = $current_status + 1;
@@ -1003,18 +1004,13 @@ class ProductController extends Controller
             foreach ($request->file() as $key => $file) {
                 if ($request->hasFile($key)) {
                     if ($request->file($key)->isValid()) {
-                        $image_url = $request[$key];
-                        if ($request[$key]) {
-                            $image = Storage::putFile('product', $request[$key], 'public');
-                            $image_url = Storage::url($image);
-                            //hapus picture sebelumnya
-                            if (isset($statusLogData->$key)) {
-                                $old = parse_url($statusLogData->$key);
-                                if (Storage::exists($old['path'])) {
-                                    Storage::delete($old['path']);
-                                }
-                            }
-                        }
+                        Storage::exists('product') or Storage::makeDirectory('product');
+
+                        // Simpan gambar ke penyimpanan
+                        $image = Storage::putFile('product', $file, 'public');
+
+                        // Dapatkan URL gambar yang baru diunggah
+                        $image_url = Storage::url($image);
                         if ($key == 'status_photo') {
                             $statusLogData->status_photo = $image_url;
                         } elseif ($key == 'status_photo2') {
@@ -1080,8 +1076,8 @@ class ProductController extends Controller
             $productData->current_location = $request->current_location;
             $productData->save();
 
-            $locationLog = LocationProductLog::where('product_id', $sp)->first();
-            $locationLog->id;
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
             $locationLog->status_product_log_id = $statusLogData->id;
             $locationLog->product_id = $sp;
             $locationLog->current_location = $request->current_location;
@@ -1128,8 +1124,9 @@ class ProductController extends Controller
         $current_status = $request->input('current_status');
         foreach ($selected_product as $sp) {
             $timeNow = Carbon::now();
-            $statusLogData = StatusProductLog::where('product_id', $sp)->first();
-            $statusLogData->id;
+            $statusLogData = new StatusProductLog();
+            $statusLogId = Uuid::uuid4()->toString();
+            $statusLogData->id = $statusLogId;
             $statusLogData->product_id = $sp;
 
             $newStatus = $current_status - 1;
@@ -1152,18 +1149,13 @@ class ProductController extends Controller
             foreach ($request->file() as $key => $file) {
                 if ($request->hasFile($key)) {
                     if ($request->file($key)->isValid()) {
-                        $image_url = $request[$key];
-                        if ($request[$key]) {
-                            $image = Storage::putFile('product', $request[$key], 'public');
-                            $image_url = Storage::url($image);
-                            //hapus picture sebelumnya
-                            if (isset($statusLogData->$key)) {
-                                $old = parse_url($statusLogData->$key);
-                                if (Storage::exists($old['path'])) {
-                                    Storage::delete($old['path']);
-                                }
-                            }
-                        }
+                        Storage::exists('product') or Storage::makeDirectory('product');
+
+                        // Simpan gambar ke penyimpanan
+                        $image = Storage::putFile('product', $file, 'public');
+
+                        // Dapatkan URL gambar yang baru diunggah
+                        $image_url = Storage::url($image);
                         if ($key == 'status_photo') {
                             $statusLogData->status_photo = $image_url;
                         } elseif ($key == 'status_photo2') {
@@ -1230,8 +1222,9 @@ class ProductController extends Controller
             $productData->current_location = $request->current_location;
             $productData->save();
 
-            $locationLog = LocationProductLog::where('product_id', $sp)->first();
-            $locationLog->id;
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
+            $locationLog->status_product_log_id = $statusLogData->id;
             $locationLog->status_product_log_id = $statusLogData->id;
             $locationLog->product_id = $sp;
             $locationLog->current_location = $request->current_location;
