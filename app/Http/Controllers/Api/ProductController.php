@@ -15,6 +15,7 @@ use App\Exports\ProductExport;
 use App\Libraries\ResponseStd;
 use Illuminate\Validation\Rule;
 use App\Models\StatusProductLog;
+use App\Models\TravelDocumentLog;
 use App\Models\LocationProductLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -1041,6 +1042,21 @@ class ProductController extends Controller
                     }
                 }
             }
+            if ($current_status == 20 || $current_status == 21) {
+                $travelDocumentLog = new TravelDocumentLog();
+                $travelDocumentLog->id = Uuid::uuid4()->toString();
+                $travelDocumentLog->product_id = $sp;
+                $travelDocumentLog->travel_document_number = $request->travel_document_number;
+                $travelDocumentLog->travel_document_path = $request->travel_document_path;
+                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+                if ($request->upload_signature) {
+                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+                    $image_url_travel_document = Storage::url($image);
+                }
+                $statusLogData->upload_signature = $image_url_travel_document;
+            }
+
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
             $statusLogData->shipping_name = $request->shipping_name;
@@ -1175,6 +1191,22 @@ class ProductController extends Controller
                     }
                 }
             }
+
+            if ($current_status == 20 || $current_status == 21) {
+                $travelDocumentLog = new TravelDocumentLog();
+                $travelDocumentLog->id = Uuid::uuid4()->toString();
+                $travelDocumentLog->product_id = $sp;
+                $travelDocumentLog->travel_document_number = $request->travel_document_number;
+                $travelDocumentLog->travel_document_path = $request->travel_document_path;
+                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+                if ($request->upload_signature) {
+                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+                    $image_url_travel_document = Storage::url($image);
+                }
+                $statusLogData->upload_signature = $image_url_travel_document;
+            }
+
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
             $statusLogData->shipping_name = $request->shipping_name;
