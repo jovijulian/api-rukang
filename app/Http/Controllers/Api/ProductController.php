@@ -592,54 +592,35 @@ class ProductController extends Controller
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
         $totalData = Product::count();
-        if (empty($request->input('search.value'))) {
-            //QUERI CUSTOM
-            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
-                ->join('status_product_logs', function ($join) {
-                    $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))->whereNull('products.deleted_at');
-                })
-                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = $totalData;
-        } else {
-            $search = $request->input('search.value');
-            $conditions = '1 = 1';
-            if (!empty($search)) {
-                $conditions .= " AND barcode LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR category LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR segment_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR description LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
-            }
-            //QUERI CUSTOM
-            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
-                ->join('status_product_logs', function ($join) {
-                    $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))->whereNull('products.deleted_at');
-                })->whereRaw($conditions)
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+        $search = $request->input('search.value');
+        $query = Product::select('products.*', 'status_product_logs.id as status_product_log')
+            ->join('status_product_logs', function ($join) {
+                $join->on('products.id', '=', 'status_product_logs.product_id')
+                    ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))
+                    ->whereNull('products.deleted_at');
+            });
 
-            //QUERI CUSTOM
-            $totalFiltered = Product::whereRaw($conditions)->count();
+        if (!empty($search)) {
+            $query->where(function ($query) use ($search) {
+                $query->where('products.barcode', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.category', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.segment_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.segment_place', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.module_number', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.bilah_number', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.start_production_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.finish_production_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.shelf_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.description', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.delivery_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.status', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.shipping_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('group_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.created_by', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.updated_by', 'LIKE', '%' . trim($search) . '%');
+            });
         }
-
-        $query = Product::select('*');
-
-        // FILTER DATA
+        // dd($query);
         if ($request->input('category') != null) {
             $query->where('category_id', $request->category);
         }
@@ -660,13 +641,12 @@ class ProductController extends Controller
             ->orderBy($order, $dir)
             ->get();
 
-
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
-        );
+        $json_data = [
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => intval($totalFiltered),
+            'data' => $data
+        ];
         return json_encode($json_data);
     }
 
