@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exports\ProductExport;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Status;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\StatusLog;
 use App\Models\LocationLog;
 use Illuminate\Http\Request;
+use App\Models\StatusProduct;
+use App\Exports\ProductExport;
 use App\Libraries\ResponseStd;
 use Illuminate\Validation\Rule;
 use App\Models\StatusProductLog;
@@ -929,16 +931,142 @@ class ProductController extends Controller
         }
 
         // FILTER DATA
-
-
-
+        // dd($data);
+        $statuses = StatusProduct::select('status')->where('id', $filterStatus)->first();
 
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
+            "status"          => $statuses->status,
             "data"            => $data
         );
         return json_encode($json_data);
+    }
+
+    public function continueStatus(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $this->executeContinueStatus($request);
+
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil dilanjutkan statusnya.',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else if ($e instanceof BadRequestHttpException) {
+                    return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    protected function executeContinueStatus($request)
+    {
+        $selected_product = $request->input('selected_product');
+        $current_status = $request->input('current_status');
+        foreach ($selected_product as $sp) {
+            $timeNow = Carbon::now();
+            $statusLogData = new StatusProductLog();
+            $statusLogId = Uuid::uuid4()->toString();
+            $statusLogData->id = $statusLogId;
+            $statusLogData->product_id = $sp;
+
+            $newStatus = $current_status + 1;
+            if ($current_status == 19) {
+                $statusLogData->status_id = 32;
+                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
+                $statusLogData->status_name = $getStatusName->status;
+            } else {
+                $statusLogData->status_id = $newStatus;
+                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
+                $statusLogData->status_name = $getStatusName->status;
+            }
+
+            $statusLogData->status_date =  $request->status_date;
+            // Input data multiple image
+            foreach ($request->file() as $key => $file) {
+                if ($request->hasFile($key)) {
+                    if ($request->file($key)->isValid()) {
+                        Storage::exists('product') or Storage::makeDirectory('product');
+
+                        // Simpan gambar ke penyimpanan
+                        $image = Storage::putFile('product', $file, 'public');
+
+                        // Dapatkan URL gambar yang baru diunggah
+                        $image_url = Storage::url($image);
+                        if ($key == 'status_photo') {
+                            $statusLogData->status_photo = $image_url;
+                        } elseif ($key == 'status_photo2') {
+                            $statusLogData->status_photo2 = $image_url ?? '';
+                        } elseif ($key == 'status_photo3') {
+                            $statusLogData->status_photo3 = $image_url ?? '';
+                        } elseif ($key == 'status_photo4') {
+                            $statusLogData->status_photo4 = $image_url ?? '';
+                        } elseif ($key == 'status_photo5') {
+                            $statusLogData->status_photo5 =  $image_url ?? '';
+                        } elseif ($key == 'status_photo6') {
+                            $statusLogData->status_photo6 = $image_url ?? '';
+                        } elseif ($key == 'status_photo7') {
+                            $statusLogData->status_photo7 = $image_url ?? '';
+                        } elseif ($key == 'status_photo8') {
+                            $statusLogData->status_photo8 = $image_url ?? '';
+                        } elseif ($key == 'status_photo9') {
+                            $statusLogData->status_photo9 = $image_url ?? '';
+                        } elseif ($key == 'status_photo10') {
+                            $statusLogData->status_photo10 = $image_url ?? '';
+                        }
+                    } else {
+                        $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
+                        $statusLogData->$key = $key_id;
+                    }
+                }
+            }
+            $statusLogData->note = $request->note;
+            $statusLogData->shipping_id = $request->shipping_id;
+            $statusLogData->shipping_name = $request->shipping_name;
+            $statusLogData->number_plate = $request->number_plate;
+            $statusLogData->created_at = $timeNow;
+            $statusLogData->updated_at = null;
+            $statusLogData->created_by = auth()->user()->fullname;
+            $statusLogData->updated_by = null;
+
+            //save status logs
+            $statusLogData->save();
+
+            $productData = Product::find($sp);
+
+            $productData->status_id = $statusLogData->status_id;
+            $productData->status = $statusLogData->status_name;
+            $productData->status_photo = $statusLogData->status_photo;
+            $productData->note = $statusLogData->note;
+            $productData->shipping_id = $statusLogData->shipping_id;
+            $productData->shipping_name = $statusLogData->shipping_name;
+            $productData->current_location = $request->current_location;
+            $productData->save();
+
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
+            $locationLog->status_product_log_id = $statusLogData->id;
+            $locationLog->product_id = $sp;
+            $locationLog->current_location = $request->current_location;
+            $locationLog->created_at = $timeNow;
+            $locationLog->created_by = auth()->user()->fullname;
+            $locationLog->updated_at = null;
+            $locationLog->updated_by = null;
+            $locationLog->save();
+        }
+        return $statusLogData;
     }
 }

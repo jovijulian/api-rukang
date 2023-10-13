@@ -39,7 +39,7 @@ class StatusProductController extends Controller
             }
 
             $paginate = StatusProduct::query()->select(['status_products.*'])
-                ->where('id', '!=', 25)
+
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
@@ -285,7 +285,7 @@ class StatusProductController extends Controller
         $totalData = StatusProduct::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = StatusProduct::where('id', '!=', 25)->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = StatusProduct::offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -298,7 +298,6 @@ class StatusProductController extends Controller
             }
             //QUERI CUSTOM
             $data =  StatusProduct::whereRaw($conditions)
-                ->where('id', '!=', 25)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
