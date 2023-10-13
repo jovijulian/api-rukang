@@ -29,7 +29,8 @@ class ProductExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
             'Barcode',
             'Nomor Modul',
             'Nomor Bilah',
-            'Tanggal Produksi',
+            'Tanggal Mulai Produksi',
+            'Tanggal Selesai Produksi',
             'Rak',
             'Keterangan',
             'Tanggal Pengiriman',
@@ -97,13 +98,13 @@ class ProductExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
     {
         if ($this->segment != null) {
             $products = Product::where('segment_id', $this->segment)
-            ->select('category', 'segment_name', 'segment_place', 'barcode', 'module_number', 'bilah_number', 'production_date', 'shelf_name', 'description', 'delivery_date', 'status', 'note', 'shipping_name', 'current_location', 'group_name')
-            ->get();
+                ->select('category', 'segment_name', 'segment_place', 'barcode', 'module_number', 'bilah_number', 'start_production_date', 'finish_production_date', 'shelf_name', 'description', 'delivery_date', 'status', 'note', 'shipping_name', 'current_location', 'group_name')
+                ->get();
 
             return $products;
         } else {
-            $products = Product::select('category', 'segment_name', 'segment_place', 'barcode', 'module_number', 'bilah_number', 'production_date', 'shelf_name', 'description', 'delivery_date', 'status', 'note', 'shipping_name', 'current_location', 'group_name')
-            ->get();
+            $products = Product::select('category', 'segment_name', 'segment_place', 'barcode', 'module_number', 'bilah_number', 'start_production_date', 'finish_production_date', 'shelf_name', 'description', 'delivery_date', 'status', 'note', 'shipping_name', 'current_location', 'group_name')
+                ->get();
 
             return $products;
         }
