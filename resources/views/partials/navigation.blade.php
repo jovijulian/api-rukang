@@ -133,6 +133,11 @@
                 <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') && !request()->is('product-by-status*') ? '' : 'text-white' }}">Semua Produk</a></li>
               </ul>
             </li>
+          </ul>
+        </li>
+        <li class="submenu-open aset-data">
+          <h6 class="submenu-hdr">Manajemen Status Aset</h6>
+          <ul>
             <li class="{{ request()->is('product-by-status*') ? 'active submenu' : 'submenu' }}">
               <a href="javascript:void(0);" class="{{ request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk By Status</span><span class="menu-arrow"></span></a>
               <ul>
