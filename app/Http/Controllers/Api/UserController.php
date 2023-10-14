@@ -445,10 +445,11 @@ class UserController extends Controller
         $order = $columns[$request->has('order.0.column')] ? 'fullname'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = User::count();
+
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
             $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', '!=', 1)->get();
+            $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -470,6 +471,7 @@ class UserController extends Controller
 
             //QUERI CUSTOM
             $totalFiltered = User::whereRaw($conditions)->count();
+            $totalData = $totalFiltered;
         }
 
         $json_data = array(
