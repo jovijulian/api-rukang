@@ -55,24 +55,24 @@
                     <input type="email" id="email" class="form-control" placeholder="Masukan email" required>
                   </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                   <label class="col-lg-2 col-form-label">No HP *</label>
                   <div class="col-lg-10">
                     <input type="text" id="phone" class="form-control" placeholder="Masukan no hp" required>
                   </div>
-                </div>
-                <div class="form-group row">
+                </div> --}}
+                {{-- <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Tanggal Lahir *</label>
                   <div class="col-lg-10">
                     <input type="date" id="birthdate" class="form-control" placeholder="Masukan tanggal lahir" required>
                   </div>
-                </div>
-                <div class="form-group row">
+                </div> --}}
+                {{-- <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Alamat *</label>
                   <div class="col-lg-10">
                     <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan alamat anda" required></textarea>
                   </div>
-                </div>
+                </div> --}}
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Password *</label>
                   <div class="col-lg-10">

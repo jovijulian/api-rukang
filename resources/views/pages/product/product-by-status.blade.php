@@ -86,9 +86,9 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto) *</label>
+                    <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                     <div class="col-lg-9">
-                      <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple required>
+                      <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple>
                       <div id="image-preview" class="mt-2 row"></div>
                     </div>
                   </div>
@@ -326,10 +326,10 @@
 
         axios.post("{{ url('api/v1/product/continue-status') }}", data, config)
           .then(res => {
-            const produk = res.data.data.item
+            // const produk = res.data.data.item
             sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
-            // window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
-            window.location.reload();
+            window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            // window.location.reload()
           })
           .catch(err => {
             $('#global-loader').hide()
@@ -348,7 +348,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Status produk gagal dilanjutkan',
-              text: errorMessage
+              // text: errorMessage
             })
           })
 

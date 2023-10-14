@@ -45,7 +45,7 @@
                   </div>
                   <div class="col-xl-6">
                     <div class="form-group row">
-                      <label class="col-lg-3 col-form-label">Kelompok *</label>
+                      <label class="col-lg-3 col-form-label">Kelompok</label>
                       <div class="col-lg-9">
                         <select id="group" class="form-control select">
                           <option value="Pilih kelompok" selected="selected" disabled>Pilih kelompok</option>
