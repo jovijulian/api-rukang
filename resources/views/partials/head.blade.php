@@ -16,6 +16,7 @@
 <!-- Datatable CSS -->
 <link rel="stylesheet" href="{{ url('assets/css/dataTables.bootstrap4.min.css') }}">
 {{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> --}}
+<link href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css" rel="stylesheet" />
 
 <!-- Fontawesome CSS -->
 <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
