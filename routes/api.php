@@ -113,6 +113,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable-product-status', 'datatableProductPerStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/continue-status', 'continueStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/rewind-status', 'rewindStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/drop-status', 'dropStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('shipping')->group(function () {
