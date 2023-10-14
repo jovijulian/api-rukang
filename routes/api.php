@@ -111,6 +111,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/update-status-product/{id}', 'updateStatusProduct')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::get('/report-product', 'export');
             Route::post('/datatable-product-status', 'datatableProductPerStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/continue-status', 'continueStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/rewind-status', 'rewindStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('shipping')->group(function () {
