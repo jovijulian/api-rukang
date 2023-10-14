@@ -122,15 +122,25 @@
         <li class="submenu-open aset-data">
           <h6 class="submenu-hdr">Manajemen Aset</h6>
           <ul>
-            <li><a href="/tool" class="{{ request()->is('tool*') ? 'active' : '' }}"><i data-feather="tool"></i><span>Alat</span></a></li>
-            <li><a href="/material" class="{{ request()->is('material*') ? 'active' : '' }}"><i data-feather="layers"></i><span>Bahan</span></a></li>
+            <li class="{{ request()->is('tool*') ? 'active' : '' }}"><a href="/tool"><i data-feather="tool"></i><span>Alat</span></a></li>
+            <li class="{{ request()->is('material*') ? 'active' : '' }}"><a href="/material"><i data-feather="layers"></i><span>Bahan</span></a></li>
             {{-- <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}"><i data-feather="box"></i><span>Produk</span></a></li>
             <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}"><i data-feather="plus-square"></i><span>Tambah Produk</span></a></li> --}}
-            <li class="submenu">
-              <a href="javascript:void(0);" class="{{ request()->is('product*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk</span><span class="menu-arrow"></span></a>
+            <li class="{{ request()->is('product*') && !request()->is('product-by-status*') ? 'active submenu' : 'submenu' }}">
+              <a href="javascript:void(0);" class="{{ request()->is('product*') && !request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk</span><span class="menu-arrow"></span></a>
               <ul>
-                <li><a href="/product/insert" class="insert-product {{ request()->is('product/insert') ? 'active' : '' }}">Tambah Produk</a></li>
-                <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') ? 'active' : '' }}">Semua Produk</a></li>
+                <li><a href="/product/insert" class="{{ request()->is('product/insert') && !request()->is('product-by-status*')  ? '' : 'text-white' }}">Tambah Produk</a></li>
+                <li><a href="/product" class="{{ request()->is('product*') && !request()->is('product/insert') && !request()->is('product-by-status*') ? '' : 'text-white' }}">Semua Produk</a></li>
+              </ul>
+            </li>
+            <li class="{{ request()->is('product-by-status*') ? 'active submenu' : 'submenu' }}">
+              <a href="javascript:void(0);" class="{{ request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk By Status</span><span class="menu-arrow"></span></a>
+              <ul>
+                {{-- <li><a href="/product-by-status/insert" class="insert-product {{ request()->is('product/insert') ? '' : 'text-white' }}">Tambah Produk</a></li> --}}
+                <li><a href="/product-by-status/16" class="insert-product {{ request()->is('product-by-status/16')  ? '' : 'text-white' }}">01 Dalam Proses Produksi</a></li>
+                <li><a href="/product-by-status/17" class="insert-product {{ request()->is('product-by-status/17')  ? '' : 'text-white' }}">02 Selesai Produksi</a></li>
+                <li><a href="/product-by-status/18" class="insert-product {{ request()->is('product-by-status/18')  ? '' : 'text-white' }}">03 Pengecekan</a></li>
+                <li><a href="/product-by-status/19" class="insert-product {{ request()->is('product-by-status/19')  ? '' : 'text-white' }}">04 Siap Kirim</a></li>
               </ul>
             </li>
           </ul>
@@ -138,21 +148,21 @@
         <li class="submenu-open master-data">
           <h6 class="submenu-hdr">Manajemen Master</h6>
           <ul>
-            <li><a href="/category" class="{{ request()->is('category*') ? 'active' : '' }}"><i data-feather="codepen"></i><span>Kategori</span></a></li>
-            <li><a href="/segment" class="{{ request()->is('segment*') ? 'active' : '' }}"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
-            <li><a href="/module" class="{{ request()->is('module*') ? 'active' : '' }}"><i data-feather="clipboard"></i><span>Modul</span></a></li>
-            <li><a href="/shelf" class="{{ request()->is('shelf*') ? 'active' : '' }}"><i data-feather="server"></i><span>Rak</span></a></li>
-            <li><a href="/status-product" class="{{ request()->is('status-product*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status Produk</span></a></li>
-            <li><a href="/status-tool-material" class="{{ request()->is('status-tool-material*') ? 'active' : '' }}"><i data-feather="package"></i><span>Status Alat & Bahan</span></a></li>
-            <li><a href="/shipping" class="{{ request()->is('shipping*') ? 'active' : '' }}"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
-            <li><a href="/group" class="{{ request()->is('group*') ? 'active group' : 'group' }}"><i data-feather="users"></i><span>Kelompok</span></a></li>
+            <li class="{{ request()->is('category*') ? 'active' : '' }}"><a href="/category"><i data-feather="codepen"></i><span>Kategori</span></a></li>
+            <li class="{{ request()->is('segment*') ? 'active' : '' }}"><a href="/segment"><i data-feather="pie-chart"></i><span>Segmen</span></a></li>
+            <li class="{{ request()->is('module*') ? 'active' : '' }}"><a href="/module"><i data-feather="clipboard"></i><span>Modul</span></a></li>
+            <li class="{{ request()->is('shelf*') ? 'active' : '' }}"><a href="/shelf"><i data-feather="server"></i><span>Rak</span></a></li>
+            <li class="{{ request()->is('status-product*') ? 'active' : '' }}"><a href="/status-product"><i data-feather="package"></i><span>Status Produk</span></a></li>
+            <li class="{{ request()->is('status-tool-material*') ? 'active' : '' }}"><a href="/status-tool-material"><i data-feather="package"></i><span>Status Alat & Bahan</span></a></li>
+            <li class="{{ request()->is('shipping*') ? 'active' : '' }}"><a href="/shipping"><i data-feather="truck"></i><span>Ekspedisi</span></a></li>
+            <li class="{{ request()->is('group*') ? 'active group' : 'group' }}"><a href="/group"><i data-feather="users"></i><span>Kelompok</span></a></li>
           </ul>
         </li>
         <li class="submenu-open user-data">
           <h6 class="submenu-hdr">Manajemen User</h6>
           <ul>
-            <li><a href="/user" class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><i data-feather="users"></i><span>User</span></a></li>
-            <li><a href="/user/inactive-user" class="{{ request()->is('user/inactive-user') ? 'active verif-role' : 'verif-role' }}"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
+            <li class="{{ request()->is('user*') && !request()->is('user/inactive-user') ? 'active' : '' }}"><a href="/user"><i data-feather="users"></i><span>User</span></a></li>
+            <li class="{{ request()->is('user/inactive-user') ? 'active verif-role' : 'verif-role' }}"><a href="/user/inactive-user"><i data-feather="user-x"></i><span>Verifikasi User</span></a></li>
           </ul>
         </li>
         <li class="submenu-open">

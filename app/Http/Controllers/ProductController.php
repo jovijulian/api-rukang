@@ -46,4 +46,10 @@ class ProductController extends Controller
             'idStatus' => $idStatus,
         ]);
     }
+
+
+    public function productByStatus($statusId)
+    {
+        return view('pages.product.product-by-status', ['statusId' => $statusId]);
+    }
 }
