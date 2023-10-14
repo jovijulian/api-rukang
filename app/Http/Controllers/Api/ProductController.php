@@ -881,7 +881,6 @@ class ProductController extends Controller
         $order = $columns[$request->has('order.0.column')] ? 'barcode'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Product::count();
         $filterStatus = $request->input('status_id');
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
@@ -892,6 +891,7 @@ class ProductController extends Controller
                 })
                 ->where('products.status_id', $filterStatus)
                 ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -928,6 +928,7 @@ class ProductController extends Controller
                 ->get();
 
             //QUERI CUSTOM
+            $totalData = $data->count();
             $totalFiltered = Product::whereRaw($conditions)->count();
         }
 
@@ -993,6 +994,31 @@ class ProductController extends Controller
                 $statusLogData->status_id = 20;
                 $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
                 $statusLogData->status_name = $getStatusName->status;
+                $travelDocumentLog = new TravelDocumentLog();
+                $travelDocumentLog->id = Uuid::uuid4()->toString();
+                $travelDocumentLog->product_id = $sp;
+                $travelDocumentLog->travel_document_number = $request->travel_document_number;
+                $travelDocumentLog->travel_document_path = $request->travel_document_path;
+                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+                if ($request->upload_signature) {
+                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+                    $image_url_travel_document = Storage::url($image);
+                }
+                $statusLogData->upload_signature = $image_url_travel_document;
+            } else if ($current_status == 20 || $current_status == 21) {
+                $travelDocumentLog = new TravelDocumentLog();
+                $travelDocumentLog->id = Uuid::uuid4()->toString();
+                $travelDocumentLog->product_id = $sp;
+                $travelDocumentLog->travel_document_number = $request->travel_document_number;
+                $travelDocumentLog->travel_document_path = $request->travel_document_path;
+                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+                if ($request->upload_signature) {
+                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+                    $image_url_travel_document = Storage::url($image);
+                }
+                $statusLogData->upload_signature = $image_url_travel_document;
             } else {
                 $statusLogData->status_id = $newStatus;
                 $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
@@ -1038,20 +1064,7 @@ class ProductController extends Controller
                     }
                 }
             }
-            if ($current_status == 20 || $current_status == 21) {
-                $travelDocumentLog = new TravelDocumentLog();
-                $travelDocumentLog->id = Uuid::uuid4()->toString();
-                $travelDocumentLog->product_id = $sp;
-                $travelDocumentLog->travel_document_number = $request->travel_document_number;
-                $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
-                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
-                if ($request->upload_signature) {
-                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
-                    $image_url_travel_document = Storage::url($image);
-                }
-                $statusLogData->upload_signature = $image_url_travel_document;
-            }
+
 
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
