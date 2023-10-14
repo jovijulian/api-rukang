@@ -328,7 +328,8 @@
           .then(res => {
             const produk = res.data.data.item
             sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
-            window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            // window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            window.location.reload();
           })
           .catch(err => {
             $('#global-loader').hide()
