@@ -14,10 +14,12 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class ProductExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles
 {
     protected $segment;
+    protected $category;
 
-    public function __construct($segment)
+    public function __construct($segment, $category)
     {
         $this->segment = $segment;
+        $this->category = $category;
     }
 
     public function headings(): array
@@ -96,8 +98,8 @@ class ProductExport implements FromCollection, WithHeadings, ShouldAutoSize, Wit
 
     public function collection()
     {
-        if ($this->segment != null) {
-            $products = Product::where('segment_id', $this->segment)
+        if ($this->segment != null || $this->category != null) {
+            $products = Product::where('segment_id', $this->segment)->where('category_id', $this->category)
                 ->select('category', 'segment_name', 'segment_place', 'barcode', 'module_number', 'bilah_number', 'start_production_date', 'finish_production_date', 'shelf_name', 'description', 'delivery_date', 'status', 'note', 'shipping_name', 'current_location', 'group_name')
                 ->get();
 
