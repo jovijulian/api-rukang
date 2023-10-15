@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Imports\FormatSuratJalan;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Status;
@@ -881,59 +882,48 @@ class ProductController extends Controller
         $order = $columns[$request->has('order.0.column')] ? 'barcode'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
+        $totalData = Product::count();
+        $search = $request->input('search.value');
         $filterStatus = $request->input('status_id');
-        if (empty($request->input('search.value'))) {
-            //QUERI CUSTOM
-            $data = Product::select('products.*', 'status_product_logs.id as status_product_log')
-                ->join('status_product_logs', function ($join) {
-                    $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
-                })
-                ->where('products.status_id', $filterStatus)
-                ->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalData = $data->count();
-            $totalFiltered = $totalData;
-        } else {
-            $search = $request->input('search.value');
-            $conditions = '1 = 1';
-            if (!empty($search)) {
-                $conditions .= " AND barcode LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR category LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR segment_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR segment_place LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR module_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR bilah_number LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR start_production_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR finish_production_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR shelf_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR description LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR delivery_date LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.shipping_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR group_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR products.updated_by LIKE '%" . trim($search) . "%'";
-            }
-            //QUERI CUSTOM
-            $data =  Product::select('products.*', 'status_product_logs.id as status_product_log')
-                ->join('status_product_logs', function ($join) {
-                    $join->on('products.id', '=', 'status_product_logs.product_id')
-                        ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'));
-                })
-                ->where('products.status_id', $filterStatus)
-                ->whereRaw($conditions)
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
-
-            //QUERI CUSTOM
-            $totalData = $data->count();
-            $totalFiltered = Product::whereRaw($conditions)->count();
+        $query = Product::select('products.*', 'status_product_logs.id as status_product_log')
+            ->join('status_product_logs', function ($join) {
+                $join->on('products.id', '=', 'status_product_logs.product_id')
+                    ->where('status_product_logs.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM status_product_logs WHERE product_id = products.id)'))
+                    ->whereNull('products.deleted_at');
+            })
+            ->where('products.status_id', $filterStatus);
+        if (!empty($search)) {
+            $query->where(function ($query) use ($search) {
+                $query->where('products.barcode', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.category', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.segment_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.segment_place', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.module_number', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.bilah_number', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.start_production_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.finish_production_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.shelf_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.description', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.delivery_date', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.status', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.shipping_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('group_name', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.created_by', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('products.updated_by', 'LIKE', '%' . trim($search) . '%');
+            });
+        }
+        if ($request->input('category') != null) {
+            $query->where('category_id', $request->category);
         }
 
-        // FILTER DATA
-        // dd($data);
+        $totalData = $query->count();
+        $totalFiltered = $totalData;
+
+        $data = $query->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir)
+            ->get();
+
         $statuses = StatusProduct::select('status')->where('id', $filterStatus)->first();
 
         $json_data = array(
@@ -986,33 +976,46 @@ class ProductController extends Controller
             $statusLogData->product_id = $sp;
 
             $newStatus = $current_status + 1;
-            if ($current_status == 19) {
+            if ($current_status == 19) { //status 04 - pengiriman ke 05 - persiapan surat jalan
                 $statusLogData->status_id = 32;
                 $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
                 $statusLogData->status_name = $getStatusName->status;
-            } else if ($current_status == 32) {
+            } else if ($current_status == 32) { //status 05 - persiapan surat jalan ke 06 - pengiriman
                 $statusLogData->status_id = 20;
                 $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
                 $statusLogData->status_name = $getStatusName->status;
+                // $getFileFormat = storage_path('app/format_surat_jalan/Format Surat Jalan.xlsx');
+                // Excel::import(new FormatSuratJalan, $getFileFormat);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 $travelDocumentLog = new TravelDocumentLog();
                 $travelDocumentLog->id = Uuid::uuid4()->toString();
                 $travelDocumentLog->product_id = $sp;
                 $travelDocumentLog->travel_document_number = $request->travel_document_number;
                 $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
-                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
-                if ($request->upload_signature) {
-                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
-                    $image_url_travel_document = Storage::url($image);
-                }
-                $statusLogData->upload_signature = $image_url_travel_document;
-            } else if ($current_status == 20 || $current_status == 21) {
+                $travelDocumentLog->save();
+                $statusLogData->travel_document_id = $travelDocumentLog->id;
+            } else if ($current_status == 20 || $current_status == 21) { //kondisi khusus status 06 - pengiriman dan 07 - diterima
                 $travelDocumentLog = new TravelDocumentLog();
                 $travelDocumentLog->id = Uuid::uuid4()->toString();
                 $travelDocumentLog->product_id = $sp;
                 $travelDocumentLog->travel_document_number = $request->travel_document_number;
                 $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+                $travelDocumentLog->save();
+                $statusLogData->travel_document_id = $travelDocumentLog->id;
                 Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
                 if ($request->upload_signature) {
                     $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
@@ -1079,14 +1082,16 @@ class ProductController extends Controller
             $statusLogData->save();
 
             $productData = Product::find($sp);
-
+            $productData->status_id = $statusLogData->status_id;
             $productData->status_id = $statusLogData->status_id;
             $productData->status = $statusLogData->status_name;
+
             $productData->status_photo = $statusLogData->status_photo;
             $productData->note = $statusLogData->note;
             $productData->shipping_id = $statusLogData->shipping_id;
             $productData->shipping_name = $statusLogData->shipping_name;
             $productData->current_location = $request->current_location;
+            // dd($productData->status_id);
             $productData->save();
 
             $locationLog = new LocationProductLog();
