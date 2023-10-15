@@ -462,7 +462,7 @@
             <select id="segment-product" class="form-control select text-start">
               <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
             </select>
-            <a href="{{ url('api/v1/product/report-product') }}" id="export-excel" class="w-100 mt-3 btn btn btn-submit">Eksport Segmen</a>
+            <a href="{{ url('api/v1/product/report-product') }}" id="export-excel" class="w-100 mt-3 btn btn btn-submit">Eksport Produk</a>
           `,
         // showCancelButton: true,
         showConfirmButton: false,

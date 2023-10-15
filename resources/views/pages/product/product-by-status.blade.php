@@ -119,6 +119,16 @@
                     </div>
                   </div>
                   <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Status *</label>
+                    <div class="col-lg-9">
+                      <select id="status-drop-select" class="form-control select" required>
+                        <option selected="selected" disabled>Pilih status</option>
+                        <option value="29">98. Duplikat</option>
+                        <option value="28">99. Tidak Dipakai</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Tanggal Status *</label>
                     <div class="col-lg-9">
                       <input type="date" id="status-date-drop" class="form-control text-sm" required>
@@ -238,6 +248,28 @@
           let reader = new FileReader()
           reader.onload = function(){
             $('#image-preview').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+          }
+          reader.readAsDataURL(this.files[i])
+        }
+      }
+    })
+
+    $('#image-status-drop').change(function(event) {
+      if (this.files) {
+        let fileAmount = this.files.length
+        $('#image-preview-drop img').remove()
+
+        if (fileAmount > 10) {
+          console.log('salah');
+          Swal.fire('Maksimal upload 10 foto', '', 'error')
+          $('#image-status-drop').val('')
+          return
+        }
+        
+        for (let i = 0; i < fileAmount; i++) {
+          let reader = new FileReader()
+          reader.onload = function(){
+            $('#image-preview-drop').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
           }
           reader.readAsDataURL(this.files[i])
         }
@@ -491,6 +523,72 @@
             Swal.fire({
               icon: 'error',
               title: 'Status produk gagal dimundurkan',
+              // text: errorMessage
+            })
+          })
+      })
+
+      $('#status-form-drop').on('submit', () => {
+        event.preventDefault()
+        $('#global-loader').show()
+
+        if (selectedId.length == 0) {
+          $('#global-loader').hide()
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Status produk gagal didrop',
+            text: 'Tolong pilih produk terlebih dahulu'
+          })
+          return
+        }
+
+        const data = {
+          selected_product: selectedId,
+          status_id: $('#status-drop-select').val() ? $('#status-drop-select').val() : '',
+          status_name: $('#status-drop-select').val() ? $('#status-drop-select').find("option:selected").text() : '',
+          status_date: $('#status-date-drop').val(),
+          note: $('#note-drop').val() ? $('#note-drop').val() : '',
+          current_location: $('#current-location-drop').prop('disabled') ? '' : $('#current-location-drop').val(),
+          status_photo: $('#image-status-drop')[0].files[0] ? $('#image-status-drop')[0].files[0] : '',
+          status_photo2: $('#image-status-drop')[0].files[1] ? $('#image-status-drop')[0].files[1] : '',
+          status_photo3: $('#image-status-drop')[0].files[2] ? $('#image-status-drop')[0].files[2] : '',
+          status_photo4: $('#image-status-drop')[0].files[3] ? $('#image-status-drop')[0].files[3] : '',
+          status_photo5: $('#image-status-drop')[0].files[4] ? $('#image-status-drop')[0].files[4] : '',
+          status_photo6: $('#image-status-drop')[0].files[5] ? $('#image-status-drop')[0].files[5] : '',
+          status_photo7: $('#image-status-drop')[0].files[6] ? $('#image-status-drop')[0].files[6] : '',
+          status_photo8: $('#image-status-drop')[0].files[7] ? $('#image-status-drop')[0].files[7] : '',
+          status_photo9: $('#image-status-drop')[0].files[8] ? $('#image-status-drop')[0].files[8] : '',
+          status_photo10: $('#image-status-drop')[0].files[9] ? $('#image-status-drop')[0].files[9] : '',
+        }
+
+        // console.log(data)
+        // return
+
+        axios.post("{{ url('api/v1/product/drop-status') }}", data, config)
+          .then(res => {
+            // const produk = res.data.data.item
+            sessionStorage.setItem("success", `Status produk berhasil didrop`)
+            window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            // window.location.reload()
+          })
+          .catch(err => {
+            $('#global-loader').hide()
+            
+            let errorMessage = ''
+
+            if (err.response.status == 422) {
+              const errors = err.response.data.errors[0]
+              for (const key in errors) {
+                errorMessage += `${errors[key]} \n`
+              }
+            } else if(err.response.status == 500) {
+              errorMessage = 'Internal server error'
+            }
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Status produk gagal didrop',
               // text: errorMessage
             })
           })
