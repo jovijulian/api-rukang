@@ -47,28 +47,26 @@
                   <img src="assets/img/icons/mail.svg" alt="img">
                 </div>
               </div>
-              <div class="form-login">
+              {{-- <div class="form-login">
                 <label for="birthdate">Tanggal Lahir *</label>
                 <div class="form-addons">
                   <input type="date" id="birthdate" required>
-                  {{-- <img src="assets/img/icons/mail.svg" alt="img"> --}}
                 </div>
-              </div>
-              <div class="form-login">
+              </div> --}}
+              {{-- <div class="form-login">
                 <label for="phone">Nomor Telepon *</label>
                 <div class="form-addons">
                   <input type="text" id="phone" placeholder="Masukan nomor telepon anda" required>
                   <img src="assets/img/icons/phone.svg" alt="img">
                 </div>
-              </div>
-              <div class="form-login">
+              </div> --}}
+              {{-- <div class="form-login">
                 <label for="address">Alamat *</label>
                 <div class="form-addons">
-                  {{-- <input type="text" id="address" placeholder="Masukan alamat anda" required> --}}
                   <textarea rows="3" cols="5" id="address" class="form-control" placeholder="Masukan alamat anda" required></textarea>
                   <img src="assets/img/icons/map.svg" alt="img">
                 </div>
-              </div>
+              </div> --}}
               <div class="form-login">
                 <label for="password">Password *</label>
                 <div class="pass-group">

@@ -110,6 +110,8 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('product/edit/{id}', 'edit');
     Route::get('product/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('product/edit-location/{id}', 'editLocation');
+    
+    Route::get('product-by-status/{statusId}', 'productByStatus');
 });
 
 Route::controller(ToolController::class)->group(function () {

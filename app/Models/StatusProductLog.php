@@ -54,6 +54,7 @@ class StatusProductLog extends Model
         'shipping_id',
         'shipping_name',
         'number_plate',
+        'upload_signature',
         'created_by',
         'updated_by',
         'deleted_by',
