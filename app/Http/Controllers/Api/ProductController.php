@@ -866,7 +866,8 @@ class ProductController extends Controller
     {
         set_time_limit(300);
         $segment = $request->has('segment') ? $request->input('segment') : null;
-        return Excel::download(new ProductExport($segment), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
+        $category = $request->has('category') ? $request->input('category') : null;
+        return Excel::download(new ProductExport($segment, $category), 'laporan-produk-' . now()->format('Y-m-d H:i:s') . '.xlsx');
     }
 
     public function datatableProductPerStatus(Request $request)
