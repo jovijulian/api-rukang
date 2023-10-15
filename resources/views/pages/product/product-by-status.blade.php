@@ -28,7 +28,7 @@
           <table id="product-table" class="table">
             <thead>
               <tr>
-                <th></th>
+                <th class="text-center p-2"><input type="checkbox" id="select-all" class="cursor-pointer" /></th>
                 <th>Barcode</th>
                 <th>Tanggal Mulai Produksi</th>
                 <th>Tanggal Selesai Produksi</th>
@@ -365,10 +365,10 @@
         },
         columnDefs: [
           {
+            targets: 0,
             orderable: false,
             className: 'select-checkbox',
-            orderable: false,
-            targets: 0
+            width: '5%'
           }
         ],
         select: {
@@ -424,6 +424,14 @@
       })
 
       let selectedId = []
+
+      $("#select-all").on("click", function(e) {
+          if ($(this).is(":checked")) {
+              table.rows().select();
+          } else {
+              table.rows().deselect();
+          }
+      });
       
       $('#status-prev').on('click', () => {
         selectedId = []
