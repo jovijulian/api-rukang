@@ -71,9 +71,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto) *</label>
+                  <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                   <div class="col-lg-9">
-                    <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple required>
+                    <input class="form-control mb-1" type="file" id="image-status" accept="image/*" multiple>
                     <div id="image-preview" class="mt-2 row"></div>
                   </div>
                 </div>
