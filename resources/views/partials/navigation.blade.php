@@ -142,10 +142,13 @@
               <a href="javascript:void(0);" class="{{ request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk By Status</span><span class="menu-arrow"></span></a>
               <ul>
                 {{-- <li><a href="/product-by-status/insert" class="insert-product {{ request()->is('product/insert') ? '' : 'text-white' }}">Tambah Produk</a></li> --}}
-                <li><a href="/product-by-status/16" class="insert-product {{ request()->is('product-by-status/16')  ? '' : 'text-white' }}">01 Dalam Proses Produksi</a></li>
-                <li><a href="/product-by-status/17" class="insert-product {{ request()->is('product-by-status/17')  ? '' : 'text-white' }}">02 Selesai Produksi</a></li>
-                <li><a href="/product-by-status/18" class="insert-product {{ request()->is('product-by-status/18')  ? '' : 'text-white' }}">03 Pengecekan</a></li>
-                <li><a href="/product-by-status/19" class="insert-product {{ request()->is('product-by-status/19')  ? '' : 'text-white' }}">04 Siap Kirim</a></li>
+                <li><a href="/product-by-status/16" class="insert-product {{ request()->is('product-by-status/16')  ? '' : 'text-white' }}">01. Dalam Proses Produksi</a></li>
+                <li><a href="/product-by-status/17" class="insert-product {{ request()->is('product-by-status/17')  ? '' : 'text-white' }}">02. Selesai Produksi</a></li>
+                <li><a href="/product-by-status/18" class="insert-product {{ request()->is('product-by-status/18')  ? '' : 'text-white' }}">03. Pengecekan</a></li>
+                <li><a href="/product-by-status/19" class="insert-product {{ request()->is('product-by-status/19')  ? '' : 'text-white' }}">04. Siap Kirim</a></li>
+                <li><a href="/product-by-status/32" class="insert-product {{ request()->is('product-by-status/32')  ? '' : 'text-white' }}">05. Persiapan Surat Jalan</a></li>
+                <li><a href="/product-by-status/20" class="insert-product {{ request()->is('product-by-status/20')  ? '' : 'text-white' }}">06. Pengiriman</a></li>
+                <li><a href="/product-by-status/21" class="insert-product {{ request()->is('product-by-status/21')  ? '' : 'text-white' }}">07. Diterima</a></li>
               </ul>
             </li>
           </ul>

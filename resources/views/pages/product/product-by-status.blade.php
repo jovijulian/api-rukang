@@ -226,6 +226,12 @@
                       <textarea rows="3" cols="5" id="note" class="form-control" placeholder="Masukan catatan"></textarea>
                     </div>
                   </div>
+                  <div id="upload-signature-input" class="form-group row">
+                    <label class="col-lg-3 col-form-label">Upload Surat Jalan</label>
+                    <div class="col-lg-9">
+                      <input class="form-control mb-1" type="file" id="upload-signature" accept="image/*">
+                    </div>
+                  </div>
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                     <div class="col-lg-9">
@@ -403,7 +409,7 @@
                     </div>
                   </div>
                   <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-primary px-3 py-2">Lanjutkan Status</button>
+                    <button type="submit" class="btn btn-primary px-3 py-2">Buat Surat Jalan</button>
                   </div>
                 </form>
               </div>
@@ -530,6 +536,10 @@
     
     if ("{{ $statusId }}" == 16) {
       $('#status-prev').hide()
+    }
+
+    if ("{{ $statusId }}" == 21) {
+      $('#status-next').hide()
     }
 
     $("#driver-telp").keypress(function(e) {
@@ -815,7 +825,10 @@
             selectedDataTable.append(rowMarkup)
           })
 
+        } else if ("{{ $statusId }}" == 32 || "{{ $statusId }}" == 20) {
+          $('#statusNextModal').modal('show')          
         } else {
+          $('#upload-signature-input').hide()
           $('#statusNextModal').modal('show')
         }
       })
@@ -976,6 +989,7 @@
           status_date: $('#status-date').val(),
           note: $('#note').val() ? $('#note').val() : '',
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val(),
+          upload_signature: $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : '',
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
           status_photo3: $('#image-status')[0].files[2] ? $('#image-status')[0].files[2] : '',
