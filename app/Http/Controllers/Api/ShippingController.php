@@ -72,6 +72,7 @@ class ShippingController extends Controller
     {
         $arrayValidator = [
             'shipping_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shippings,shipping_name,NULL,id'],
+            'company_name' => ['required', 'string', 'min:1', 'max:60'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -84,6 +85,7 @@ class ShippingController extends Controller
 
         // input data shipping
         $shippingData->shipping_name = $data['shipping_name'];
+        $shippingData->company_name = $data['company_name'];
         $shippingData->created_at = $timeNow;
         $shippingData->created_by = auth()->user()->fullname;
         $shippingData->updated_at = null;
@@ -161,6 +163,7 @@ class ShippingController extends Controller
     {
         $arrayValidator = [
             'shipping_name' => ['required', 'string', 'min:1', 'max:40'],
+            'company_name' => ['required', 'string', 'min:1', 'max:60'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -177,6 +180,7 @@ class ShippingController extends Controller
         }
         $shippingData->id = $id;
         $shippingData->shipping_name = $data['shipping_name'];
+        $shippingData->company_name = $data['company_name'];
         $shippingData->updated_at = $timeNow;
         $shippingData->updated_by = auth()->user()->fullname;
         //Save
@@ -286,6 +290,7 @@ class ShippingController extends Controller
             $conditions = '1 = 1';
             if (!empty($search)) {
                 $conditions .= " AND shipping_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND company_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
