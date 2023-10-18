@@ -33,6 +33,7 @@ class StatusProductLogResource extends JsonResource
             'status_photo8' => $this->status_photo8,
             'status_photo9' => $this->status_photo9,
             'status_photo10' => $this->status_photo10,
+            'upload_signature' => $this->upload_signature,
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
             'number_plate' => $this->number_plate,

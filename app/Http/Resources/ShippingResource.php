@@ -17,6 +17,7 @@ class ShippingResource extends JsonResource
         return [
             'id' => $this->id,
             'shipping_name' => $this->shipping_name,
+            'company_name' => $this->company_name,
             'shipping_use' => $this->shipping_use,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
