@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\MaterialController;
+use App\Http\Controllers\Api\ModuleCompletenessController;
 use App\Http\Controllers\Api\SeederProductController;
 use App\Http\Controllers\Api\ShelfController;
 use App\Http\Controllers\Api\ShippingController;
@@ -195,6 +196,16 @@ Route::prefix('v1')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/index-status', 'countStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+        });
+    });
+    Route::prefix('module-completeness')->group(function () {
+        Route::controller(ModuleCompletenessController::class)->group(function () {
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
 });
