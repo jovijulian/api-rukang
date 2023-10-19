@@ -36,6 +36,12 @@
                     <input type="text" id="shipping" class="form-control" placeholder="Masukan nama ekspedisi" required>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-lg-2 col-form-label">Nama Perusahaan *</label>
+                  <div class="col-lg-10">
+                    <input type="text" id="company-name" class="form-control" placeholder="Masukan nama perusahaan" required>
+                  </div>
+                </div>
                 <div class="text-end">
                   <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
@@ -76,6 +82,7 @@
 
         const data = {
           shipping_name: $('#shipping').val(),
+          company_name: $('#company-name').val(),
         }
 
 
@@ -112,7 +119,10 @@
         axios.get("{{ url('api/v1/shipping/detail/' . $id) }}", config)
           .then(res => {
             const data = res.data.data.item
+
+            console.log(data);
             $('#shipping').val(data.shipping_name)
+            $('#company-name').val(data.company_name)
           })
           .catch(err => {
             console.log(err)

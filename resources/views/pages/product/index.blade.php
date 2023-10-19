@@ -34,12 +34,11 @@
           <div class="wordset">
             <ul>
               <li>
-                <a onclick="toExcel()" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                    src="assets/img/icons/excel.svg" alt="img"></a>
+                <a onclick="toExcel()" data-toggle="modal" data-target="#modalExport" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a>
+                {{-- <a onclick="toExcel()" data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="assets/img/icons/excel.svg" alt="img"></a> --}}
               </li>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg"
-                    alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="assets/img/icons/printer.svg" alt="img"></a>
               </li>
             </ul>
           </div>
@@ -106,6 +105,39 @@
             <tbody>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade p-3" id="modalExport" tabindex="-1" aria-labelledby="modalExportLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-3">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalExportLabel">Export ke Excel</h5>
+          </div>
+          <div class="modal-body">
+            <form id="export-form">
+              <div class="form-group row">
+                <label class="col-lg-3 col-form-label">Kategori *</label>
+                <div class="col-lg-9">
+                  <select id="category-export" class="form-control select" required>
+                    {{-- <option selected="selected" disabled>Pilih kendaraan</option> --}}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-lg-3 col-form-label">Segmen *</label>
+                <div class="col-lg-9">
+                  <select id="segment-export" class="form-control select" required>
+                    {{-- <option selected="selected" disabled>Pilih kendaraan</option> --}}
+                  </select>
+                </div>
+              </div>
+              <div class="text-end mt-4">
+                <button type="submit" class="btn btn-primary px-3 py-2">Export</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -453,25 +485,53 @@
       })
     }
 
-    function toExcel() {
-      Swal.fire({
-        // title: 'Pilih Segmen',
-        // icon: 'question',
-        padding: '3em',
-        html: `
-            <select id="segment-product" class="form-control select text-start">
-              <option value="pilih segmen" selected="selected" disabled>Pilih segmen</option>
-            </select>
-            <a href="{{ url('api/v1/product/report-product') }}" id="export-excel" class="w-100 mt-3 btn btn btn-submit">Eksport Produk</a>
-          `,
-        // showCancelButton: true,
-        showConfirmButton: false,
-      })
 
+    function toExcel() {
+      $('#modalExport').modal('show')
+
+      let segment, category
+
+      getCategory()
       getSegment()
 
+      function getCategory() {
+        $('#category-export').select2({
+          placeholder: 'Pilih kategori',
+          ajax: {
+            url: "{{ url('api/v1/category/indexForProduct') }}",
+            headers: config.headers,
+            dataType: 'json',
+            type: "GET",
+            data: function(params) {
+              var query = {
+                search: params.term,
+                page: params.page || 1
+              }
+              return query
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1
+
+              return {
+                results: $.map(data.data.items, function(item) {
+                  return {
+                    text: item.category,
+                    id: item.id,
+                  }
+                }),
+                pagination: {
+                    more: data.page_info.last_page != params.page
+                }
+              }
+            },
+            cache: true
+          }
+        })
+      }
+
       function getSegment() {
-        $('#segment-product').select2({
+        $('#segment-export').select2({
+          placeholder: 'Pilih segmen',
           ajax: {
             url: "{{ url('api/v1/segment/index') }}",
             headers: config.headers,
@@ -507,12 +567,28 @@
           }
         })
 
-        $('#segment-product').on('change', () => {
-          const id = $('#segment-product').val()
-          const url = `{{ url('api/v1/product/report-product') }}?segment=${id}`
-          $('#export-excel').attr('href', url);
-        })
       }
+
+      $('#segment-export').on('change', () => {
+        const id = $('#segment-export').val()
+        segment = id
+
+        // const url = `{{ url('api/v1/product/report-product') }}?segment=${id}`
+        // $('#export-excel').attr('href', url);
+      })
+
+      $('#category-export').on('change', () => {
+        const id = $('#category-export').val()
+        category = id
+      })
+
+      $('#export-form').on('submit', () => {
+        event.preventDefault()
+
+        const url = `{{ url('api/v1/product/report-product') }}?segment=${segment}&category=${category}`
+        
+        window.open(url, '_blank')
+      })
     }
 
   </script>

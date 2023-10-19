@@ -108,6 +108,7 @@
               <tr>
                 <th>No</th>
                 <th>Nama Ekspedisi</th>
+                <th>Nama Perusahaan</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -207,6 +208,7 @@
               },
             },
             {data: 'shipping_name'},
+            {data: 'company_name'},
             {
               data: 'created_at',
               render: function (data) {

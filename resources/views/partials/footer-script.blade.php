@@ -13,8 +13,10 @@
 <!-- Datatable JS -->
 <script src="{{ url('assets/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('assets/js/dataTables.bootstrap4.min.js') }}"></script>
+{{-- <script src="{{ url('assets/js/dataTables.checkboxes.min.js') }}"></script> --}}
 {{-- <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script> --}}
 <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/jquery-datatables-checkboxes@1.2.14/js/dataTables.checkboxes.min.js"></script> --}}
 
 <!-- Bootstrap Core JS -->
 <script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>

@@ -59,17 +59,12 @@
               <tr>
                 <th class="text-center p-2"><input type="checkbox" id="select-all" class="cursor-pointer" /></th>
                 <th>Barcode</th>
-                <th>Tanggal Mulai Produksi</th>
-                <th>Tanggal Selesai Produksi</th>
                 <th>Keterangan</th>
-                <th>Tanggal Pengiriman</th>
-                <th>Status</th>
-                <th>Dibuat Pada</th>
-                <th>Dibuat Oleh</th>
+                <th>Diubah Pada</th>
+                <th>Diubah Oleh</th>
+                {{-- <th>Tanggal Status Terkini</th> --}}
               </tr>
             </thead>
-            <tbody>
-            </tbody>
           </table>
         </div>
 
@@ -148,7 +143,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Status *</label>
+                    <label class="col-lg-3 col-form-label">Status Menjadi *</label>
                     <div class="col-lg-9">
                       <select id="status-drop-select" class="form-control select" required>
                         <option selected="selected" disabled>Pilih status</option>
@@ -248,8 +243,8 @@
           </div>
         </div>
 
-        <div class="modal fade p-3" id="statusNextModalTravel" tabindex="-1" aria-labelledby="statusNextModalTravelLabel" aria-hidden="true">
-          <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1500px">
+        <div class="modal fade" id="statusNextModalTravel" tabindex="-1" aria-labelledby="statusNextModalTravelLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content p-3">
               <div class="modal-header">
                 <h5 class="modal-title" id="statusNextModalTravelLabel">Lanjutkan Status (Persiapan Surat Jalan)</h5>
@@ -397,10 +392,6 @@
                           <tr>
                             <th>No</th>
                             <th>Nama Barang</th>
-                            <th>Jumlah</th>
-                            <th>Satuan</th>
-                            <th>Packing</th>
-                            <th>Keterangan</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -568,6 +559,7 @@
         sDom: 'frBtlpi',
         ordering: true,
         pagingType: 'numbers',
+        // stateSave: true,
         language: {
           search: ' ',
           sLengthMenu: '_MENU_',
@@ -589,6 +581,8 @@
             $('.title-status-product').text(`Produk - ${json.status}`)
             $('.recent-status').val(`${json.status}`)
 
+            console.log(json);
+
             return json.data
           },
           data: function(d) {
@@ -602,6 +596,8 @@
         columnDefs: [
           {
             targets: 0,
+            checkboxes: true,
+            sorting: false,
             orderable: false,
             className: 'select-checkbox',
             width: '5%'
@@ -609,7 +605,6 @@
         ],
         select: {
           style: 'multi',
-          // selector: 'td:first-child'
         },
         columns: [
           {
@@ -624,40 +619,50 @@
             data: 'barcode'
           },
           {
-            data: 'start_production_date',
-            render: function(data) {
-              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
-            }
-          },
-          {
-            data: 'finish_production_date',
-            render: function(data) {
-              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
-            }
-          },
-          {
             data: 'description'
           },
           {
-            data: 'delivery_date',
-            render: function(data) {
-              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
-            }
-          },
-          {
-            data: 'status'
-          },
-          {
-            data: 'created_at',
+            data: 'updated_at',
             render: function(data) {
               return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
             }
           },
           {
-            data: 'created_by'
+            data: 'updated_by'
           },
         ]
       })
+
+      let statusNextId
+      let statusPrevId
+
+      if ("{{ $statusId }}" == 16) {
+        statusNextId = 17
+      } else if ("{{ $statusId }}" == 17) {
+        statusNextId = 18
+      } else if ("{{ $statusId }}" == 18) {
+        statusNextId = 19
+      } else if ("{{ $statusId }}" == 19) {
+        statusNextId = 32
+      } else if ("{{ $statusId }}" == 32) {
+        statusNextId = 20
+      } else if ("{{ $statusId }}" == 20) {
+        statusNextId = 21
+      }
+
+      if ("{{ $statusId }}" == 21) {
+        statusPrevId = 20
+      } else if ("{{ $statusId }}" == 20) {
+        statusPrevId = 32
+      } else if ("{{ $statusId }}" == 32) {
+        statusPrevId = 19
+      } else if ("{{ $statusId }}" == 19) {
+        statusPrevId = 18
+      } else if ("{{ $statusId }}" == 17) {
+        statusPrevId = 16
+      }
+
+      // console.log(statusPrevId);
 
       getCategory()
       getShipping()
@@ -733,6 +738,7 @@
           }
         })
       }
+
 
       $('#shipping-select').on('change', function (e) {
         const selectedData = $(this).select2('data')
@@ -816,10 +822,6 @@
               <tr>
                 <th>${i + 1}</th>
                 <th>${data.category + ' - ' + data.barcode}</th>
-                <th>1</th>
-                <th><input type="text" class="form-control text-sm satuan" placeholder="Masukan satuan"></th>
-                <th><input type="text" class="form-control text-sm packing" placeholder="Masukan packing"></th>
-                <th><input type="text" class="form-control text-sm keterangan" placeholder="Masukan keterangan"></th>
               </tr>
             `
             selectedDataTable.append(rowMarkup)
@@ -853,6 +855,7 @@
         const data = {
           selected_product: selectedId,
           current_status: "{{ $statusId }}",
+          previous_status: statusPrevId,
           status_date: $('#status-date-prev').val(),
           note: $('#note-prev').val() ? $('#note-prev').val() : '',
           current_location: $('#current-location-prev').prop('disabled') ? '' : $('#current-location-prev').val(),
@@ -985,6 +988,7 @@
 
         const data = {
           selected_product: selectedId,
+          next_status: statusNextId,
           current_status: "{{ $statusId }}",
           status_date: $('#status-date').val(),
           note: $('#note').val() ? $('#note').val() : '',
@@ -1035,7 +1039,7 @@
       })
 
       $('#status-form-next-travel').on('submit', () => {
-        $('#global-loader').hide()
+        $('#global-loader').show()
         event.preventDefault()
 
         const satuan = $('.satuan').map((_,el) => el.value).get()
@@ -1044,14 +1048,12 @@
 
         const finalDataSelected = selectedData.map((item, i) => ({
           productName: `${item.category} - ${item.barcode}`,
-          satuan: satuan[i],
-          packing: packing[i],
-          keterangan: keterangan[i],
         }))
 
 
         const data = {
           selected_product: selectedId,
+          next_status: statusNextId,
           current_status: "{{ $statusId }}",
           status_date: $('#status-date-travel').val(),
           note: $('#note-travel').val() ? $('#note-travel').val() : '',
@@ -1087,6 +1089,9 @@
           products: finalDataSelected
         }
 
+        // console.log(data)
+        // return
+
         if (selectedId.length == 0) {
           $('#global-loader').hide()
 
@@ -1105,9 +1110,13 @@
             sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
             window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
             // window.location.reload()
+
+            console.log(res);
           })
           .catch(err => {
             $('#global-loader').hide()
+
+            console.log(err);
             
             let errorMessage = ''
 
