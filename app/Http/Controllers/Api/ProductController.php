@@ -1078,13 +1078,26 @@ class ProductController extends Controller
             $number_plate = $request->number_plate;
             $driver_name = $request->driver_name;
             $driver_telp = $request->driver_telp;
-            // $travelDocumentLog = new TravelDocumentLog();
-            // $travelDocumentLog->id = Uuid::uuid4()->toString();
-            // $travelDocumentLog->travel_document_number = $request->travel_document_number;
-            // $travelDocumentLog->travel_document_path = $request->travel_document_path;
-            // $travelDocumentLog->save();
-            $travel_document_id = 1;
-            return Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan.xlsx');
+
+            $travelDocumentLog = new TravelDocumentLog();
+            $travelDocumentLog->id = Uuid::uuid4()->toString();
+            $travelDocumentLog->travel_document_number = $nomor_travel;
+            $travelDocumentLog->save();
+            $travel_document_id = $travelDocumentLog->id;
+
+            $generateTravelDocument = Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan-' . now()->format('Y-m-d H:i:s') . '.xlsx');
+            $path_document_travel = null;
+            $tempFilePath = $generateTravelDocument->getFile();
+
+            if (file_exists($tempFilePath)) {
+                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+                $storedPath = Storage::putFile('travel_document', new \Illuminate\Http\File($tempFilePath), 'public');
+                $path_document_travel = Storage::url($storedPath);
+            }
+
+            $getTravelDocumentLog = TravelDocumentLog::where('id', $travel_document_id)->first();
+            $getTravelDocumentLog->travel_document_path = $path_document_travel;
+            $getTravelDocumentLog->save();
         }
         return $statusLogData;
     }
