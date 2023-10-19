@@ -7,11 +7,13 @@ use App\Appraisal;
 use Carbon\Carbon;
 use App\Application;
 use App\Models\Product;
+use App\Libraries\ResponseStd;
 use App\Models\StatusProductLog;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Concerns\FromView;
-
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\BeforeExport;
@@ -58,7 +60,6 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
 
     public function view(): View
     {
-
         $products = Product::whereIn('id', $this->selected_product)->get();
 
         $result = [];
@@ -69,6 +70,7 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
             foreach ($segmentProducts as $sp) {
                 $getStatusLog = StatusProductLog::where('product_id', $sp->id)->where('status_id', 32)->first();
                 $getStatusLog->travel_document_id = $this->travel_document_id;
+                $getStatusLog->save();
             }
 
             $segmentName = $segmentProducts->first()->segment_name;
@@ -87,22 +89,36 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
                 'qty' => $totalQty,
             ];
         }
+        $receiver = $this->receiver;
+        $from = $this->from;
+        $checked_by_gudang = $this->checked_by_gudang;
+        $checked_by_keamanan = $this->checked_by_keamanan;
+        $checked_by_produksi = $this->checked_by_produksi;
+        $checked_by_project_manager = $this->checked_by_project_manager;
+        $driver = $this->driver;
+        $received_by_site_manager = $this->received_by_site_manager;
+        $nomor_travel = $this->nomor_travel;
+        $status_date = $this->status_date;
+        $shipping_name = $this->shipping_name;
+        $number_plate = $this->number_plate;
+        $driver_name = $this->driver_name;
+        $driver_telp = $this->driver_telp;
         return view('export.travel-document', [
             'products' => $result,
-            'receiver' => $this->receiver,
-            'from' => $this->from,
-            'checked_by_gudang' => $this->checked_by_gudang,
-            'checked_by_keamanan' => $this->checked_by_keamanan,
-            'checked_by_produksi' => $this->checked_by_produksi,
-            'checked_by_project_manager' => $this->checked_by_project_manager,
-            'driver' => $this->driver,
-            'received_by_site_manager' => $this->received_by_site_manager,
-            'nomor_travel' => $this->nomor_travel,
-            'status_date' => $this->status_date,
-            'shipping_name' => $this->shipping_name,
-            'number_plate' => $this->number_plate,
-            'driver_name' => $this->driver_name,
-            'driver_telp' => $this->driver_telp,
+            'receiver' => $receiver,
+            'from' => $from,
+            'checked_by_gudang' => $checked_by_gudang,
+            'checked_by_keamanan' => $checked_by_keamanan,
+            'checked_by_produksi' => $checked_by_produksi,
+            'checked_by_project_manager' => $checked_by_project_manager,
+            'driver' => $driver,
+            'received_by_site_manager' => $received_by_site_manager,
+            'nomor_travel' => $nomor_travel,
+            'status_date' => $status_date,
+            'shipping_name' => $shipping_name,
+            'number_plate' => $number_plate,
+            'driver_name' => $driver_name,
+            'driver_telp' => $driver_telp,
         ]);
     }
     public function columnWidths(): array
@@ -123,13 +139,6 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
             'M' => 18,
             'N' => 9,
             'O' => 9,
-            'P' => 4.43,
-            'Q' => 6.86,
-            'R' => 6.86,
-            'S' => 7.29,
-            'T' => 7.29,
-            'U' => 8.86,
-            'V' => 5.43
         ];
     }
     public function registerEvents(): array
@@ -139,52 +148,11 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
             BeforeExport::class => function (BeforeExport $event) {
                 $event->writer->getProperties()->setCreator('Dcrops');
             },
-
             AfterSheet::class    => function (AfterSheet $event) {
-                // $event->getDefaultStyle()->getAlignment()->setWrapText(true);
-                $event->sheet->getDelegate()->getStyle('A10:B12')->getAlignment()->setWrapText(true);
-
-                $cellRange = 'A1:AB2';
-                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setBold(true);
-                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
-                $to = $event->sheet->getDelegate()->getHighestRow();
-                // Apply array of styles to B2:G8 cell range
-                $styleArray = [
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                            'color' => ['argb' => '000000'],
-                        ],
-                    ]
-                ];
-
-                $event->sheet->getDelegate()->getStyle('A1:AB' . $to)->applyFromArray($styleArray);
-                $event->sheet->styleCells(
-                    'A1:AB12',
-                    [
-                        'borders' => [
-                            'outline' => [
-                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                                'color' => ['argb' => '000000'],
-                            ],
-                        ],
-                        'alignment' => [
-                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                        ]
-                    ]
-                );
-
-                $event->sheet->styleCells(
-                    'A14:AB' . ($to - 3),
-                    [
-                        'borders' => [
-                            'outline' => [
-                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                                'color' => ['argb' => '000000'],
-                            ],
-                        ]
-                    ]
-                );
+                try {
+                } catch (\Exception $e) {
+                    Log::error(__CLASS__ . ":" . __FUNCTION__ . '' . $e->getMessage());
+                }
             }
 
         ];
@@ -193,9 +161,4 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function collection()
-    {
-        //
-
-    }
 }

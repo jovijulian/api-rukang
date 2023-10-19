@@ -39,7 +39,7 @@
         <tr>
             <td></td>
             <td></td>
-            <td rowspan="3"><img src="{{ url('assets/img/product/nuart.png') }}" alt="" srcset="" />
+            <td rowspan="3"><img alt="" srcset="" />
             </td>
             <td colspan="3">PT.&nbsp;&nbsp;&nbsp;SILUET NYOMAN NUARTA</td>
             <td></td>
@@ -124,7 +124,7 @@
             <td></td>
             <td></td>
             <td>KEPADA :</td>
-            <td colspan="3" rowspan="6">{{ $from }}</td>
+            <td colspan="3" rowspan="6">{{ $receiver }}</td>
             <td></td>
             <td colspan="2">NOMOR :</td>
             <td>{{ $nomor_travel }}</td>
@@ -247,7 +247,6 @@
         @php
             $no = 1;
         @endphp
-        @dd($from);
         @foreach ($products as $product)
             <tr>
                 <td></td>
