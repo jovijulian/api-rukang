@@ -116,7 +116,7 @@
             <h5 class="modal-title" id="modalExportLabel">Export ke Excel</h5>
           </div>
           <div class="modal-body">
-            <form id="status-form-next-travel">
+            <form id="export-form">
               <div class="form-group row">
                 <label class="col-lg-3 col-form-label">Kategori *</label>
                 <div class="col-lg-9">
@@ -485,9 +485,11 @@
       })
     }
 
+
     function toExcel() {
       $('#modalExport').modal('show')
 
+      let segment, category
 
       getCategory()
       getSegment()
@@ -565,12 +567,28 @@
           }
         })
 
-        $('#segment-product').on('change', () => {
-          const id = $('#segment-product').val()
-          const url = `{{ url('api/v1/product/report-product') }}?segment=${id}`
-          $('#export-excel').attr('href', url);
-        })
       }
+
+      $('#segment-export').on('change', () => {
+        const id = $('#segment-export').val()
+        segment = id
+
+        // const url = `{{ url('api/v1/product/report-product') }}?segment=${id}`
+        // $('#export-excel').attr('href', url);
+      })
+
+      $('#category-export').on('change', () => {
+        const id = $('#category-export').val()
+        category = id
+      })
+
+      $('#export-form').on('submit', () => {
+        event.preventDefault()
+
+        const url = `{{ url('api/v1/product/report-product') }}?segment=${segment}&category=${category}`
+        
+        window.open(url, '_blank')
+      })
     }
 
   </script>
