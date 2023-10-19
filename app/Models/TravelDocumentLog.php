@@ -35,7 +35,6 @@ class TravelDocumentLog extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'product_id',
         'travel_document_number',
         'travel_document_path',
         'created_by',

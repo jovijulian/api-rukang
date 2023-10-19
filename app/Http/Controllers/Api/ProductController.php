@@ -1063,13 +1063,28 @@ class ProductController extends Controller
         }
 
         if ($next_status == 32) {
-            $travelDocumentLog = new TravelDocumentLog();
-            $travelDocumentLog->id = Uuid::uuid4()->toString();
-            $travelDocumentLog->travel_document_number = $request->travel_document_number;
-            $travelDocumentLog->travel_document_path = $request->travel_document_path;
-            $travelDocumentLog->save();
-            $travel_document_id = $travelDocumentLog->id;
-            return Excel::download(new TravelDocumentExport($selected_product, $travel_document_id), 'Form Surat Jalan.xlsx');
+            set_time_limit(3000);
+            $receiver = $request->receiver;
+            $from = $request->from;
+            $checked_by_gudang = $request->checked_by_gudang;
+            $checked_by_keamanan = $request->checked_by_keamanan;
+            $checked_by_produksi = $request->checked_by_produksi;
+            $checked_by_project_manager = $request->checked_by_project_manager;
+            $driver = $request->driver;
+            $received_by_site_manager = $request->received_by_site_manager;
+            $nomor_travel = $request->nomor_travel;
+            $status_date = $request->status_date;
+            $shipping_name = $request->shipping_name;
+            $number_plate = $request->number_plate;
+            $driver_name = $request->driver_name;
+            $driver_telp = $request->driver_telp;
+            // $travelDocumentLog = new TravelDocumentLog();
+            // $travelDocumentLog->id = Uuid::uuid4()->toString();
+            // $travelDocumentLog->travel_document_number = $request->travel_document_number;
+            // $travelDocumentLog->travel_document_path = $request->travel_document_path;
+            // $travelDocumentLog->save();
+            $travel_document_id = 1;
+            return Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan.xlsx');
         }
         return $statusLogData;
     }
