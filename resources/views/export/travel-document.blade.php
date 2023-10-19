@@ -124,10 +124,10 @@
             <td></td>
             <td></td>
             <td>KEPADA :</td>
-            <td colspan="3" rowspan="6"></td>
+            <td colspan="3" rowspan="6">{{ $from }}</td>
             <td></td>
             <td colspan="2">NOMOR :</td>
-            <td></td>
+            <td>{{ $nomor_travel }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -140,7 +140,7 @@
             <td></td>
             <td></td>
             <td colspan="2">TANGGAL :</td>
-            <td></td>
+            <td>{{ $status_date }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -153,7 +153,7 @@
             <td></td>
             <td></td>
             <td colspan="2">KENDARAAN :</td>
-            <td></td>
+            <td>{{ $shipping_name }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -166,7 +166,7 @@
             <td></td>
             <td></td>
             <td colspan="2">NO. POLISI :</td>
-            <td></td>
+            <td>{{ $number_plate }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -179,7 +179,7 @@
             <td></td>
             <td></td>
             <td colspan="2">NAMA&nbsp;&nbsp;&nbsp;PENGEMUDI :</td>
-            <td></td>
+            <td>{{ $driver_name }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -192,7 +192,7 @@
             <td></td>
             <td></td>
             <td colspan="2">NO&nbsp;&nbsp;&nbsp;TELP PENGEMUDI :</td>
-            <td></td>
+            <td>{{ $driver_telp }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -244,105 +244,23 @@
             <td></td>
             <td></td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;</td>
-            <td></td>
-            <td></td>
-        </tr>
+        @php
+            $no = 1;
+        @endphp
+        @dd($from);
+        @foreach ($products as $product)
+            <tr>
+                <td></td>
+                <td>{{ $no++ }}</td>
+                <td colspan="3">{{ $product['segment'] }}</td>
+                <td>{{ $product['qty'] }}</td>
+                <td></td>
+                <td colspan="2"></td>
+                <td colspan="4">{{ $product['description'] }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        @endforeach
         <tr>
             <td></td>
             <td></td>
@@ -435,13 +353,13 @@
         <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td colspan="2"></td>
+            <td>{{ $from }}</td>
+            <td>{{ $checked_by_gudang }}</td>
+            <td>{{ $checked_by_keamanan }}</td>
+            <td>{{ $checked_by_produksi }}</td>
+            <td>{{ $checked_by_project_manager }}</td>
+            <td>{{ $driver }}</td>
+            <td colspan="2">{{ $received_by_site_manager }}</td>
             <td></td>
             <td></td>
             <td></td>
