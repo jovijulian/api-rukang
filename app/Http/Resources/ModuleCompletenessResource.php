@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShippingResource extends JsonResource
+class ModuleCompletenessResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,9 @@ class ShippingResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'shipping_name' => $this->shipping_name,
-            'company_name' => $this->company_name,
-            'shipping_use' => $this->shipping_use,
+            'segment' => $this->segment,
+            'module' => $this->module,
+            'completeness' => $this->completeness,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,

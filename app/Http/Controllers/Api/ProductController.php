@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Imports\FormatSuratJalan;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use App\Models\Status;
@@ -16,12 +15,14 @@ use App\Exports\ProductExport;
 use App\Libraries\ResponseStd;
 use Illuminate\Validation\Rule;
 use App\Models\StatusProductLog;
+use App\Imports\FormatSuratJalan;
 use App\Models\TravelDocumentLog;
 use App\Models\LocationProductLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TravelDocumentExport;
 use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -968,7 +969,7 @@ class ProductController extends Controller
     protected function executeContinueStatus($request)
     {
         $selected_product = $request->input('selected_product');
-        $current_status = $request->input('current_status');
+        $next_status = $request->input('next_status');
         foreach ($selected_product as $sp) {
             $timeNow = Carbon::now();
             $statusLogData = new StatusProductLog();
@@ -976,59 +977,18 @@ class ProductController extends Controller
             $statusLogData->id = $statusLogId;
             $statusLogData->product_id = $sp;
 
-            $newStatus = $current_status + 1;
-            if ($current_status == 19) { //status 04 - pengiriman ke 05 - persiapan surat jalan
-                $statusLogData->status_id = 32;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
-            } else if ($current_status == 32) { //status 05 - persiapan surat jalan ke 06 - pengiriman
-                $statusLogData->status_id = 20;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
-                // $getFileFormat = storage_path('app/format_surat_jalan/Format Surat Jalan.xlsx');
-                // Excel::import(new FormatSuratJalan, $getFileFormat);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                $travelDocumentLog = new TravelDocumentLog();
-                $travelDocumentLog->id = Uuid::uuid4()->toString();
-                $travelDocumentLog->product_id = $sp;
-                $travelDocumentLog->travel_document_number = $request->travel_document_number;
-                $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $travelDocumentLog->save();
-                $statusLogData->travel_document_id = $travelDocumentLog->id;
-            } else if ($current_status == 20 || $current_status == 21) { //kondisi khusus status 06 - pengiriman dan 07 - diterima
-                $travelDocumentLog = new TravelDocumentLog();
-                $travelDocumentLog->id = Uuid::uuid4()->toString();
-                $travelDocumentLog->product_id = $sp;
-                $travelDocumentLog->travel_document_number = $request->travel_document_number;
-                $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $travelDocumentLog->save();
-                $statusLogData->travel_document_id = $travelDocumentLog->id;
+            if ($next_status == 20 || $next_status == 21) { //kondisi khusus status 06 - pengiriman dan 07 - diterima
                 Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
                 if ($request->upload_signature) {
                     $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
                     $image_url_travel_document = Storage::url($image);
                 }
                 $statusLogData->upload_signature = $image_url_travel_document;
-            } else {
-                $statusLogData->status_id = $newStatus;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
             }
 
+            $statusLogData->status_id = $next_status;
+            $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
+            $statusLogData->status_name = $getStatusName->status;
             $statusLogData->status_date =  $request->status_date;
             // Input data multiple image
             foreach ($request->file() as $key => $file) {
@@ -1068,8 +1028,6 @@ class ProductController extends Controller
                     }
                 }
             }
-
-
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
             $statusLogData->shipping_name = $request->shipping_name;
@@ -1078,23 +1036,20 @@ class ProductController extends Controller
             $statusLogData->updated_at = null;
             $statusLogData->created_by = auth()->user()->fullname;
             $statusLogData->updated_by = null;
-
-            //save status logs
             $statusLogData->save();
 
+            //update product
             $productData = Product::find($sp);
             $productData->status_id = $statusLogData->status_id;
-            $productData->status_id = $statusLogData->status_id;
             $productData->status = $statusLogData->status_name;
-
             $productData->status_photo = $statusLogData->status_photo;
             $productData->note = $statusLogData->note;
             $productData->shipping_id = $statusLogData->shipping_id;
             $productData->shipping_name = $statusLogData->shipping_name;
             $productData->current_location = $request->current_location;
-            // dd($productData->status_id);
             $productData->save();
 
+            //insert location log
             $locationLog = new LocationProductLog();
             $locationLog->id = Uuid::uuid4()->toString();
             $locationLog->status_product_log_id = $statusLogData->id;
@@ -1105,6 +1060,31 @@ class ProductController extends Controller
             $locationLog->updated_at = null;
             $locationLog->updated_by = null;
             $locationLog->save();
+        }
+
+        if ($next_status == 32) {
+            set_time_limit(3000);
+            $receiver = $request->receiver;
+            $from = $request->from;
+            $checked_by_gudang = $request->checked_by_gudang;
+            $checked_by_keamanan = $request->checked_by_keamanan;
+            $checked_by_produksi = $request->checked_by_produksi;
+            $checked_by_project_manager = $request->checked_by_project_manager;
+            $driver = $request->driver;
+            $received_by_site_manager = $request->received_by_site_manager;
+            $nomor_travel = $request->nomor_travel;
+            $status_date = $request->status_date;
+            $shipping_name = $request->shipping_name;
+            $number_plate = $request->number_plate;
+            $driver_name = $request->driver_name;
+            $driver_telp = $request->driver_telp;
+            // $travelDocumentLog = new TravelDocumentLog();
+            // $travelDocumentLog->id = Uuid::uuid4()->toString();
+            // $travelDocumentLog->travel_document_number = $request->travel_document_number;
+            // $travelDocumentLog->travel_document_path = $request->travel_document_path;
+            // $travelDocumentLog->save();
+            $travel_document_id = 1;
+            return Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan.xlsx');
         }
         return $statusLogData;
     }
@@ -1140,7 +1120,7 @@ class ProductController extends Controller
     protected function executeRewindStatus($request)
     {
         $selected_product = $request->input('selected_product');
-        $current_status = $request->input('current_status');
+        $previous_status = $request->input('previous_status');
         foreach ($selected_product as $sp) {
             $timeNow = Carbon::now();
             $statusLogData = new StatusProductLog();
@@ -1148,21 +1128,10 @@ class ProductController extends Controller
             $statusLogData->id = $statusLogId;
             $statusLogData->product_id = $sp;
 
-            $newStatus = $current_status - 1;
-            if ($current_status == 20) {
-                $statusLogData->status_id = 32;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
-            } else if ($current_status == 32) {
-                $statusLogData->status_id = 19;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
-            } else {
-                $statusLogData->status_id = $newStatus;
-                $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
-                $statusLogData->status_name = $getStatusName->status;
-            }
 
+            $statusLogData->status_id = $previous_status;
+            $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
+            $statusLogData->status_name = $getStatusName->status;
             $statusLogData->status_date =  $request->status_date;
             // Input data multiple image
             foreach ($request->file() as $key => $file) {
@@ -1203,13 +1172,7 @@ class ProductController extends Controller
                 }
             }
 
-            if ($current_status == 20 || $current_status == 21) {
-                $travelDocumentLog = new TravelDocumentLog();
-                $travelDocumentLog->id = Uuid::uuid4()->toString();
-                $travelDocumentLog->product_id = $sp;
-                $travelDocumentLog->travel_document_number = $request->travel_document_number;
-                $travelDocumentLog->travel_document_path = $request->travel_document_path;
-                $statusLogData->travel_document_number = $travelDocumentLog->travel_document_number;
+            if ($previous_status == 20 || $previous_status == 21) {
                 Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
                 if ($request->upload_signature) {
                     $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
@@ -1226,12 +1189,10 @@ class ProductController extends Controller
             $statusLogData->updated_at = null;
             $statusLogData->created_by = auth()->user()->fullname;
             $statusLogData->updated_by = null;
-
-            //save status logs
             $statusLogData->save();
 
+            //update product
             $productData = Product::find($sp);
-
             $productData->status_id = $statusLogData->status_id;
             $productData->status = $statusLogData->status_name;
             $productData->status_photo = $statusLogData->status_photo;
@@ -1241,6 +1202,7 @@ class ProductController extends Controller
             $productData->current_location = $request->current_location;
             $productData->save();
 
+            //insert location log
             $locationLog = new LocationProductLog();
             $locationLog->id = Uuid::uuid4()->toString();
             $locationLog->status_product_log_id = $statusLogData->id;

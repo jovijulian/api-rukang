@@ -21,6 +21,8 @@ class Shipping extends Model
 
     protected $fillable = [
         'shipping_name',
+        'shipping_use',
+        'company_name',
         'created_by',
         'updated_by',
         'deleted_by',
