@@ -40,7 +40,7 @@ class StatusProductLogResource extends JsonResource
             'shipping_name' => $this->shipping_name,
             'number_plate' => $this->number_plate,
             'note' => $this->note,
-            'status_detail' => StatusProduct::select('status', 'need_expedition')->where('id', $this->status_id)->first(),
+            'status_detail' => StatusProduct::select('status', 'need_expedition')->where('id', $this->status_id)->latest(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
