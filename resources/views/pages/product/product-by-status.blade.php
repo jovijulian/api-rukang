@@ -624,7 +624,7 @@
           {
             data: 'updated_at',
             render: function(data) {
-              return new Date(data).toISOString().split('T')[0].split('-').reverse().join('-')
+              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
             }
           },
           {
@@ -1104,7 +1104,7 @@
           return
         }
 
-        axios.post("{{ url('api/v1/product/continue-status') }}", data, config)
+        axios.post("{{ url('api/v1/product/generate-travel-document') }}", data, config)
           .then(res => {
             // const produk = res.data.data.item
             sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)

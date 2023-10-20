@@ -6,6 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\ModuleComplete;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SegmentController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\StatusProductController;
 use App\Http\Controllers\StatusToolMaterialController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkProgress;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,4 +134,17 @@ Route::controller(MaterialController::class)->group(function () {
     Route::get('material/edit-status/{idProduct}/{idStatus}', 'editStatus');
     Route::get('material/edit/{id}', 'edit');
     Route::get('material/edit-location/{id}', 'editLocation');
+});
+
+
+Route::controller(ModuleComplete::class)->group(function () {
+    Route::get('module-complete/', 'index');
+    Route::get('module-complete/insert', 'insert');
+    Route::get('module-complete/edit/{id}', 'edit');
+});
+
+Route::controller(WorkProgress::class)->group(function () {
+    Route::get('work-progress/', 'index');
+    Route::get('work-progress/insert', 'insert');
+    Route::get('work-progress/edit/{id}', 'edit');
 });
