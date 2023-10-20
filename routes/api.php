@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\StatusProductController;
 use App\Http\Controllers\Api\StatusToolMaterialController;
 use App\Http\Controllers\Api\ToolController;
+use App\Http\Controllers\Api\WorkProgressController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
@@ -206,6 +207,17 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+        });
+    });
+    Route::prefix('work-progress')->group(function () {
+        Route::controller(WorkProgressController::class)->group(function () {
+            Route::get('/index', 'index')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/create', 'store')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/detail/{id}', 'show')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::post('/update-image-work-progress/{id}', 'updateImageWorkProgress')->middleware(['auth:api', 'check_admin:1,2,3,4']);
         });
     });
 });
