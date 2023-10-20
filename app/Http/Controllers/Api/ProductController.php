@@ -32,6 +32,7 @@ use App\Http\Resources\LocationLogResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\StatusProductLogResource;
 use App\Http\Resources\LocationProductLogResource;
+use App\Models\Shipping;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ProductController extends Controller
@@ -1349,5 +1350,137 @@ class ProductController extends Controller
             $locationLog->save();
         }
         return $statusLogData;
+    }
+    protected function generateTravelDocument(Request $request)
+    {
+        set_time_limit(300);
+        $selected_product = $request->input('selected_product');
+        $next_status = $request->input('next_status');
+        foreach ($selected_product as $sp) {
+            $timeNow = Carbon::now();
+            $statusLogData = new StatusProductLog();
+            $statusLogId = Uuid::uuid4()->toString();
+            $statusLogData->id = $statusLogId;
+            $statusLogData->product_id = $sp;
+            $statusLogData->status_id = $next_status;
+            $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
+            $statusLogData->status_name = $getStatusName->status;
+            $statusLogData->status_date =  $request->status_date;
+            // Input data multiple image
+            foreach ($request->file() as $key => $file) {
+                if ($request->hasFile($key)) {
+                    if ($request->file($key)->isValid()) {
+                        Storage::exists('product') or Storage::makeDirectory('product');
+
+                        // Simpan gambar ke penyimpanan
+                        $image = Storage::putFile('product', $file, 'public');
+
+                        // Dapatkan URL gambar yang baru diunggah
+                        $image_url = Storage::url($image);
+                        if ($key == 'status_photo') {
+                            $statusLogData->status_photo = $image_url;
+                        } elseif ($key == 'status_photo2') {
+                            $statusLogData->status_photo2 = $image_url ?? '';
+                        } elseif ($key == 'status_photo3') {
+                            $statusLogData->status_photo3 = $image_url ?? '';
+                        } elseif ($key == 'status_photo4') {
+                            $statusLogData->status_photo4 = $image_url ?? '';
+                        } elseif ($key == 'status_photo5') {
+                            $statusLogData->status_photo5 =  $image_url ?? '';
+                        } elseif ($key == 'status_photo6') {
+                            $statusLogData->status_photo6 = $image_url ?? '';
+                        } elseif ($key == 'status_photo7') {
+                            $statusLogData->status_photo7 = $image_url ?? '';
+                        } elseif ($key == 'status_photo8') {
+                            $statusLogData->status_photo8 = $image_url ?? '';
+                        } elseif ($key == 'status_photo9') {
+                            $statusLogData->status_photo9 = $image_url ?? '';
+                        } elseif ($key == 'status_photo10') {
+                            $statusLogData->status_photo10 = $image_url ?? '';
+                        }
+                    } else {
+                        $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
+                        $statusLogData->$key = $key_id;
+                    }
+                }
+            }
+            $statusLogData->note = $request->note;
+            $statusLogData->shipping_id = $request->shipping_id;
+            $statusLogData->shipping_name = $request->shipping_name;
+            $statusLogData->number_plate = $request->number_plate;
+            $statusLogData->created_at = $timeNow;
+            $statusLogData->updated_at = null;
+            $statusLogData->created_by = auth()->user()->fullname;
+            $statusLogData->updated_by = null;
+            $statusLogData->save();
+
+            //update product
+            $productData = Product::find($sp);
+            $productData->status_id = $statusLogData->status_id;
+            $productData->status = $statusLogData->status_name;
+            $productData->status_photo = $statusLogData->status_photo;
+            $productData->note = $statusLogData->note;
+            $productData->shipping_id = $statusLogData->shipping_id;
+            $productData->shipping_name = $statusLogData->shipping_name;
+            $productData->current_location = $request->current_location;
+            $productData->save();
+
+            //insert location log
+            $locationLog = new LocationProductLog();
+            $locationLog->id = Uuid::uuid4()->toString();
+            $locationLog->status_product_log_id = $statusLogData->id;
+            $locationLog->product_id = $sp;
+            $locationLog->current_location = $request->current_location;
+            $locationLog->created_at = $timeNow;
+            $locationLog->created_by = auth()->user()->fullname;
+            $locationLog->updated_at = null;
+            $locationLog->updated_by = null;
+            $locationLog->save();
+        }
+
+        $receiver = $request->receiver;
+        $from = $request->from;
+        $checked_by_gudang = $request->checked_by_gudang;
+        $checked_by_keamanan = $request->checked_by_keamanan;
+        $checked_by_produksi = $request->checked_by_produksi;
+        $checked_by_project_manager = $request->checked_by_project_manager;
+        $driver = $request->driver;
+        $received_by_site_manager = $request->received_by_site_manager;
+        $nomor_travel = $request->nomor_travel;
+        $travel_date = $request->travel_date;
+        $shipping_name = $request->shipping_name;
+        $number_plate = $request->number_plate;
+        $driver_name = $request->driver_name;
+        $driver_telp = $request->driver_telp;
+
+        //update increment shipping use
+        $updateShippingUse = Shipping::where('id', 1)->first();
+        $updateShippingUse->shipping_use++;
+        $updateShippingUse->save();
+
+        //insert log surat jalan
+        $travelDocumentLog = new TravelDocumentLog();
+        $travelDocumentLog->id = Uuid::uuid4()->toString();
+        $travelDocumentLog->travel_document_number = $nomor_travel;
+        $travelDocumentLog->save();
+        $travel_document_id = $travelDocumentLog->id;
+
+        //generate surat jalan
+        $generateTravelDocument = Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $travel_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan-' . now()->format('Y-m-d H:i:s') . '.xlsx');
+        $path_document_travel = null;
+        $tempFilePath = $generateTravelDocument->getFile();
+
+        if (file_exists($tempFilePath)) {
+            Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+            $storedPath = Storage::putFile('travel_document', new \Illuminate\Http\File($tempFilePath), 'public');
+            $path_document_travel = Storage::url($storedPath);
+        }
+
+        //update path log surat jalan
+        $getTravelDocumentLog = TravelDocumentLog::where('id', $travel_document_id)->first();
+        $getTravelDocumentLog->travel_document_path = $path_document_travel;
+        $getTravelDocumentLog->save();
+
+        return $generateTravelDocument;
     }
 }
