@@ -69,24 +69,7 @@ class WorkProgressController extends Controller
      * Show the form for creating a new resource.
      */
 
-    protected function validateCreate(array $data)
-    {
-        $arrayValidator = [
-            'process_name' => ['required', 'string', 'min:1', 'max:60'],
-            'photo_01' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_02' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_03' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_04' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_05' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_06' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_07' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_08' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_09' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_10' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-        ];
 
-        return Validator::make($data, $arrayValidator);
-    }
     protected function create(array $data, Request $request)
     {
 
@@ -152,10 +135,6 @@ class WorkProgressController extends Controller
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateCreate($request->all());
-            if ($validate->fails()) {
-                throw new ValidationException($validate);
-            }
             $model = $this->create($request->all(), $request);
             DB::commit();
 
@@ -365,31 +344,11 @@ class WorkProgressController extends Controller
         return json_encode($json_data);
     }
 
-    protected function validateImageWorkProgress(array $data)
-    {
-        $arrayValidator = [
-            'photo_01' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_02' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_03' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_04' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_05' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_06' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_07' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_08' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_09' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-            'photo_10' => ['image', 'mimes:jpg,png,jpeg,gif,svg'],
-        ];
-        return Validator::make($data, $arrayValidator);
-    }
 
     public function updateImageWorkProgress($id, Request $request)
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateImageWorkProgress($request->all());
-            if ($validate->fails()) {
-                throw new ValidationException($validate);
-            }
             $data = $this->editImageWorkProgress($id, $request->all(), $request);
 
             DB::commit();
