@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Edit Progress Pekerjaan</title>
+  <title>Edit Foto Progress Pekerjaan</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Edit Data Progress Pekerjaan</h3>
+            <h3 class="page-title">Edit Data Foto Progress Pekerjaan</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{ url('/work-progress') }}">Progress Pekerjaan</a></li>
-              <li class="breadcrumb-item active">Edit Progress Pekerjaan</li>
+              <li class="breadcrumb-item active">Edit Foto Progress Pekerjaan</li>
             </ul>
           </div>
         </div>
@@ -31,9 +31,10 @@
             <div class="card-body p-4">
               <form id="update-module-complete-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Proses *</label>
+                  <label class="col-lg-2 col-form-label">Upload Foto Proses (Maks 10 Foto)</label>
                   <div class="col-lg-10">
-                    <input type="text" id="process-name" class="form-control" placeholder="Masukan nama proses" required>
+                    <input class="form-control mb-1" type="file" id="image-process" accept="image/*" multiple>
+                    <div id="image-preview" class="mt-2 row"></div>
                   </div>
                 </div>
                 <div class="text-end">
@@ -62,7 +63,7 @@
       let config = {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
@@ -101,9 +102,9 @@
         }
 
 
-        axios.put("{{ url('api/v1/work-progress/update/' . $id) }}", data, config)
+        axios.post("{{ url('api/v1/work-progress/update-image-work-progress/' . $id) }}", data, config)
           .then(res => {
-            sessionStorage.setItem("success", `Progress Pekerjaan berhasil diubah`)
+            sessionStorage.setItem("success", `Foto Progress Pekerjaan berhasil diubah`)
             window.location.href = "{{ url('/work-progress') }}"
           })
           .catch(err => {
@@ -122,7 +123,7 @@
 
             Swal.fire({
               icon: 'error',
-              title: 'Progress Pekerjaan gagal ditambahkan',
+              title: 'Foto Progress Pekerjaan gagal ditambahkan',
               text: errorMessage
             })
           })
@@ -134,8 +135,6 @@
           .then(res => {
             const data = res.data.data.item
             // console.log(data);
-
-            $('#process-name').val(data.process_name)
           })
           .catch(err => {
             console.log(err)

@@ -20,4 +20,8 @@ class WorkProgress extends Controller
     {
         return view('pages.work-progress.edit', ['id' => $id]);
     }
+    public function updateImage($id)
+    {
+        return view('pages.work-progress.update-image', ['id' => $id]);
+    }
 }

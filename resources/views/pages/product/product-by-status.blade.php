@@ -519,7 +519,7 @@
     let config = {
       headers: {
         'X-CSRF-TOKEN': token,
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
         'Authorization': `${tokenType} ${accessToken}`
       }
@@ -1104,11 +1104,19 @@
           return
         }
 
-        axios.post("{{ url('api/v1/product/generate-travel-document') }}", data, config)
+        axios.post("{{ url('api/v1/product/generate-travel-document') }}", data, {
+          headers: {
+            'X-CSRF-TOKEN': token,
+            'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json',
+            'Authorization': `${tokenType} ${accessToken}`,
+          },
+          responseType: 'blob'
+        })
           .then(res => {
             // const produk = res.data.data.item
-            sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
-            window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            // sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
+            // window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
             // window.location.reload()
 
             console.log(res);

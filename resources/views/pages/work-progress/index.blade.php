@@ -165,6 +165,7 @@
                     <a class="me-3" href="/work-progress/edit/` + data + `">
                       <img src="assets/img/icons/edit.svg" alt="img">
                     </a>
+                    <a href="/work-progress/update-image/` + data + `" class="p-2 btn btn-submit text-white" >Update Foto</a>
                   `
                 } else {
                   return `
