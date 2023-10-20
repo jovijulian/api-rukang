@@ -140,7 +140,7 @@
             <td></td>
             <td></td>
             <td colspan="2">TANGGAL :</td>
-            <td>{{ $status_date }}</td>
+            <td>{{ $travel_date }}</td>
             <td></td>
             <td></td>
             <td></td>

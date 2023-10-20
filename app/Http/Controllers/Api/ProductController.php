@@ -1073,7 +1073,7 @@ class ProductController extends Controller
             $driver = $request->driver;
             $received_by_site_manager = $request->received_by_site_manager;
             $nomor_travel = $request->nomor_travel;
-            $status_date = $request->status_date;
+            $travel_date = $request->travel_date;
             $shipping_name = $request->shipping_name;
             $number_plate = $request->number_plate;
             $driver_name = $request->driver_name;
@@ -1085,7 +1085,7 @@ class ProductController extends Controller
             $travelDocumentLog->save();
             $travel_document_id = $travelDocumentLog->id;
 
-            $generateTravelDocument = Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan-' . now()->format('Y-m-d H:i:s') . '.xlsx');
+            $generateTravelDocument = Excel::download(new TravelDocumentExport($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $travel_date, $shipping_name, $number_plate, $driver_name, $driver_telp), 'Form Surat Jalan-' . now()->format('Y-m-d H:i:s') . '.xlsx');
             $path_document_travel = null;
             $tempFilePath = $generateTravelDocument->getFile();
 
@@ -1098,6 +1098,8 @@ class ProductController extends Controller
             $getTravelDocumentLog = TravelDocumentLog::where('id', $travel_document_id)->first();
             $getTravelDocumentLog->travel_document_path = $path_document_travel;
             $getTravelDocumentLog->save();
+
+            return $generateTravelDocument;
         }
         return $statusLogData;
     }

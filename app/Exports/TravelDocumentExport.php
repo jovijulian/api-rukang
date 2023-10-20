@@ -32,13 +32,13 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
     protected $driver;
     protected $received_by_site_manager;
     protected $nomor_travel;
-    protected $status_date;
+    protected $travel_date;
     protected $shipping_name;
     protected $number_plate;
     protected $driver_name;
     protected $driver_telp;
 
-    public function __construct($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $status_date, $shipping_name, $number_plate, $driver_name, $driver_telp)
+    public function __construct($selected_product, $travel_document_id, $receiver, $from, $checked_by_gudang, $checked_by_keamanan, $checked_by_produksi, $checked_by_project_manager, $driver, $received_by_site_manager, $nomor_travel, $travel_date, $shipping_name, $number_plate, $driver_name, $driver_telp)
     {
         $this->selected_product = $selected_product;
         $this->travel_document_id = $travel_document_id;
@@ -51,7 +51,7 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
         $this->driver = $driver;
         $this->received_by_site_manager = $received_by_site_manager;
         $this->nomor_travel = $nomor_travel;
-        $this->status_date = $status_date;
+        $this->travel_date = $travel_date;
         $this->shipping_name = $shipping_name;
         $this->number_plate = $number_plate;
         $this->driver_name = $driver_name;
@@ -98,7 +98,7 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
         $driver = $this->driver;
         $received_by_site_manager = $this->received_by_site_manager;
         $nomor_travel = $this->nomor_travel;
-        $status_date = $this->status_date;
+        $travel_date = $this->travel_date;
         $shipping_name = $this->shipping_name;
         $number_plate = $this->number_plate;
         $driver_name = $this->driver_name;
@@ -114,7 +114,7 @@ class TravelDocumentExport implements FromView, WithEvents, WithColumnWidths
             'driver' => $driver,
             'received_by_site_manager' => $received_by_site_manager,
             'nomor_travel' => $nomor_travel,
-            'status_date' => $status_date,
+            'travel_date' => $travel_date,
             'shipping_name' => $shipping_name,
             'number_plate' => $number_plate,
             'driver_name' => $driver_name,
