@@ -22,7 +22,9 @@ class ModuleCompleteness extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'segment_id',
         'segment',
+        'module_id',
         'module',
         'completeness',
         'created_by',

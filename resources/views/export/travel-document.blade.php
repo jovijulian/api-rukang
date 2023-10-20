@@ -1,23 +1,25 @@
-<table style="table-layout: fixed; width: 1966px">
+<table style="table-layout: fixed; width: 985px">
     <colgroup>
-        <col style="width: 130.4px" />
-        <col style="width: 130.4px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
-        <col style="width: 131.2px" />
+        <col style="width: 62.2px">
+        <col style="width: 81.2px">
+        <col style="width: 91.2px">
+        <col style="width: 91.2px">
+        <col style="width: 91.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
+        <col style="width: 11.2px">
+        <col style="width: 11.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
+        <col style="width: 68.2px">
     </colgroup>
     <thead>
         <tr>
+            <th colspan="2" rowspan="3"></th>
+            <th colspan="3">PT. SILUET NYOMAN NUARTA</th>
             <th></th>
             <th></th>
             <th></th>
@@ -28,9 +30,15 @@
             <th></th>
             <th></th>
             <th></th>
+        </tr>
+        <tr>
+            <th colspan="3">Setraduta Raya No. L-6, Sarijadi Bandung 40559</th>
             <th></th>
             <th></th>
-            <th></th>
+            <th colspan="8" rowspan="2">SURAT JALAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        </tr>
+        <tr>
+            <th colspan="3">T.62 22 2020414 email:siluet@nyomanuarta.com</th>
             <th></th>
             <th></th>
         </tr>
@@ -39,39 +47,6 @@
         <tr>
             <td></td>
             <td></td>
-            <td rowspan="3"><img alt="" srcset="" />
-            </td>
-            <td colspan="3">PT.&nbsp;&nbsp;&nbsp;SILUET NYOMAN NUARTA</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">Setraduta&nbsp;&nbsp;&nbsp;Raya No. L-6, Sarijadi Bandung 40559</td>
-            <td></td>
-            <td colspan="6" rowspan="2">SURAT JALAN</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td colspan="3">T.62&nbsp;&nbsp;&nbsp;22 2020414 email:siluet@nyomanuarta.com</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -105,99 +80,62 @@
         </tr>
         <tr>
             <td></td>
+            <td>Kepada</td>
+            <td colspan="4" rowspan="5">{{ $receiver }}</td>
             <td></td>
+            <td colspan="2">NOMOR</td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>KEPADA :</td>
-            <td colspan="3" rowspan="6">{{ $receiver }}</td>
-            <td></td>
-            <td colspan="2">NOMOR :</td>
-            <td>{{ $nomor_travel }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>:</td>
+            <td colspan="4">{{ $nomor_travel }}</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
+            <td colspan="2">TANGGAL</td>
             <td></td>
-            <td colspan="2">TANGGAL :</td>
-            <td>{{ $travel_date }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>:</td>
+            <td colspan="4">{{ date('d-M-Y', strtotime($travel_date)) }}</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
+            <td colspan="2">KENDARAAN</td>
             <td></td>
-            <td colspan="2">KENDARAAN :</td>
-            <td>{{ $shipping_name }}</td>
+            <td>:</td>
+            <td colspan="4">{{ $shipping_name }}</td>
+        </tr>
+        <tr>
             <td></td>
             <td></td>
             <td></td>
+            <td colspan="2">NO. POLISI</td>
+            <td></td>
+            <td>:</td>
+            <td colspan="4">{{ $number_plate }}</td>
+        </tr>
+        <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td colspan="2">NAMA PENGEMUDI</td>
+            <td></td>
+            <td>:</td>
+            <td colspan="4">{{ $driver_name }}</td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td colspan="2">NO. POLISI :</td>
-            <td>{{ $number_plate }}</td>
             <td></td>
             <td></td>
             <td></td>
+            <td colspan="2">NO TELP PENGEMUDI</td>
             <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td colspan="2">NAMA&nbsp;&nbsp;&nbsp;PENGEMUDI :</td>
-            <td>{{ $driver_name }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td colspan="2">NO&nbsp;&nbsp;&nbsp;TELP PENGEMUDI :</td>
-            <td>{{ $driver_telp }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>:</td>
+            <td colspan="4">{{ $driver_telp }}</td>
         </tr>
         <tr>
             <td></td>
@@ -217,52 +155,33 @@
             <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td rowspan="3">NO</td>
+            <td colspan="5" rowspan="3">NAMA BARANG</td>
+            <td rowspan="3">JUMLAH</td>
+            <td rowspan="3">SATUAN</td>
+            <td colspan="2" rowspan="3">PACKING</td>
+            <td colspan="5" rowspan="3">KETERANGAN</td>
         </tr>
         <tr>
-            <td></td>
-            <td>No</td>
-            <td colspan="3">Nama&nbsp;&nbsp;&nbsp;Barang</td>
-            <td>Jumlah</td>
-            <td>Satuan</td>
-            <td colspan="2">Packing</td>
-            <td colspan="4">Keterangan</td>
-            <td></td>
-            <td></td>
+        </tr>
+        <tr>
         </tr>
         @php
             $no = 1;
         @endphp
         @foreach ($products as $product)
             <tr>
-                <td></td>
                 <td>{{ $no++ }}</td>
-                <td colspan="3">{{ $product['segment'] }}</td>
+                <td colspan="5">{{ $product['segment'] }}</td>
                 <td>{{ $product['qty'] }}</td>
                 <td></td>
                 <td colspan="2"></td>
-                <td colspan="4">{{ $product['description'] }}</td>
-                <td></td>
-                <td></td>
+                <td colspan="5">{{ $product['description'] }}</td>
             </tr>
         @endforeach
         <tr>
             <td></td>
-            <td></td>
+            <td> </td>
             <td></td>
             <td></td>
             <td></td>
@@ -280,40 +199,12 @@
         <tr>
             <td></td>
             <td></td>
-            <td>Dikirim&nbsp;&nbsp;&nbsp;oleh :</td>
-            <td colspan="2">Diperiksa oleh :</td>
-            <td>Diketahui oleh :</td>
-            <td>Disetujui oleh :</td>
-            <td>Pengemudi&nbsp;&nbsp;&nbsp;,</td>
-            <td colspan="2">&nbsp;&nbsp;&nbsp;Diterima oleh :</td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-        </tr>
-        <tr>
             <td></td>
-            <td></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td rowspan="5"><br /><br /><br /><br /></td>
-            <td colspan="2" rowspan="5">
-                <br />
-                <br />
-                <br />
-                <br />
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -323,80 +214,47 @@
             <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="3" rowspan="2">Dikirim oleh :</td>
+            <td colspan="2" rowspan="2"> Diperiksa oleh :</td>
+            <td colspan="2" rowspan="2"> Diketahui oleh :</td>
+            <td colspan="3" rowspan="2">Disetujui oleh :</td>
+            <td colspan="3" rowspan="2">Pengemudi : </td>
+            <td colspan="2" rowspan="2">Diterima oleh :</td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="3" rowspan="4"> </td>
+            <td rowspan="4"> <br><br><br> </td>
+            <td rowspan="4"> </td>
+            <td colspan="2" rowspan="4"> </td>
+            <td colspan="3" rowspan="4"> &nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;<br>&nbsp;&nbsp;<br> &nbsp;&nbsp;</td>
+            <td colspan="3" rowspan="4"></td>
+            <td colspan="2" rowspan="4"></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td>{{ $from }}</td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td colspan="3">{{ $from }}</td>
             <td>{{ $checked_by_gudang }}</td>
             <td>{{ $checked_by_keamanan }}</td>
-            <td>{{ $checked_by_produksi }}</td>
-            <td>{{ $checked_by_project_manager }}</td>
-            <td>{{ $driver }}</td>
+            <td colspan="2">{{ $checked_by_produksi }}</td>
+            <td colspan="3">{{ $checked_by_project_manager }}</td>
+            <td colspan="3">{{ $driver }}</td>
             <td colspan="2">{{ $received_by_site_manager }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td>Pengiriman</td>
+            <td colspan="3">Pengiriman</td>
             <td>Gudang</td>
             <td>Keamanan</td>
-            <td>Produksi</td>
-            <td>Project Manager</td>
-            <td>Driver</td>
+            <td colspan="2">Produksi</td>
+            <td colspan="3">Project Manager</td>
+            <td colspan="3">Driver</td>
             <td colspan="2">Site Manager</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
     </tbody>
 </table>
