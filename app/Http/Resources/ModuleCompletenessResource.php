@@ -16,7 +16,9 @@ class ModuleCompletenessResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'segment_id' => $this->segment_id,
             'segment' => $this->segment,
+            'module_id' => $this->module_id,
             'module' => $this->module,
             'completeness' => $this->completeness,
             'created_at' => $this->created_at,

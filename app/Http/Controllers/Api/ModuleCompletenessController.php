@@ -83,7 +83,9 @@ class ModuleCompletenessController extends Controller
         $moduleCompletenessData = new ModuleCompleteness();
 
         // input data module completeness
+        $moduleCompletenessData->segment_id = $data['segment_id'];
         $moduleCompletenessData->segment = $data['segment'];
+        $moduleCompletenessData->module_id = $data['module_id'];
         $moduleCompletenessData->module = $data['module'];
         $moduleCompletenessData->completeness = $data['completeness'];
         $moduleCompletenessData->created_at = $timeNow;
@@ -180,7 +182,9 @@ class ModuleCompletenessController extends Controller
             throw new \Exception("Invalid module completeness id", 406);
         }
         $moduleCompletenessData->id = $id;
+        $moduleCompletenessData->segment_id = $data['segment_id'];
         $moduleCompletenessData->segment = $data['segment'];
+        $moduleCompletenessData->module_id = $data['module_id'];
         $moduleCompletenessData->module = $data['module'];
         $moduleCompletenessData->completeness = $data['completeness'];
         $moduleCompletenessData->updated_at = $timeNow;
