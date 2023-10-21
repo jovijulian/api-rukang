@@ -105,6 +105,7 @@ class TravelDocumentExport implements FromView, WithEvents
         $number_plate = $this->number_plate;
         $driver_name = $this->driver_name;
         $driver_telp = $this->driver_telp;
+        // $url_image = 'https://nuart.sgp1.cdn.digitaloceanspaces.com/asset/logo.png';
         return view('export.travel-document', [
             'products' => $result,
             'receiver' => $receiver,
@@ -133,6 +134,9 @@ class TravelDocumentExport implements FromView, WithEvents
 
             AfterSheet::class    => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
+                // $url_image = 'https://nuart.sgp1.cdn.digitaloceanspaces.com/asset/logo.png';
+                // $sheet->getDrawingCollection()->offsetSet('A1', new Drawing());
+                // $sheet->getDrawingCollection()->get('A1')->setPath($url_image);
                 $baseRowNumber = 16;
                 $dataCount = count($this->result);
                 foreach ($this->result as $index => $data) {

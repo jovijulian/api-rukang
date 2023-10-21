@@ -1451,6 +1451,10 @@ class ProductController extends Controller
         $getTravelDocumentLog->updated_by = auth()->user()->fullname;
         $getTravelDocumentLog->save();
 
-        return $generateTravelDocument;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil dilanjutkan statusnya.',
+            'travel_document_path' => $path_document_travel,
+        ], 200);
     }
 }
