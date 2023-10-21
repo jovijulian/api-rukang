@@ -1104,22 +1104,15 @@
           return
         }
 
-        axios.post("{{ url('api/v1/product/generate-travel-document') }}", data, {
-          headers: {
-            'X-CSRF-TOKEN': token,
-            'Content-Type': 'multipart/form-data',
-            'Accept': 'application/json',
-            'Authorization': `${tokenType} ${accessToken}`,
-          },
-          responseType: 'blob'
-        })
+        axios.post("{{ url('api/v1/product/generate-travel-document') }}", data, config)
           .then(res => {
-            // const produk = res.data.data.item
-            // sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
-            // window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
-            // window.location.reload()
+            const data = res.data
 
-            console.log(res);
+            window.open(data.travel_document_path, '_blank')
+
+            sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
+            window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
+            // window.location.reload()
           })
           .catch(err => {
             $('#global-loader').hide()
