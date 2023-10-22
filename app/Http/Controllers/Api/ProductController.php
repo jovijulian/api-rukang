@@ -111,7 +111,7 @@ class ProductController extends Controller
             $image = Storage::putFile('product', $data['status_photo'], 'public');
             $image_url = Storage::url($image);
         }
-        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+        if ($data['status_id'] == 16 || $data['status_id'] == null) {
             $productData->qty = 0;
         } else {
             $productData->qty = 1;
@@ -488,6 +488,7 @@ class ProductController extends Controller
         $statusLog->id = Uuid::uuid4()->toString();
         $statusLog->product_id = $id;
         $statusLog->status_id = $data['status_id'];
+
         $statusLog->status_name = $data['status_name'];
         $statusLog->status_date = $data['status_date'];
         // Input data multiple image
@@ -543,7 +544,7 @@ class ProductController extends Controller
         $statusLog->save();
 
         $productData = Product::find($id);
-        if ($data['status_id'] == 25 || $data['status_id'] == 16 || $data['status_id'] == null) {
+        if ($data['status_id'] == 16 || $data['status_id'] == null) {
             $productData->qty = 0;
         } else {
             $productData->qty = 1;
@@ -1041,6 +1042,9 @@ class ProductController extends Controller
 
             //update product
             $productData = Product::find($sp);
+            if (!$statusLogData->status_id == 16) {
+                $productData->qty = 1;
+            }
             $productData->status_id = $statusLogData->status_id;
             $productData->status = $statusLogData->status_name;
             $productData->status_photo = $statusLogData->status_photo;
