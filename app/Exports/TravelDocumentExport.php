@@ -80,7 +80,6 @@ class TravelDocumentExport implements FromView, WithEvents
                 ->map(function ($moduleProducts) {
                     return $moduleProducts->first()->module_number . '(' . $moduleProducts->pluck('bilah_number')->implode(',') . ')';
                 });
-            dd($segmentProducts);
             $description = $moduleMap->implode(', ');
             $totalQty = $segmentProducts->sum('qty');
 
@@ -89,7 +88,6 @@ class TravelDocumentExport implements FromView, WithEvents
                 'description' => $description,
                 'qty' => $totalQty,
             ];
-            dd($result);
         }
         $this->result = $result;
         $receiver = $this->receiver;
