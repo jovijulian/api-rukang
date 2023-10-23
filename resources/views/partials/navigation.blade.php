@@ -139,7 +139,7 @@
           <h6 class="submenu-hdr">Manajemen Status Aset</h6>
           <ul>
             <li class="{{ request()->is('product-by-status*') ? 'active submenu' : 'submenu' }}">
-              <a href="javascript:void(0);" class="{{ request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Produk By Status</span><span class="menu-arrow"></span></a>
+              <a href="javascript:void(0);" class="{{ request()->is('product-by-status*') ? 'active subdrop' : '' }}"><i data-feather="check-square"></i><span>Produk By Status</span><span class="menu-arrow"></span></a>
               <ul>
                 {{-- <li><a href="/product-by-status/insert" class="insert-product {{ request()->is('product/insert') ? '' : 'text-white' }}">Tambah Produk</a></li> --}}
                 <li><a href="/product-by-status/16" class="insert-product {{ request()->is('product-by-status/16')  ? '' : 'text-white' }}">01. Dalam Proses Produksi</a></li>
@@ -157,7 +157,7 @@
           <h6 class="submenu-hdr">Manajemen Referensi</h6>
           <ul>
             <li class="{{ request()->is('category*') || request()->is('segment*') || request()->is('module*') && !request()->is('module-complete*') || request()->is('shelf*') || request()->is('status-product*') || request()->is('status-tool-material*') || request()->is('shipping*') || request()->is('group*') ? 'active submenu' : 'submenu' }}">
-              <a href="javascript:void(0);" class="{{ request()->is('category*') || request()->is('segment*') || request()->is('module*') && !request()->is('module-complete*') || request()->is('shelf*') || request()->is('status-product*') || request()->is('status-tool-material*') || request()->is('shipping*') || request()->is('group*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Referensi Aset</span><span class="menu-arrow"></span></a>
+              <a href="javascript:void(0);" class="{{ request()->is('category*') || request()->is('segment*') || request()->is('module*') && !request()->is('module-complete*') || request()->is('shelf*') || request()->is('status-product*') || request()->is('status-tool-material*') || request()->is('shipping*') || request()->is('group*') ? 'active subdrop' : '' }}"><i data-feather="package"></i><span>Referensi Aset</span><span class="menu-arrow"></span></a>
               <ul>
                 <li><a href="/category" class="{{ request()->is('category*') ? '' : 'text-white' }}">Kategori</a></li>
                 <li><a href="/segment" class="{{ request()->is('segment*') ? '' : 'text-white' }}">Segmen</a></li>
@@ -171,7 +171,7 @@
             </li>
 
             <li class="{{ request()->is('module-complete*') || request()->is('work-progress*') ? 'active submenu' : 'submenu' }}">
-              <a href="javascript:void(0);" class="{{ request()->is('module-complete*') || request()->is('work-progress*') ? 'active subdrop' : '' }}"><i data-feather="box"></i><span>Referensi Dashboard</span><span class="menu-arrow"></span></a>
+              <a href="javascript:void(0);" class="{{ request()->is('module-complete*') || request()->is('work-progress*') ? 'active subdrop' : '' }}"><i data-feather="bar-chart-2"></i><span>Referensi Dashboard</span><span class="menu-arrow"></span></a>
               <ul>
                 <li><a href="/module-complete" class="{{ request()->is('module-complete*') ? '' : 'text-white' }}">Kelengkapan Modul</a></li>
                 <li><a href="/work-progress" class="{{ request()->is('work-progress*') ? '' : 'text-white' }}">Progress Pekerjaan</a></li>
