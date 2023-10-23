@@ -16,7 +16,9 @@
 <!-- Datatable CSS -->
 <link rel="stylesheet" href="{{ url('assets/css/dataTables.bootstrap4.min.css') }}">
 {{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css"> --}}
+{{-- <link rel="stylesheet" href="{{ url('assets/css/dataTables.checkboxes.css') }}"> --}}
 <link href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css" rel="stylesheet" />
+{{-- <link type="text/css" href="https://cdn.jsdelivr.net/npm/jquery-datatables-checkboxes@1.2.14/css/dataTables.checkboxes.min.css" rel="stylesheet" /> --}}
 
 <!-- Fontawesome CSS -->
 <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/fontawesome.min.css') }}">

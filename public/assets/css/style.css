@@ -4670,7 +4670,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 .sidebar .sidebar-menu > ul > li.submenu-open ul li a {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 15px;
   /* color: #67748E; */
   color: #fff;
   position: relative;
@@ -4747,13 +4747,13 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 .sidebar .sidebar-menu .submenu-open .submenu ul li a::after {
   content: "";
-  /* background: rgba(50, 71, 92, 0.38); */
-  width: 8px;
-  height: 8px;
-  border: 2px solid #fff;
+  background: #fff;
+  width: 4px;
+  height: 4px;
+  /* border: 2px solid #fff; */
   border-radius: 50px;
   position: absolute;
-  top: 16px;
+  top: 18px;
   left: 0;
 }
 .sidebar .sidebar-menu .submenu-open .submenu ul li a:hover {

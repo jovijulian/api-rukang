@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TravelDocumentLog extends Model
+class ModuleCompleteness extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,28 +15,18 @@ class TravelDocumentLog extends Model
      *
      * @var string
      */
-
-    protected $table = 'travel_document_logs';
     protected $primaryKey = 'id';
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $table = 'module_completeness';
 
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'travel_document_number',
-        'travel_document_path',
+        'segment_id',
+        'segment',
+        'module_id',
+        'module',
+        'completeness',
         'created_by',
         'updated_by',
         'deleted_by',

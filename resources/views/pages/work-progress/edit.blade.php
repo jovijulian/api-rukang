@@ -1,7 +1,7 @@
 @extends('layouts/content')
 
 @section('title')
-  <title>Tambah Ekspedisi</title>
+  <title>Edit Progress Pekerjaan</title>
 @endsection
 
 @section('content')
@@ -11,11 +11,11 @@
       <div class="page-header">
         <div class="row">
           <div class="col">
-            <h3 class="page-title">Tambah Data Ekspedisi</h3>
+            <h3 class="page-title">Edit Data Progress Pekerjaan</h3>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('/shipping') }}">Ekspedisi</a></li>
-              <li class="breadcrumb-item active">Tambah Ekspedisi</li>
+              <li class="breadcrumb-item"><a href="{{ url('/work-progress') }}">Progress Pekerjaan</a></li>
+              <li class="breadcrumb-item active">Edit Progress Pekerjaan</li>
             </ul>
           </div>
         </div>
@@ -29,21 +29,15 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="insert-shipping-form">
+              <form id="update-module-complete-form">
                 <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Ekspedisi *</label>
+                  <label class="col-lg-2 col-form-label">Nama Proses *</label>
                   <div class="col-lg-10">
-                    <input type="text" id="shipping" class="form-control" placeholder="Masukan nama ekspedisi" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-lg-2 col-form-label">Nama Perusahaan *</label>
-                  <div class="col-lg-10">
-                    <input type="text" id="company-name" class="form-control" placeholder="Masukan nama perusahaan" required>
+                    <input type="text" id="process-name" class="form-control" placeholder="Masukan nama proses" required>
                   </div>
                 </div>
                 <div class="text-end">
-                  <button type="submit" class="btn btn-primary">Tambah Data</button>
+                  <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
               </form>
             </div>
@@ -60,9 +54,9 @@
       const accessToken = localStorage.getItem('access_token')
 
       // REDIRECT IF NOT ADMIN
-      if (!currentUser.isAdmin) {
-        window.location.href = "{{ url('/dashboard') }}"
-      }
+      // if (!currentUser.isAdmin) {
+      //   window.location.href = "{{ url('/dashboard') }}"
+      // }
 
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       let config = {
@@ -74,21 +68,43 @@
         }
       }
 
-      $('#insert-shipping-form').on('submit', () => {
+      $('#image-process').change(function(event) {
+        if (this.files) {
+          let fileAmount = this.files.length
+          $('#image-preview img').remove()
+
+          if (fileAmount > 10) {
+            console.log('salah');
+            Swal.fire('Maksimal upload 10 foto', '', 'error')
+            $('#image-process').val('')
+            return
+          }
+          
+          for (let i = 0; i < fileAmount; i++) {
+            let reader = new FileReader()
+            reader.onload = function(){
+              $('#image-preview').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+            }
+            reader.readAsDataURL(this.files[i])
+          }
+        }
+      })
+      
+      getData()
+
+      $('#update-module-complete-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
         const data = {
-          shipping_name: $('#shipping').val(),
-          company_name: $('#company-name').val(),
+          process_name: $('#process-name').val() ? $('#process-name').val() : '',
         }
 
-        
-        axios.post("{{ url('api/v1/shipping/create') }}", data, config)
+
+        axios.put("{{ url('api/v1/work-progress/update/' . $id) }}", data, config)
           .then(res => {
-            const shipping = res.data.data.item
-            sessionStorage.setItem("success", `${shipping.shipping_name} berhasil ditambahkan`)
-            window.location.href = "{{ url('/shipping') }}"
+            sessionStorage.setItem("success", `Progress Pekerjaan berhasil diubah`)
+            window.location.href = "{{ url('/work-progress') }}"
           })
           .catch(err => {
             $('#global-loader').hide()
@@ -106,12 +122,25 @@
 
             Swal.fire({
               icon: 'error',
-              title: 'Ekspedisi gagal ditambahkan',
+              title: 'Progress Pekerjaan gagal ditambahkan',
               text: errorMessage
             })
           })
 
       })
+
+      function getData() {
+        axios.get("{{ url('api/v1/work-progress/detail/' . $id) }}", config)
+          .then(res => {
+            const data = res.data.data.item
+            // console.log(data);
+
+            $('#process-name').val(data.process_name)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
 
     })
   </script>

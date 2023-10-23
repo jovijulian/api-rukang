@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Product;
-use App\Models\Shipping;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Models\ModuleCompleteness;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
-use App\Http\Resources\ShippingResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Http\Resources\ModuleCompletenessResource;
 
-class ShippingController extends Controller
+class ModuleCompletenessController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +24,7 @@ class ShippingController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'shipping_name';
+            $sort = $request->has('sort') ? $request->input('sort') : 'segment';
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -35,19 +33,19 @@ class ShippingController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND shippings.shipping_name LIKE '%$search_term%'";
+                $conditions .= " AND module_completeness.segment LIKE '%$search_term%'";
             }
 
-            $paginate = Shipping::query()->select(['shippings.*'])
+            $paginate = ModuleCompleteness::query()->select(['module_completeness.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Shipping::query()
+            $countAll = ModuleCompleteness::query()
                 ->count();
 
             // paging response.
-            $response = ShippingResource::collection($paginate);
+            $response = ModuleCompletenessResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -71,8 +69,9 @@ class ShippingController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'shipping_name' => ['required', 'string', 'min:1', 'max:40', 'unique:shippings,shipping_name,NULL,id'],
-            'company_name' => ['required', 'string', 'min:1', 'max:60'],
+            'segment' => ['required', 'string', 'min:1', 'max:40'],
+            'module' => ['required', 'string', 'min:1', 'max:40'],
+            'completeness' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -81,20 +80,23 @@ class ShippingController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $shippingData = new Shipping();
+        $moduleCompletenessData = new ModuleCompleteness();
 
-        // input data shipping
-        $shippingData->shipping_name = $data['shipping_name'];
-        $shippingData->company_name = $data['company_name'];
-        $shippingData->created_at = $timeNow;
-        $shippingData->created_by = auth()->user()->fullname;
-        $shippingData->updated_at = null;
-        $shippingData->updated_by = null;
+        // input data module completeness
+        $moduleCompletenessData->segment_id = $data['segment_id'];
+        $moduleCompletenessData->segment = $data['segment'];
+        $moduleCompletenessData->module_id = $data['module_id'];
+        $moduleCompletenessData->module = $data['module'];
+        $moduleCompletenessData->completeness = $data['completeness'];
+        $moduleCompletenessData->created_at = $timeNow;
+        $moduleCompletenessData->created_by = auth()->user()->fullname;
+        $moduleCompletenessData->updated_at = null;
+        $moduleCompletenessData->updated_by = null;
 
         // save shipping
-        $shippingData->save();
+        $moduleCompletenessData->save();
 
-        return $shippingData;
+        return $moduleCompletenessData;
     }
 
     /**
@@ -112,7 +114,7 @@ class ShippingController extends Controller
             DB::commit();
 
             // return
-            $single = new ShippingResource($model);
+            $single = new ModuleCompletenessResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -135,11 +137,11 @@ class ShippingController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Shipping::query()->find($id);
+            $model = ModuleCompleteness::query()->find($id);
             if (empty($model)) {
-                throw new \Exception("Ekspedisi tidak ada", 404);
+                throw new \Exception("Kelengkapan Modul tidak ada", 404);
             }
-            $single = new ShippingResource($model);
+            $single = new ModuleCompletenessResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -162,8 +164,9 @@ class ShippingController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'shipping_name' => ['required', 'string', 'min:1', 'max:40'],
-            'company_name' => ['required', 'string', 'min:1', 'max:60'],
+            'segment' => ['required', 'string', 'min:1', 'max:40'],
+            'module' => ['required', 'string', 'min:1', 'max:40'],
+            'completeness' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -172,21 +175,24 @@ class ShippingController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find shipping by id
-        $shippingData = Shipping::find($id);
+        // Find module completeness by id
+        $moduleCompletenessData = ModuleCompleteness::find($id);
 
-        if (empty($shippingData)) {
-            throw new \Exception("Invalid shipping id", 406);
+        if (empty($moduleCompletenessData)) {
+            throw new \Exception("Invalid module completeness id", 406);
         }
-        $shippingData->id = $id;
-        $shippingData->shipping_name = $data['shipping_name'];
-        $shippingData->company_name = $data['company_name'];
-        $shippingData->updated_at = $timeNow;
-        $shippingData->updated_by = auth()->user()->fullname;
+        $moduleCompletenessData->id = $id;
+        $moduleCompletenessData->segment_id = $data['segment_id'];
+        $moduleCompletenessData->segment = $data['segment'];
+        $moduleCompletenessData->module_id = $data['module_id'];
+        $moduleCompletenessData->module = $data['module'];
+        $moduleCompletenessData->completeness = $data['completeness'];
+        $moduleCompletenessData->updated_at = $timeNow;
+        $moduleCompletenessData->updated_by = auth()->user()->fullname;
         //Save
-        $shippingData->save();
+        $moduleCompletenessData->save();
 
-        return $shippingData;
+        return $moduleCompletenessData;
     }
 
     /**
@@ -205,7 +211,7 @@ class ShippingController extends Controller
             DB::commit();
 
             // return.
-            $single = new ShippingResource($data);
+            $single = new ModuleCompletenessResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -225,47 +231,43 @@ class ShippingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    // protected function delete($id)
-    // {
+    protected function delete($id)
+    {
 
-    //     $shipping = Shipping::find($id);
-    //     if ($shipping == null) {
-    //         throw new \Exception("Ekspedisi tidak ada", 404);
-    //     }
+        $moduleCompleteness = ModuleCompleteness::find($id);
+        if ($moduleCompleteness == null) {
+            throw new \Exception("Kelengkapan Modul tidak ada", 404);
+        }
 
-    //     $product = Product::query()->where('shipping_id', $shipping->id)->first();
-    //     if ($product != null) {
-    //         return throw new \Exception("Data Ekspedisi digunakan oleh Produk", 409);
-    //     }
-    //     $shipping->deleted_by = auth()->user()->fullname;
-    //     $shipping->save();
+        $moduleCompleteness->deleted_by = auth()->user()->fullname;
+        $moduleCompleteness->save();
 
-    //     $shipping->delete();
+        $moduleCompleteness->delete();
 
-    //     return $shipping;
-    // }
-    // public function destroy(string $id)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $this->delete($id);
-    //         DB::commit();
-    //         // return
-    //         return ResponseStd::okNoOutput("Ekspedisi berhasil dihapus.");
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         if ($e instanceof ValidationException) {
-    //             return ResponseStd::validation($e->validator);
-    //         } else {
-    //             Log::error($e->getMessage());
-    //             if ($e instanceof QueryException) {
-    //                 return ResponseStd::fail(trans('error.global.invalid-query'));
-    //             } else {
-    //                 return ResponseStd::fail($e->getMessage(), $e->getCode());
-    //             }
-    //         }
-    //     }
-    // }
+        return $moduleCompleteness;
+    }
+    public function destroy(string $id)
+    {
+        DB::beginTransaction();
+        try {
+            $this->delete($id);
+            DB::commit();
+            // return
+            return ResponseStd::okNoOutput("Kelengkapan Modul berhasil dihapus.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
 
     public function datatable(Request $request)
     {
@@ -277,32 +279,34 @@ class ShippingController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->has('order.0.column')] ? 'shipping_name'  : $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'segment'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Shipping::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Shipping::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = ModuleCompleteness::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND shipping_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " AND company_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND segment LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR module LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR completeness LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Shipping::whereRaw($conditions)
+            $data =  ModuleCompleteness::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = Shipping::whereRaw($conditions)->count();
+            $totalFiltered = ModuleCompleteness::whereRaw($conditions)->count();
+            $totalData = $totalFiltered;
         }
 
         $json_data = array(

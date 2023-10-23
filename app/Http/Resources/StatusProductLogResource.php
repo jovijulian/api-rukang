@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\LocationLog;
 use App\Models\Status;
 use App\Models\StatusProduct;
+use App\Models\TravelDocumentLog;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StatusProductLogResource extends JsonResource
@@ -33,11 +34,13 @@ class StatusProductLogResource extends JsonResource
             'status_photo8' => $this->status_photo8,
             'status_photo9' => $this->status_photo9,
             'status_photo10' => $this->status_photo10,
+            'upload_signature' => $this->upload_signature,
+            'travel_document' => TravelDocumentLog::where('id', $this->travel_document_id)->first(),
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,
             'number_plate' => $this->number_plate,
             'note' => $this->note,
-            'status_detail' => StatusProduct::select('status', 'need_expedition')->where('id', $this->status_id)->first(),
+            'status_detail' => StatusProduct::select('status', 'need_expedition')->where('id', $this->status_id)->latest(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
