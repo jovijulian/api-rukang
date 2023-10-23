@@ -496,32 +496,36 @@ class UserController extends Controller
         $order = $columns[$request->has('order.0.column')] ? 'fullname'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = User::count();
+
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
             $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isActive', 0)->whereNotNull('email_verified_at')->get();
+            $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND fullname LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND (fullname LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR email LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR phone_number LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR updated_by LIKE '%" . trim($search) . "%')";
             }
-            //QUERI CUSTOM
-            $data =  User::whereRaw($conditions)
-                ->where('isActive', 0)
+
+            $data = User::whereRaw($conditions)
+                ->where('isActive', '=', 0)
                 ->whereNotNull('email_verified_at')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
+
             //QUERI CUSTOM
-            $totalFiltered = User::whereRaw($conditions)->count();
+            $totalFiltered = User::whereRaw($conditions)->where('isActive', '=', 0)
+                ->whereNotNull('email_verified_at')->count();
+            $totalData = $totalFiltered;
         }
 
         $json_data = array(
