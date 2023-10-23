@@ -981,13 +981,15 @@ class ProductController extends Controller
 
             if ($next_status == 20 || $next_status == 21) { //kondisi khusus status 06 - pengiriman dan 07 - diterima
                 Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+
                 if ($request->upload_signature) {
                     $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
                     $image_url_travel_document = Storage::url($image);
+                } else {
+                    $image_url_travel_document = null;
                 }
                 $statusLogData->upload_signature = $image_url_travel_document;
             }
-
             $statusLogData->status_id = $next_status;
             $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
             $statusLogData->status_name = $getStatusName->status;
@@ -1030,6 +1032,7 @@ class ProductController extends Controller
                     }
                 }
             }
+
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
             $statusLogData->shipping_name = $request->shipping_name;
@@ -1042,6 +1045,7 @@ class ProductController extends Controller
 
             //update product
             $productData = Product::find($sp);
+
             if (!$statusLogData->status_id == 16) {
                 $productData->qty = 1;
             }
@@ -1153,14 +1157,16 @@ class ProductController extends Controller
                 }
             }
 
-            if ($previous_status == 20 || $previous_status == 21) {
-                Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
-                if ($request->upload_signature) {
-                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
-                    $image_url_travel_document = Storage::url($image);
-                }
-                $statusLogData->upload_signature = $image_url_travel_document;
-            }
+            // if ($previous_status == 20 || $previous_status == 21) {
+            //     Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
+            //     if ($request->upload_signature) {
+            //         $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+            //         $image_url_travel_document = Storage::url($image);
+            //     } else {
+            //         $image_url_travel_document = null;
+            //     }
+            //     $statusLogData->upload_signature = $image_url_travel_document;
+            // }
 
             $statusLogData->note = $request->note;
             $statusLogData->shipping_id = $request->shipping_id;
