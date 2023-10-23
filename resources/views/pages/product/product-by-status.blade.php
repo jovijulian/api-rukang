@@ -57,8 +57,9 @@
           <table id="product-table" class="table">
             <thead>
               <tr>
-                <th class="text-center p-2"><input type="checkbox" id="select-all" class="cursor-pointer" /></th>
+                <th class="text-center p-2"><input type="checkbox" id="select-all" class="cursor-pointer " /></th>
                 <th>Barcode</th>
+                <th>Kategori</th>
                 <th>Keterangan</th>
                 <th>Diubah Pada</th>
                 <th>Diubah Oleh</th>
@@ -79,9 +80,6 @@
             <div class="modal-content p-3">
               <div class="modal-header">
                 <h5 class="modal-title" id="statusPrevModalLabel">Mundurkan Status</h5>
-                {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button> --}}
               </div>
               <div class="modal-body">
                 <form id="status-form-prev">
@@ -89,6 +87,12 @@
                     <label class="col-lg-3 col-form-label">Status Terkini</label>
                     <div class="col-lg-9">
                       <input type="text" class="form-control text-sm recent-status" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Status Menjadi</label>
+                    <div class="col-lg-9">
+                      <input type="text" class="form-control text-sm prev-status" disabled>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -201,6 +205,12 @@
                     <label class="col-lg-3 col-form-label">Status Terkini</label>
                     <div class="col-lg-9">
                       <input type="text" class="form-control text-sm recent-status" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Status Menjadi</label>
+                    <div class="col-lg-9">
+                      <input type="text" class="form-control text-sm next-status" disabled>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -558,6 +568,7 @@
         bInfo: true,
         sDom: 'frBtlpi',
         ordering: true,
+        order: [[ 1, 'asc' ]],
         pagingType: 'numbers',
         // stateSave: true,
         language: {
@@ -581,7 +592,7 @@
             $('.title-status-product').text(`Produk - ${json.status}`)
             $('.recent-status').val(`${json.status}`)
 
-            console.log(json);
+            console.log(json.data);
 
             return json.data
           },
@@ -610,13 +621,20 @@
           {
             data: null,
             orderable: false,
+            // class: 'text-center',  
             searchable: false,
             render: function () {
-                return '';
+              return ''
+              // return `
+              //   <input type="checkbox" class="cursor-pointer cb-child" />
+              // `;
             },
           },
           {
             data: 'barcode'
+          },
+          {
+            data: 'category'
           },
           {
             data: 'description'
@@ -638,28 +656,42 @@
 
       if ("{{ $statusId }}" == 16) {
         statusNextId = 17
+        $('.next-status').val('02. Selesai Produksi')
       } else if ("{{ $statusId }}" == 17) {
         statusNextId = 18
+        $('.next-status').val('03. Pengecekan')
       } else if ("{{ $statusId }}" == 18) {
         statusNextId = 19
+        $('.next-status').val('04. Siap Kirim')
       } else if ("{{ $statusId }}" == 19) {
         statusNextId = 32
+        $('.next-status').val('05. Perisiapan Surat Jalan')
       } else if ("{{ $statusId }}" == 32) {
         statusNextId = 20
+        $('.next-status').val('06. Pengiriman')
       } else if ("{{ $statusId }}" == 20) {
         statusNextId = 21
+        $('.next-status').val('07. Diterima')
       }
 
       if ("{{ $statusId }}" == 21) {
         statusPrevId = 20
+        $('.prev-status').val('06. Pengiriman')
       } else if ("{{ $statusId }}" == 20) {
         statusPrevId = 32
+        $('.prev-status').val('05. Persiapan Surat Jalan')
       } else if ("{{ $statusId }}" == 32) {
         statusPrevId = 19
+        $('.prev-status').val('04. Siap Kirim')
       } else if ("{{ $statusId }}" == 19) {
         statusPrevId = 18
+        $('.prev-status').val('03. Pengecekan')
+      } else if ("{{ $statusId }}" == 18) {
+        statusPrevId = 17
+        $('.prev-status').val('02. Selesai Produksi')
       } else if ("{{ $statusId }}" == 17) {
         statusPrevId = 16
+        $('.prev-status').val('01. Dalam Proses Produksi')
       }
 
       // console.log(statusPrevId);
@@ -769,12 +801,19 @@
       let selectedData = []
 
       $("#select-all").on("click", function(e) {
-          if ($(this).is(":checked")) {
-              table.rows().select();
-          } else {
-              table.rows().deselect();
-          }
-      });
+        // $('.cb-child').prop('checked', $('#select-all').prop('checked'))
+        if ($(this).is(":checked")) {
+            table.rows().select();
+        } else {
+            table.rows().deselect();
+        }
+      })
+
+      // $('#product-table tbody').on('click', '.cb-child', function() {
+      //   if ($(this).prop("checked") !== true) {
+      //     $('#select-all').prop('checked', false)
+      //   }
+      // })
       
       $('#status-prev').on('click', () => {
         selectedId = []
@@ -1108,7 +1147,13 @@
           .then(res => {
             const data = res.data
 
-            window.open(data.travel_document_path, '_blank')
+            const anchor = document.createElement("a")
+            anchor.target = "_blank"
+            anchor.href = data.travel_document_path
+            anchor.download = 'tes.xlsx'
+            document.body.appendChild(anchor)
+            anchor.click()
+            document.body.removeChild(anchor)
 
             sessionStorage.setItem("success", `Status produk berhasil dilanjutkan`)
             window.location.href = `{{ url('/product-by-status/' . $statusId) }}`
