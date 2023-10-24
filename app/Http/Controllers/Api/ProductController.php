@@ -1426,7 +1426,7 @@ class ProductController extends Controller
         $driver_telp = $request->driver_telp;
 
         //update increment shipping use
-        $updateShippingUse = Shipping::where('id', 1)->first();
+        $updateShippingUse = Shipping::where('id', $request->shipping_id)->first();
         $updateShippingUse->shipping_use++;
         $updateShippingUse->updated_at = $timeNow;
         $updateShippingUse->updated_by = auth()->user()->fullname;
