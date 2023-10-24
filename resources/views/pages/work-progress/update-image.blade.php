@@ -98,7 +98,16 @@
         $('#global-loader').show()
 
         const data = {
-          process_name: $('#process-name').val() ? $('#process-name').val() : '',
+          photo_01: $('#image-process')[0].files[0] ? $('#image-process')[0].files[0] : '',
+          photo_03: $('#image-process')[0].files[2] ? $('#image-process')[0].files[2] : '',
+          photo_02: $('#image-process')[0].files[1] ? $('#image-process')[0].files[1] : '',
+          photo_04: $('#image-process')[0].files[3] ? $('#image-process')[0].files[3] : '',
+          photo_05: $('#image-process')[0].files[4] ? $('#image-process')[0].files[4] : '',
+          photo_06: $('#image-process')[0].files[5] ? $('#image-process')[0].files[5] : '',
+          photo_07: $('#image-process')[0].files[6] ? $('#image-process')[0].files[6] : '',
+          photo_08: $('#image-process')[0].files[7] ? $('#image-process')[0].files[7] : '',
+          photo_09: $('#image-process')[0].files[8] ? $('#image-process')[0].files[8] : '',
+          photo_10: $('#image-process')[0].files[9] ? $('#image-process')[0].files[9] : '',
         }
 
 

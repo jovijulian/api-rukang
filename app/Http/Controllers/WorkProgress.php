@@ -11,6 +11,11 @@ class WorkProgress extends Controller
         return view('pages.work-progress.index');
     }
 
+    public function progress()
+    {
+        return view('pages.work-progress.progress');
+    }
+
     public function insert()
     {
         return view('pages.work-progress.insert');
@@ -20,6 +25,7 @@ class WorkProgress extends Controller
     {
         return view('pages.work-progress.edit', ['id' => $id]);
     }
+
     public function updateImage($id)
     {
         return view('pages.work-progress.update-image', ['id' => $id]);
