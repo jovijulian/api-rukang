@@ -1473,15 +1473,13 @@ class ProductController extends Controller
     {
         try {
             $search_term = $request->input('search');
-            // $limit = $request->has('limit') ? $request->input('limit') : 10;
             $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
             $order = $request->has('order') ? $request->input('order') : 'DESC';
             $conditions = '1 = 1';
-            // Jika dari frontend memaksa limit besar.
-            // if ($limit > 10) {
-            //     $limit = 10;
-            // }
 
+            if ($request->input('category') != null) {
+                $conditions .= " AND category_id = " . $request->input('category');
+            }
             if (!empty($search_term)) {
                 $conditions .= " AND products.barcode LIKE '%$search_term%'";
             }
