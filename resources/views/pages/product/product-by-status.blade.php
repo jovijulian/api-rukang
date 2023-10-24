@@ -656,15 +656,20 @@
       })
 
       if (!serverSide) {
+        $('.dataTables_filter').appendTo('.search-input')
+        getClientSideData()
+      }
+
+      function getClientSideData() {
         axios.get("{{ url('api/v1/product/siap-kirim-table') }}", config)
           .then((res) => {
             const data = res.data.data.items
 
-            console.log(data);
             $('.title-status-product').text(`Produk - 04. Siap Kirim`)
             $('.recent-status').val(`04. Siap Kirim`)
 
             // Mengisi data ke dalam tabel DataTable
+            table.ajax.reload(null, false);
             table.clear().rows.add(data).draw()
           })
           .catch((error) => {
@@ -804,16 +809,39 @@
 
       function filterData() {
         $('#category-filter').on('change', () => {
-          categoryFilter = $('#category-filter').val()
+          if (serverSide) {
+            categoryFilter = $('#category-filter').val()
+  
+            table.ajax.reload(null, false)
+          } else {
+            const categoryId = $('#category-filter').val()
 
-          table.ajax.reload(null, false)
+            console.log(categoryId);
+
+
+            axios.get(`{{ url('api/v1/product/siap-kirim-table?category=${categoryId}') }}`, config)
+              .then((res) => {
+                const data = res.data.data.items
+                
+                // Mengisi data ke dalam tabel DataTable
+                table.ajax.reload(null, false);
+                table.clear().rows.add(data).draw()
+              })
+              .catch((error) => {
+                console.log(error)
+              });
+          }
         })
       }
 
       $('#delete-filter-data').on('click', () => {
-        categoryFilter = ''
-        $('#category-filter').val(null).trigger('change')
-        table.ajax.reload(null, false)
+        if (!serverSide) {
+          getClientSideData()
+        } else {
+          categoryFilter = ''
+          $('#category-filter').val(null).trigger('change')
+          table.ajax.reload(null, false)
+        }
       })
 
 
