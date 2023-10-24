@@ -897,7 +897,6 @@
 
       const today = new Date().toISOString().split('T')[0]
       $(".date-now").val(today)
-      $(".date-now").prop('disabled', true)
 
       $('#status-form-prev').on('submit', () => {
         event.preventDefault()
