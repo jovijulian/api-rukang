@@ -98,6 +98,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
             // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::get('/report-status-product', 'export');
         });
     });
     Route::prefix('product')->group(function () {

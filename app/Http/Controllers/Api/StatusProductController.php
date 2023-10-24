@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\StatusProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\StatusProduct;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Exports\StatusProductExport;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\StatusProductResource;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\StatusProductResource;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -314,5 +316,11 @@ class StatusProductController extends Controller
             "data"            => $data
         );
         return json_encode($json_data);
+    }
+
+    public function export(Request $request)
+    {
+        set_time_limit(300);
+        return Excel::download(new StatusProductExport, 'Daftar Master_Status_Produk.xlsx');
     }
 }
