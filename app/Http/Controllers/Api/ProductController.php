@@ -7,6 +7,7 @@ use Ramsey\Uuid\Uuid;
 use App\Models\Status;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Shipping;
 use App\Models\StatusLog;
 use App\Models\LocationLog;
 use Illuminate\Http\Request;
@@ -30,9 +31,9 @@ use App\Http\Resources\StatusLogResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\LocationLogResource;
 use Illuminate\Validation\ValidationException;
+use App\Http\Resources\ProductSiapKirimResource;
 use App\Http\Resources\StatusProductLogResource;
 use App\Http\Resources\LocationProductLogResource;
-use App\Models\Shipping;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ProductController extends Controller
@@ -982,13 +983,13 @@ class ProductController extends Controller
             if ($next_status == 20 || $next_status == 21) { //kondisi khusus status 06 - pengiriman dan 07 - diterima
                 Storage::exists('travel_document') or Storage::makeDirectory('travel_document');
 
-                if ($request->upload_signature) {
-                    $image = Storage::putFile('travel_document', $request->upload_signature, 'public');
+                if ($request->upload_travel_document) {
+                    $image = Storage::putFile('travel_document', $request->upload_travel_document, 'public');
                     $image_url_travel_document = Storage::url($image);
                 } else {
                     $image_url_travel_document = null;
                 }
-                $statusLogData->upload_signature = $image_url_travel_document;
+                $statusLogData->upload_travel_document = $image_url_travel_document;
             }
             $statusLogData->status_id = $next_status;
             $getStatusName = StatusProduct::select('status')->where('id', $statusLogData->status_id)->first();
@@ -1425,7 +1426,7 @@ class ProductController extends Controller
         $driver_telp = $request->driver_telp;
 
         //update increment shipping use
-        $updateShippingUse = Shipping::where('id', 1)->first();
+        $updateShippingUse = Shipping::where('id', $request->shipping_id)->first();
         $updateShippingUse->shipping_use++;
         $updateShippingUse->updated_at = $timeNow;
         $updateShippingUse->updated_by = auth()->user()->fullname;
@@ -1466,5 +1467,48 @@ class ProductController extends Controller
             'message' => 'Data berhasil dilanjutkan statusnya.',
             'travel_document_path' => $path_document_travel,
         ], 200);
+    }
+
+    public function indexSiapKirimTable(Request $request)
+    {
+        try {
+            $search_term = $request->input('search');
+            $sort = $request->has('sort') ? $request->input('sort') : 'created_at';
+            $order = $request->has('order') ? $request->input('order') : 'DESC';
+            $conditions = '1 = 1';
+
+            if ($request->input('category') != null) {
+                $conditions .= " AND category_id = " . $request->input('category');
+            }
+            if (!empty($search_term)) {
+                $conditions .= " AND products.barcode LIKE '%$search_term%'";
+            }
+            $countAll = Product::query()
+                ->count();
+
+            $paginate = Product::query()->select(['products.*'])
+                ->where('products.status_id', 19)
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($countAll);
+
+
+
+            // paging response.
+            $response = ProductSiapKirimResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
     }
 }

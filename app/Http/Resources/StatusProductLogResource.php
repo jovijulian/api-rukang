@@ -34,7 +34,7 @@ class StatusProductLogResource extends JsonResource
             'status_photo8' => $this->status_photo8,
             'status_photo9' => $this->status_photo9,
             'status_photo10' => $this->status_photo10,
-            'upload_signature' => $this->upload_signature,
+            'upload_travel_document' => $this->upload_travel_document,
             'travel_document' => TravelDocumentLog::where('id', $this->travel_document_id)->first(),
             'shipping_id' => $this->shipping_id,
             'shipping_name' => $this->shipping_name,

@@ -30,10 +30,6 @@
                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
                     src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
-              <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                    src="{{ url('assets/img/icons/printer.svg') }}" alt="img"></a>
-              </li>
             </ul>
           </div>
         </div>

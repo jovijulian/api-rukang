@@ -11,22 +11,12 @@
         <h4>User</h4>
         <h6>Verifikasi User</h6>
       </div>
-      {{-- <div class="page-btn">
-        <a href="addproduct.html" class="btn btn-added"><img src="{{ url('assets/img/icons/plus.svg') }}" alt="img" class="me-1">Add
-          New Product</a>
-      </div> --}}
     </div>
 
     <div class="card">
       <div class="card-body">
         <div class="table-top">
           <div class="search-set">
-            {{-- <div class="search-path">
-              <a class="btn btn-filter" id="filter_search">
-                <img src="{{ url('assets/img/icons/filter.svg') }}" alt="img">
-                <span><img src="{{ url('assets/img/icons/closes.svg') }}" alt="img"></span>
-              </a>
-            </div> --}}
             <div class="search-input">
               <a class="btn btn-searchset"><img src="{{ url('assets/img/icons/search-white.svg') }}" alt="img"></a>
             </div>
@@ -34,16 +24,7 @@
           <div class="wordset">
             <ul>
               <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                    src="{{ url('assets/img/icons/pdf.svg') }}" alt="img"></a>
-              </li>
-              <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                    src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
-              </li>
-              <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                    src="{{ url('assets/img/icons/printer.svg') }}" alt="img"></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="{{ url('assets/img/icons/excel.svg') }}" alt="img"></a>
               </li>
             </ul>
           </div>

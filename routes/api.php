@@ -98,6 +98,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
             // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,5']);
+            Route::get('/report-status-product', 'export');
         });
     });
     Route::prefix('product')->group(function () {
@@ -117,6 +118,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/rewind-status', 'rewindStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/drop-status', 'dropStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/generate-travel-document', 'generateTravelDocument')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/siap-kirim-table', 'indexSiapKirimTable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('shipping')->group(function () {
