@@ -148,4 +148,6 @@ Route::controller(WorkProgress::class)->group(function () {
     Route::get('work-progress/insert', 'insert');
     Route::get('work-progress/edit/{id}', 'edit');
     Route::get('work-progress/update-image/{id}', 'updateImage');
+    
+    Route::get('progress-work', 'progress');
 });
