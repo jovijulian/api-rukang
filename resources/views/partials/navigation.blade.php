@@ -117,6 +117,9 @@
             <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
               <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
             </li>
+            <li class="{{ request()->is('progress-nuart') ? 'active' : '' }}">
+              <a href="/progress-nuart"><i data-feather="clipboard"></i><span>Progress Pekerjaan</span></a>
+            </li>
           </ul>
         </li>
         <li class="submenu-open aset-data">

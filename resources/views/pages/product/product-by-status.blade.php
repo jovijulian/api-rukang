@@ -98,7 +98,7 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Tanggal Status *</label>
                     <div class="col-lg-9">
-                      <input type="date" id="status-date-prev" class="form-control text-sm" required>
+                      <input type="date" id="status-date-prev" class="form-control text-sm date-now" required>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -159,7 +159,7 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Tanggal Status *</label>
                     <div class="col-lg-9">
-                      <input type="date" id="status-date-drop" class="form-control text-sm" required>
+                      <input type="date" id="status-date-drop" class="form-control text-sm date-now" required>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -216,7 +216,7 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Tanggal Status *</label>
                     <div class="col-lg-9">
-                      <input type="date" id="status-date" class="form-control text-sm" required>
+                      <input type="date" id="status-date" class="form-control text-sm date-now" required>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -232,9 +232,9 @@
                     </div>
                   </div>
                   <div id="upload-signature-input" class="form-group row">
-                    <label class="col-lg-3 col-form-label">Upload Surat Jalan</label>
+                    <label class="col-lg-3 col-form-label">Upload Surat Jalan *</label>
                     <div class="col-lg-9">
-                      <input class="form-control mb-1" type="file" id="upload-signature" accept="image/*">
+                      <input class="form-control mb-1" type="file" id="upload-signature" accept="image/*" required>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -273,7 +273,7 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Tanggal Status *</label>
                         <div class="col-lg-9">
-                          <input type="date" id="status-date-travel" class="form-control text-sm" required>
+                          <input type="date" id="status-date-travel" class="form-control text-sm date-now" required>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -363,7 +363,7 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Tanggal *</label>
                         <div class="col-lg-9">
-                          <input type="date" id="travel-date" class="form-control text-sm" required>
+                          <input type="date" id="travel-date" class="form-control text-sm date-now" required>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -560,11 +560,17 @@
 
       let categoryFilter = $('#category-filter').val()
 
+      let serverSide = true
+
+      if ("{{ $statusId }}" == 19) {
+        serverSide = false
+      }
+
       // GET PRODUCT
       const table = $('#product-table').DataTable({
         responsive: true,
-        processing: true,
-        serverSide: true,
+        processing: serverSide,
+        serverSide: serverSide,
         bInfo: true,
         sDom: 'frBtlpi',
         ordering: true,
@@ -591,8 +597,6 @@
           dataSrc: function (json) {
             $('.title-status-product').text(`Produk - ${json.status}`)
             $('.recent-status').val(`${json.status}`)
-
-            console.log(json.data);
 
             return json.data
           },
@@ -650,6 +654,23 @@
           },
         ]
       })
+
+      if (!serverSide) {
+        axios.get("{{ url('api/v1/product/siap-kirim-table') }}", config)
+          .then((res) => {
+            const data = res.data.data.items
+
+            console.log(data);
+            $('.title-status-product').text(`Produk - 04. Siap Kirim`)
+            $('.recent-status').val(`04. Siap Kirim`)
+
+            // Mengisi data ke dalam tabel DataTable
+            table.clear().rows.add(data).draw()
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+      }
 
       let statusNextId
       let statusPrevId
@@ -869,11 +890,14 @@
         } else if ("{{ $statusId }}" == 32 || "{{ $statusId }}" == 20) {
           $('#statusNextModal').modal('show')          
         } else {
-          $('#upload-signature-input').hide()
+          $('#upload-signature-input').remove()
           $('#statusNextModal').modal('show')
         }
       })
 
+      const today = new Date().toISOString().split('T')[0]
+      $(".date-now").val(today)
+      $(".date-now").prop('disabled', true)
 
       $('#status-form-prev').on('submit', () => {
         event.preventDefault()
@@ -1008,7 +1032,6 @@
           })
       })
 
-
       $('#status-form-next').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
@@ -1032,7 +1055,7 @@
           status_date: $('#status-date').val(),
           note: $('#note').val() ? $('#note').val() : '',
           current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val(),
-          upload_signature: $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : '',
+          // upload_signature: $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : '',
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
           status_photo3: $('#image-status')[0].files[2] ? $('#image-status')[0].files[2] : '',
@@ -1043,6 +1066,10 @@
           status_photo8: $('#image-status')[0].files[7] ? $('#image-status')[0].files[7] : '',
           status_photo9: $('#image-status')[0].files[8] ? $('#image-status')[0].files[8] : '',
           status_photo10: $('#image-status')[0].files[9] ? $('#image-status')[0].files[9] : '',
+        }
+
+        if ("{{ $statusId }}" == 32 || "{{ $statusId }}" == 20) {
+          data.upload_travel_document = $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : ''
         }
 
         // console.log(data)
