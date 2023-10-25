@@ -28,6 +28,14 @@
               <a class="btn btn-searchset"><img src="{{ url('assets/img/icons/search-white.svg') }}" alt="img"></a>
             </div>
           </div>
+          <div class="wordset">
+            <ul>
+              <li>
+                <a href="{{ url('api/v1/product/report-product-per-status?status_id=' . $statusId) }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src={{ asset("assets/img/icons/excel.svg") }} alt="img"></a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div class="card mb-0" id="filter_inputs">
@@ -70,12 +78,16 @@
         </div>
 
         <div class="mt-3 d-flex justify-content-between">
-          <button id="status-prev" class="btn btn-primary px-4 py-3" data-toggle="modal" data-target="#statusPrevModal">Mundurkan Status</button>
-          <button id="status-drop" class="btn btn-secondary px-4 py-3" data-toggle="modal" data-target="#statusDropModal">Drop Status</button>
-          <button id="status-next" class="btn btn-primary px-4 py-3" data-toggle="modal" data-target="#statusNextModal">Lanjutkan Status</button>
+          <button id="status-prev" class="btn btn-primary px-4 py-3" data-toggle="modal"
+            data-target="#statusPrevModal">Mundurkan Status</button>
+          <button id="status-drop" class="btn btn-secondary px-4 py-3" data-toggle="modal"
+            data-target="#statusDropModal">Drop Status</button>
+          <button id="status-next" class="btn btn-primary px-4 py-3" data-toggle="modal"
+            data-target="#statusNextModal">Lanjutkan Status</button>
         </div>
 
-        <div class="modal fade" id="statusPrevModal" tabindex="-1" aria-labelledby="statusPrevModalLabel" aria-hidden="true">
+        <div class="modal fade" id="statusPrevModal" tabindex="-1" aria-labelledby="statusPrevModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content p-3">
               <div class="modal-header">
@@ -104,7 +116,8 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                     <div class="col-lg-9">
-                      <input type="text" id="current-location-prev" class="form-control" placeholder="Masukan lokasi terkini">
+                      <input type="text" id="current-location-prev" class="form-control"
+                        placeholder="Masukan lokasi terkini">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -116,7 +129,8 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                     <div class="col-lg-9">
-                      <input class="form-control mb-1" type="file" id="image-status-prev" accept="image/*" multiple>
+                      <input class="form-control mb-1" type="file" id="image-status-prev" accept="image/*"
+                        multiple>
                       <div id="image-preview-prev" class="mt-2 row"></div>
                     </div>
                   </div>
@@ -129,7 +143,8 @@
           </div>
         </div>
 
-        <div class="modal fade" id="statusDropModal" tabindex="-1" aria-labelledby="statusDropModalLabel" aria-hidden="true">
+        <div class="modal fade" id="statusDropModal" tabindex="-1" aria-labelledby="statusDropModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content p-3">
               <div class="modal-header">
@@ -165,7 +180,8 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                     <div class="col-lg-9">
-                      <input type="text" id="current-location-drop" class="form-control" placeholder="Masukan lokasi terkini">
+                      <input type="text" id="current-location-drop" class="form-control"
+                        placeholder="Masukan lokasi terkini">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -177,7 +193,8 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
                     <div class="col-lg-9">
-                      <input class="form-control mb-1" type="file" id="image-status-drop" accept="image/*" multiple>
+                      <input class="form-control mb-1" type="file" id="image-status-drop" accept="image/*"
+                        multiple>
                       <div id="image-preview-drop" class="mt-2 row"></div>
                     </div>
                   </div>
@@ -190,7 +207,8 @@
           </div>
         </div>
 
-        <div class="modal fade" id="statusNextModal" tabindex="-1" aria-labelledby="statusNextModalLabel" aria-hidden="true">
+        <div class="modal fade" id="statusNextModal" tabindex="-1" aria-labelledby="statusNextModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content p-3">
               <div class="modal-header">
@@ -222,7 +240,8 @@
                   <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                     <div class="col-lg-9">
-                      <input type="text" id="current-location" class="form-control" placeholder="Masukan lokasi terkini">
+                      <input type="text" id="current-location" class="form-control"
+                        placeholder="Masukan lokasi terkini">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -253,11 +272,13 @@
           </div>
         </div>
 
-        <div class="modal fade" id="statusNextModalTravel" tabindex="-1" aria-labelledby="statusNextModalTravelLabel" aria-hidden="true">
+        <div class="modal fade" id="statusNextModalTravel" tabindex="-1" aria-labelledby="statusNextModalTravelLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content p-3">
               <div class="modal-header">
-                <h5 class="modal-title" id="statusNextModalTravelLabel">Lanjutkan Status (Persiapan Surat Jalan)</h5>
+                <h5 class="modal-title" id="statusNextModalTravelLabel">Lanjutkan Status (Persiapan Surat
+                  Jalan)</h5>
               </div>
               <div class="modal-body">
                 <form id="status-form-next-travel">
@@ -279,7 +300,8 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Lokasi Terkini</label>
                         <div class="col-lg-9">
-                          <input type="text" id="current-location-travel" class="form-control" placeholder="Masukan lokasi terkini">
+                          <input type="text" id="current-location-travel" class="form-control"
+                            placeholder="Masukan lokasi terkini">
                         </div>
                       </div>
                     </div>
@@ -291,9 +313,11 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10 Foto)</label>
+                        <label class="col-lg-3 col-form-label">Upload Foto Status (Maks 10
+                          Foto)</label>
                         <div class="col-lg-9">
-                          <input class="form-control mb-1" type="file" id="image-status-travel" accept="image/*" multiple>
+                          <input class="form-control mb-1" type="file" id="image-status-travel" accept="image/*"
+                            multiple>
                           <div id="image-preview-travel" class="mt-2 row"></div>
                         </div>
                       </div>
@@ -313,43 +337,51 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Dikirim Oleh *</label>
                         <div class="col-lg-9">
-                          <input type="text" id="from" class="form-control text-sm" placeholder="Masukan pengirim" required>
+                          <input type="text" id="from" class="form-control text-sm"
+                            placeholder="Masukan pengirim" required>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Diperiksa Oleh (Gudang)</label>
                         <div class="col-lg-9">
-                          <input type="text" id="checked-by-gudang" class="form-control text-sm" placeholder="Masukan diperiksa oleh gudang">
+                          <input type="text" id="checked-by-gudang" class="form-control text-sm"
+                            placeholder="Masukan diperiksa oleh gudang">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Diperiksa Oleh (Keamanan)</label>
                         <div class="col-lg-9">
-                          <input type="text" id="checked-by-keamanan" class="form-control text-sm" placeholder="Masukan diperiksa oleh keamanan">
+                          <input type="text" id="checked-by-keamanan" class="form-control text-sm"
+                            placeholder="Masukan diperiksa oleh keamanan">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Diperiksa Oleh (Produksi)</label>
                         <div class="col-lg-9">
-                          <input type="text" id="checked-by-produksi" class="form-control text-sm" placeholder="Masukan diperiksa oleh produksi">
+                          <input type="text" id="checked-by-produksi" class="form-control text-sm"
+                            placeholder="Masukan diperiksa oleh produksi">
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Diperiksa Oleh (Project Manager)</label>
+                        <label class="col-lg-3 col-form-label">Diperiksa Oleh (Project
+                          Manager)</label>
                         <div class="col-lg-9">
-                          <input type="text" id="checked-by-project-manager" class="form-control text-sm" placeholder="Masukan diperiksa oleh project manager">
+                          <input type="text" id="checked-by-project-manager" class="form-control text-sm"
+                            placeholder="Masukan diperiksa oleh project manager">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Pengemudi</label>
                         <div class="col-lg-9">
-                          <input type="text" id="driver" class="form-control text-sm" placeholder="Masukan pengemudi">
+                          <input type="text" id="driver" class="form-control text-sm"
+                            placeholder="Masukan pengemudi">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Diterima Oleh (Site Manager)</label>
                         <div class="col-lg-9">
-                          <input type="text" id="received-by-site-manager" class="form-control text-sm" placeholder="Masukan diterima oleh site manager">
+                          <input type="text" id="received-by-site-manager" class="form-control text-sm"
+                            placeholder="Masukan diterima oleh site manager">
                         </div>
                       </div>
                     </div>
@@ -357,7 +389,8 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Nomor *</label>
                         <div class="col-lg-9">
-                          <input type="text" id="nomor-travel" class="form-control text-sm" placeholder="Pilih kendaraan" disabled required>
+                          <input type="text" id="nomor-travel" class="form-control text-sm"
+                            placeholder="Pilih kendaraan" disabled required>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -377,19 +410,22 @@
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">No Polisi *</label>
                         <div class="col-lg-9">
-                          <input type="text" id="number-plate" class="form-control text-sm" placeholder="Masukan nomor polisi" required>
+                          <input type="text" id="number-plate" class="form-control text-sm"
+                            placeholder="Masukan nomor polisi" required>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Nama Pengemudi</label>
                         <div class="col-lg-9">
-                          <input type="text" id="driver-name" class="form-control text-sm" placeholder="Masukan nama pengemudi">
+                          <input type="text" id="driver-name" class="form-control text-sm"
+                            placeholder="Masukan nama pengemudi">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Nomor Telepon Pengemudi</label>
                         <div class="col-lg-9">
-                          <input type="text" id="driver-telp" class="form-control text-sm" placeholder="Masukan nomor telepon pengemudi">
+                          <input type="text" id="driver-telp" class="form-control text-sm"
+                            placeholder="Masukan nomor telepon pengemudi">
                         </div>
                       </div>
                     </div>
@@ -448,11 +484,13 @@
           $('#image-status').val('')
           return
         }
-        
+
         for (let i = 0; i < fileAmount; i++) {
           let reader = new FileReader()
-          reader.onload = function(){
-            $('#image-preview').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+          reader.onload = function() {
+            $('#image-preview').append(
+              `<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`
+            )
           }
           reader.readAsDataURL(this.files[i])
         }
@@ -470,11 +508,13 @@
           $('#image-status-drop').val('')
           return
         }
-        
+
         for (let i = 0; i < fileAmount; i++) {
           let reader = new FileReader()
-          reader.onload = function(){
-            $('#image-preview-drop').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+          reader.onload = function() {
+            $('#image-preview-drop').append(
+              `<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`
+            )
           }
           reader.readAsDataURL(this.files[i])
         }
@@ -492,11 +532,13 @@
           $('#image-status-prev').val('')
           return
         }
-        
+
         for (let i = 0; i < fileAmount; i++) {
           let reader = new FileReader()
-          reader.onload = function(){
-            $('#image-preview-prev').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+          reader.onload = function() {
+            $('#image-preview-prev').append(
+              `<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`
+            )
           }
           reader.readAsDataURL(this.files[i])
         }
@@ -514,11 +556,13 @@
           $('#image-status-travel').val('')
           return
         }
-        
+
         for (let i = 0; i < fileAmount; i++) {
           let reader = new FileReader()
-          reader.onload = function(){
-            $('#image-preview-travel').append(`<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`)
+          reader.onload = function() {
+            $('#image-preview-travel').append(
+              `<img src="${this.result}" alt="" class="mx-auto col-2 m-1" alt="" style="height: 70px; width: auto">`
+            )
           }
           reader.readAsDataURL(this.files[i])
         }
@@ -534,7 +578,7 @@
         'Authorization': `${tokenType} ${accessToken}`
       }
     }
-    
+
     if ("{{ $statusId }}" == 16) {
       $('#status-prev').hide()
     }
@@ -574,7 +618,9 @@
         bInfo: true,
         sDom: 'frBtlpi',
         ordering: true,
-        order: [[ 1, 'asc' ]],
+        order: [
+          [1, 'asc']
+        ],
         pagingType: 'numbers',
         // stateSave: true,
         language: {
@@ -594,7 +640,7 @@
             'X-CSRF-TOKEN': token,
             'Authorization': `${tokenType} ${accessToken}`
           },
-          dataSrc: function (json) {
+          dataSrc: function(json) {
             $('.title-status-product').text(`Produk - ${json.status}`)
             $('.recent-status').val(`${json.status}`)
 
@@ -608,30 +654,27 @@
             console.log(err)
           }
         },
-        columnDefs: [
-          {
-            targets: 0,
-            checkboxes: true,
-            sorting: false,
-            orderable: false,
-            className: 'select-checkbox',
-            width: '5%'
-          }
-        ],
+        columnDefs: [{
+          targets: 0,
+          checkboxes: true,
+          sorting: false,
+          orderable: false,
+          className: 'select-checkbox',
+          width: '5%'
+        }],
         select: {
           style: 'multi',
         },
-        columns: [
-          {
+        columns: [{
             data: null,
             orderable: false,
-            // class: 'text-center',  
+            // class: 'text-center',
             searchable: false,
-            render: function () {
+            render: function() {
               return ''
               // return `
-              //   <input type="checkbox" class="cursor-pointer cb-child" />
-              // `;
+            //   <input type="checkbox" class="cursor-pointer cb-child" />
+            // `;
             },
           },
           {
@@ -646,7 +689,8 @@
           {
             data: 'updated_at',
             render: function(data) {
-              return data ? new Date(data).toISOString().split('T')[0].split('-').reverse().join('-') : ''
+              return data ? new Date(data).toISOString().split('T')[0].split('-')
+                .reverse().join('-') : ''
             }
           },
           {
@@ -752,7 +796,7 @@
                   }
                 }),
                 pagination: {
-                    more: data.page_info.last_page != params.page
+                  more: data.page_info.last_page != params.page
                 }
               }
             },
@@ -784,11 +828,12 @@
                   return {
                     text: item.shipping_name,
                     id: item.id,
-                    shippingName: item.shipping_name + ' - ' + item.shipping_use
+                    shippingName: item.shipping_name + ' - ' + item
+                      .shipping_use
                   }
                 }),
                 pagination: {
-                    more: data.page_info.last_page != params.page
+                  more: data.page_info.last_page != params.page
                 }
               }
             },
@@ -798,7 +843,7 @@
       }
 
 
-      $('#shipping-select').on('change', function (e) {
+      $('#shipping-select').on('change', function(e) {
         const selectedData = $(this).select2('data')
         if (selectedData.length > 0) {
           const shippingName = selectedData[0].shippingName
@@ -811,7 +856,7 @@
         $('#category-filter').on('change', () => {
           if (serverSide) {
             categoryFilter = $('#category-filter').val()
-  
+
             table.ajax.reload(null, false)
           } else {
             const categoryId = $('#category-filter').val()
@@ -819,10 +864,11 @@
             console.log(categoryId);
 
 
-            axios.get(`{{ url('api/v1/product/siap-kirim-table?category=${categoryId}') }}`, config)
+            axios.get(`{{ url('api/v1/product/siap-kirim-table?category=${categoryId}') }}`,
+                config)
               .then((res) => {
                 const data = res.data.data.items
-                
+
                 // Mengisi data ke dalam tabel DataTable
                 table.ajax.reload(null, false);
                 table.clear().rows.add(data).draw()
@@ -852,9 +898,9 @@
       $("#select-all").on("click", function(e) {
         // $('.cb-child').prop('checked', $('#select-all').prop('checked'))
         if ($(this).is(":checked")) {
-            table.rows().select();
+          table.rows().select();
         } else {
-            table.rows().deselect();
+          table.rows().deselect();
         }
       })
 
@@ -863,7 +909,7 @@
       //     $('#select-all').prop('checked', false)
       //   }
       // })
-      
+
       $('#status-prev').on('click', () => {
         selectedId = []
 
@@ -916,7 +962,7 @@
           })
 
         } else if ("{{ $statusId }}" == 32 || "{{ $statusId }}" == 20) {
-          $('#statusNextModal').modal('show')          
+          $('#statusNextModal').modal('show')
         } else {
           $('#upload-signature-input').remove()
           $('#statusNextModal').modal('show')
@@ -948,17 +994,28 @@
           previous_status: statusPrevId,
           status_date: $('#status-date-prev').val(),
           note: $('#note-prev').val() ? $('#note-prev').val() : '',
-          current_location: $('#current-location-prev').prop('disabled') ? '' : $('#current-location-prev').val(),
-          status_photo: $('#image-status-prev')[0].files[0] ? $('#image-status-prev')[0].files[0] : '',
-          status_photo2: $('#image-status-prev')[0].files[1] ? $('#image-status-prev')[0].files[1] : '',
-          status_photo3: $('#image-status-prev')[0].files[2] ? $('#image-status-prev')[0].files[2] : '',
-          status_photo4: $('#image-status-prev')[0].files[3] ? $('#image-status-prev')[0].files[3] : '',
-          status_photo5: $('#image-status-prev')[0].files[4] ? $('#image-status-prev')[0].files[4] : '',
-          status_photo6: $('#image-status-prev')[0].files[5] ? $('#image-status-prev')[0].files[5] : '',
-          status_photo7: $('#image-status-prev')[0].files[6] ? $('#image-status-prev')[0].files[6] : '',
-          status_photo8: $('#image-status-prev')[0].files[7] ? $('#image-status-prev')[0].files[7] : '',
-          status_photo9: $('#image-status-prev')[0].files[8] ? $('#image-status-prev')[0].files[8] : '',
-          status_photo10: $('#image-status-prev')[0].files[9] ? $('#image-status-prev')[0].files[9] : '',
+          current_location: $('#current-location-prev').prop('disabled') ? '' : $(
+            '#current-location-prev').val(),
+          status_photo: $('#image-status-prev')[0].files[0] ? $('#image-status-prev')[0]
+            .files[0] : '',
+          status_photo2: $('#image-status-prev')[0].files[1] ? $('#image-status-prev')[0]
+            .files[1] : '',
+          status_photo3: $('#image-status-prev')[0].files[2] ? $('#image-status-prev')[0]
+            .files[2] : '',
+          status_photo4: $('#image-status-prev')[0].files[3] ? $('#image-status-prev')[0]
+            .files[3] : '',
+          status_photo5: $('#image-status-prev')[0].files[4] ? $('#image-status-prev')[0]
+            .files[4] : '',
+          status_photo6: $('#image-status-prev')[0].files[5] ? $('#image-status-prev')[0]
+            .files[5] : '',
+          status_photo7: $('#image-status-prev')[0].files[6] ? $('#image-status-prev')[0]
+            .files[6] : '',
+          status_photo8: $('#image-status-prev')[0].files[7] ? $('#image-status-prev')[0]
+            .files[7] : '',
+          status_photo9: $('#image-status-prev')[0].files[8] ? $('#image-status-prev')[0]
+            .files[8] : '',
+          status_photo10: $('#image-status-prev')[0].files[9] ? $('#image-status-prev')[0]
+            .files[9] : '',
         }
 
         // console.log(data)
@@ -973,7 +1030,7 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            
+
             let errorMessage = ''
 
             if (err.response.status == 422) {
@@ -981,7 +1038,7 @@
               for (const key in errors) {
                 errorMessage += `${errors[key]} \n`
               }
-            } else if(err.response.status == 500) {
+            } else if (err.response.status == 500) {
               errorMessage = 'Internal server error'
             }
 
@@ -1011,20 +1068,32 @@
         const data = {
           selected_product: selectedId,
           status_id: $('#status-drop-select').val() ? $('#status-drop-select').val() : '',
-          status_name: $('#status-drop-select').val() ? $('#status-drop-select').find("option:selected").text() : '',
+          status_name: $('#status-drop-select').val() ? $('#status-drop-select').find(
+            "option:selected").text() : '',
           status_date: $('#status-date-drop').val(),
           note: $('#note-drop').val() ? $('#note-drop').val() : '',
-          current_location: $('#current-location-drop').prop('disabled') ? '' : $('#current-location-drop').val(),
-          status_photo: $('#image-status-drop')[0].files[0] ? $('#image-status-drop')[0].files[0] : '',
-          status_photo2: $('#image-status-drop')[0].files[1] ? $('#image-status-drop')[0].files[1] : '',
-          status_photo3: $('#image-status-drop')[0].files[2] ? $('#image-status-drop')[0].files[2] : '',
-          status_photo4: $('#image-status-drop')[0].files[3] ? $('#image-status-drop')[0].files[3] : '',
-          status_photo5: $('#image-status-drop')[0].files[4] ? $('#image-status-drop')[0].files[4] : '',
-          status_photo6: $('#image-status-drop')[0].files[5] ? $('#image-status-drop')[0].files[5] : '',
-          status_photo7: $('#image-status-drop')[0].files[6] ? $('#image-status-drop')[0].files[6] : '',
-          status_photo8: $('#image-status-drop')[0].files[7] ? $('#image-status-drop')[0].files[7] : '',
-          status_photo9: $('#image-status-drop')[0].files[8] ? $('#image-status-drop')[0].files[8] : '',
-          status_photo10: $('#image-status-drop')[0].files[9] ? $('#image-status-drop')[0].files[9] : '',
+          current_location: $('#current-location-drop').prop('disabled') ? '' : $(
+            '#current-location-drop').val(),
+          status_photo: $('#image-status-drop')[0].files[0] ? $('#image-status-drop')[0]
+            .files[0] : '',
+          status_photo2: $('#image-status-drop')[0].files[1] ? $('#image-status-drop')[0]
+            .files[1] : '',
+          status_photo3: $('#image-status-drop')[0].files[2] ? $('#image-status-drop')[0]
+            .files[2] : '',
+          status_photo4: $('#image-status-drop')[0].files[3] ? $('#image-status-drop')[0]
+            .files[3] : '',
+          status_photo5: $('#image-status-drop')[0].files[4] ? $('#image-status-drop')[0]
+            .files[4] : '',
+          status_photo6: $('#image-status-drop')[0].files[5] ? $('#image-status-drop')[0]
+            .files[5] : '',
+          status_photo7: $('#image-status-drop')[0].files[6] ? $('#image-status-drop')[0]
+            .files[6] : '',
+          status_photo8: $('#image-status-drop')[0].files[7] ? $('#image-status-drop')[0]
+            .files[7] : '',
+          status_photo9: $('#image-status-drop')[0].files[8] ? $('#image-status-drop')[0]
+            .files[8] : '',
+          status_photo10: $('#image-status-drop')[0].files[9] ? $('#image-status-drop')[0]
+            .files[9] : '',
         }
 
         // console.log(data)
@@ -1039,7 +1108,7 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            
+
             let errorMessage = ''
 
             if (err.response.status == 422) {
@@ -1047,7 +1116,7 @@
               for (const key in errors) {
                 errorMessage += `${errors[key]} \n`
               }
-            } else if(err.response.status == 500) {
+            } else if (err.response.status == 500) {
               errorMessage = 'Internal server error'
             }
 
@@ -1081,7 +1150,8 @@
           current_status: "{{ $statusId }}",
           status_date: $('#status-date').val(),
           note: $('#note').val() ? $('#note').val() : '',
-          current_location: $('#current-location').prop('disabled') ? '' : $('#current-location').val(),
+          current_location: $('#current-location').prop('disabled') ? '' : $(
+            '#current-location').val(),
           // upload_signature: $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : '',
           status_photo: $('#image-status')[0].files[0] ? $('#image-status')[0].files[0] : '',
           status_photo2: $('#image-status')[0].files[1] ? $('#image-status')[0].files[1] : '',
@@ -1096,7 +1166,8 @@
         }
 
         if ("{{ $statusId }}" == 32 || "{{ $statusId }}" == 20) {
-          data.upload_travel_document = $('#upload-signature')[0].files[0] ? $('#upload-signature')[0].files[0] : ''
+          data.upload_travel_document = $('#upload-signature')[0].files[0] ? $(
+            '#upload-signature')[0].files[0] : ''
         }
 
         // console.log(data)
@@ -1111,7 +1182,7 @@
           })
           .catch(err => {
             $('#global-loader').hide()
-            
+
             let errorMessage = ''
 
             if (err.response.status == 422) {
@@ -1119,7 +1190,7 @@
               for (const key in errors) {
                 errorMessage += `${errors[key]} \n`
               }
-            } else if(err.response.status == 500) {
+            } else if (err.response.status == 500) {
               errorMessage = 'Internal server error'
             }
 
@@ -1135,9 +1206,9 @@
         $('#global-loader').show()
         event.preventDefault()
 
-        const satuan = $('.satuan').map((_,el) => el.value).get()
-        const packing = $('.packing').map((_,el) => el.value).get()
-        const keterangan = $('.keterangan').map((_,el) => el.value).get()
+        const satuan = $('.satuan').map((_, el) => el.value).get()
+        const packing = $('.packing').map((_, el) => el.value).get()
+        const keterangan = $('.keterangan').map((_, el) => el.value).get()
 
         const finalDataSelected = selectedData.map((item, i) => ({
           productName: `${item.category} - ${item.barcode}`,
@@ -1150,29 +1221,45 @@
           current_status: "{{ $statusId }}",
           status_date: $('#status-date-travel').val(),
           note: $('#note-travel').val() ? $('#note-travel').val() : '',
-          current_location: $('#current-location-travel').prop('disabled') ? '' : $('#current-location-travel').val(),
-          status_photo: $('#image-status-travel')[0].files[0] ? $('#image-status-travel')[0].files[0] : '',
-          status_photo2: $('#image-status-travel')[0].files[1] ? $('#image-status-travel')[0].files[1] : '',
-          status_photo3: $('#image-status-travel')[0].files[2] ? $('#image-status-travel')[0].files[2] : '',
-          status_photo4: $('#image-status-travel')[0].files[3] ? $('#image-status-travel')[0].files[3] : '',
-          status_photo5: $('#image-status-travel')[0].files[4] ? $('#image-status-travel')[0].files[4] : '',
-          status_photo6: $('#image-status-travel')[0].files[5] ? $('#image-status-travel')[0].files[5] : '',
-          status_photo7: $('#image-status-travel')[0].files[6] ? $('#image-status-travel')[0].files[6] : '',
-          status_photo8: $('#image-status-travel')[0].files[7] ? $('#image-status-travel')[0].files[7] : '',
-          status_photo9: $('#image-status-travel')[0].files[8] ? $('#image-status-travel')[0].files[8] : '',
-          status_photo10: $('#image-status-travel')[0].files[9] ? $('#image-status-travel')[0].files[9] : '',
+          current_location: $('#current-location-travel').prop('disabled') ? '' : $(
+            '#current-location-travel').val(),
+          status_photo: $('#image-status-travel')[0].files[0] ? $('#image-status-travel')[0]
+            .files[0] : '',
+          status_photo2: $('#image-status-travel')[0].files[1] ? $('#image-status-travel')[0]
+            .files[1] : '',
+          status_photo3: $('#image-status-travel')[0].files[2] ? $('#image-status-travel')[0]
+            .files[2] : '',
+          status_photo4: $('#image-status-travel')[0].files[3] ? $('#image-status-travel')[0]
+            .files[3] : '',
+          status_photo5: $('#image-status-travel')[0].files[4] ? $('#image-status-travel')[0]
+            .files[4] : '',
+          status_photo6: $('#image-status-travel')[0].files[5] ? $('#image-status-travel')[0]
+            .files[5] : '',
+          status_photo7: $('#image-status-travel')[0].files[6] ? $('#image-status-travel')[0]
+            .files[6] : '',
+          status_photo8: $('#image-status-travel')[0].files[7] ? $('#image-status-travel')[0]
+            .files[7] : '',
+          status_photo9: $('#image-status-travel')[0].files[8] ? $('#image-status-travel')[0]
+            .files[8] : '',
+          status_photo10: $('#image-status-travel')[0].files[9] ? $('#image-status-travel')[0]
+            .files[9] : '',
 
           shipping_id: $('#shipping-select').val() ? $('#shipping-select').val() : '',
-          shipping_name: $('#shipping-select').val() ? $('#shipping-select').find("option:selected").text() : '',
-          
+          shipping_name: $('#shipping-select').val() ? $('#shipping-select').find(
+            "option:selected").text() : '',
+
           receiver: $('#receiver').val() ? $('#receiver').val() : '',
           from: $('#from').val() ? $('#from').val() : '',
           checked_by_gudang: $('#checked-by-gudang').val() ? $('#checked-by-gudang').val() : '',
-          checked_by_keamanan: $('#checked-by-keamanan').val() ? $('#checked-by-keamanan').val() : '',
-          checked_by_produksi: $('#checked-by-produksi').val() ? $('#checked-by-produksi').val() : '',
-          checked_by_project_manager: $('#checked-by-project-manager').val() ? $('#checked-by-project-manager').val() : '',
+          checked_by_keamanan: $('#checked-by-keamanan').val() ? $('#checked-by-keamanan')
+            .val() : '',
+          checked_by_produksi: $('#checked-by-produksi').val() ? $('#checked-by-produksi')
+            .val() : '',
+          checked_by_project_manager: $('#checked-by-project-manager').val() ? $(
+            '#checked-by-project-manager').val() : '',
           driver: $('#driver').val() ? $('#driver').val() : '',
-          received_by_site_manager: $('#received-by-site-manager').val() ? $('#received-by-site-manager').val() : '',
+          received_by_site_manager: $('#received-by-site-manager').val() ? $(
+            '#received-by-site-manager').val() : '',
           nomor_travel: $('#nomor-travel').val() ? $('#nomor-travel').val() : '',
           travel_date: $('#travel-date').val() ? $('#travel-date').val() : '',
           number_plate: $('#number-plate').val() ? $('#number-plate').val() : '',
@@ -1217,7 +1304,7 @@
             $('#global-loader').hide()
 
             console.log(err);
-            
+
             let errorMessage = ''
 
             if (err.response.status == 422) {
@@ -1225,7 +1312,7 @@
               for (const key in errors) {
                 errorMessage += `${errors[key]} \n`
               }
-            } else if(err.response.status == 500) {
+            } else if (err.response.status == 500) {
               errorMessage = 'Internal server error'
             }
 
@@ -1238,6 +1325,5 @@
       })
 
     })
-
   </script>
 @endsection

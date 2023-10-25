@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TravelDocumentExport;
+use App\Exports\ProductPerStatusExport;
 use App\Http\Resources\ProductResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -1510,5 +1511,12 @@ class ProductController extends Controller
                 }
             }
         }
+    }
+
+    public function exportProductPerStatus(Request $request)
+    {
+        set_time_limit(300);
+        $status_id = $request->has('status_id') ? $request->input('status_id') : null;
+        return Excel::download(new ProductPerStatusExport($status_id), 'Daftar Manajemen Status Aset.xlsx');
     }
 }
