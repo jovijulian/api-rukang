@@ -95,7 +95,7 @@ class ProductPerStatusExport implements FromCollection, WithHeadings, ShouldAuto
     public function styles(Worksheet $sheet)
     {
         $lastRowIndex = $sheet->getHighestDataRow();
-        $lastColumnIndex = 'M';
+        $lastColumnIndex = 'P';
 
         $sheet->mergeCells('A1:B1');
         $sheet->mergeCells('A2:B2');

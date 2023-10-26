@@ -78,7 +78,7 @@ class StatusProductExport implements FromCollection, WithHeadings, ShouldAutoSiz
     public function styles(Worksheet $sheet)
     {
         $lastRowIndex = $sheet->getHighestDataRow();
-        $lastColumnIndex = 'M';
+        $lastColumnIndex = 'G';
 
         $sheet->mergeCells('A1:B1');
         $sheet->mergeCells('A2:B2');
