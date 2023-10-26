@@ -40,7 +40,7 @@
                   <label class="col-lg-2 col-form-label">Role *</label>
                   <div class="col-lg-10">
                     <select id="role" class="form-control select" required>
-                      <option selected="selected" disabled>Pilih role anda</option>
+                      <option selected="selected" disabled>Pilih role </option>
                       <option value="1">Admin</option>
                       <option value="2">Admin Produksi</option>
                       <option value="3">Officer Produksi</option>
@@ -77,7 +77,7 @@
                   <label class="col-lg-2 col-form-label">Password *</label>
                   <div class="col-lg-10">
                     <div class="pass-group">
-                      <input type="password" id="password" class="pass-input " placeholder="Masukan password anda" required>
+                      <input type="password" id="password" class="pass-input " placeholder="Masukan password" required>
                       <span class="fas toggle-password fa-eye-slash"></span>
                     </div>
                   </div>
@@ -137,23 +137,23 @@
         const data = {
           fullname: $('#fullname').val(),
           email: $('#email').val(),
-          birthdate: $('#birthdate').val(),
-          phone_number: $('#phone').val(),
-          address: $('#address').val(),
+          // birthdate: $('#birthdate').val(),
+          // phone_number: $('#phone').val(),
+          // address: $('#address').val(),
           password: $('#password').val(),
           isAdmin: $('#role').val(),
         }
 
         // VALIDASI GROUP SELECT
-        if (!data.group_id) {
-          $('#global-loader').hide()
-          Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Tolong pilih kelompok anda'
-          })
-          return
-        }
+        // if (!data.group_id) {
+        //   $('#global-loader').hide()
+        //   Swal.fire({
+        //     icon: 'warning',
+        //     title: 'Oops...',
+        //     text: 'Tolong pilih kelompok anda'
+        //   })
+        //   return
+        // }
 
         // VALIDASI PASSWORD
         if ($('#password-confirm').val() != data.password) {
@@ -165,6 +165,9 @@
           })
           return
         }
+
+        // console.log(data);
+        // return
         
         axios.post("{{ url('api/v1/user/create') }}", data, config)
           .then(res => {
