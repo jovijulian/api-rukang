@@ -87,6 +87,11 @@ class RegisterController extends BaseApiController
                 new OnlyVerifiedMail
             ],
             'password' => ['required', 'string', 'min:3'],
+            'phone_number' => [
+                'min:3',
+                'max:15',
+                'unique:users,phone_number,NULL,id'
+            ],
         ];
 
 
