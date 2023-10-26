@@ -124,23 +124,23 @@
         const data = {
           fullname: $('#fullname').val(),
           email: $('#email').val(),
-          birthdate: $('#birthdate').val(),
-          phone_number: $('#phone').val(),
-          address: $('#address').val(),
+          // birthdate: $('#birthdate').val(),
+          // phone_number: $('#phone').val(),
+          // address: $('#address').val(),
           password: $('#password').val(),
           isAdmin: $('#role').val(),
         }
 
-        // VALIDASI GROUP SELECT
-        if (!data.group_id) {
-          $('#global-loader').hide()
-          Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Tolong pilih kelompok anda'
-          })
-          return
-        }
+        // // VALIDASI GROUP SELECT
+        // if (!data.group_id) {
+        //   $('#global-loader').hide()
+        //   Swal.fire({
+        //     icon: 'warning',
+        //     title: 'Oops...',
+        //     text: 'Tolong pilih kelompok anda'
+        //   })
+        //   return
+        // }
 
         // VALIDASI PASSWORD
         if ($('#password-confirm').val() != data.password) {
