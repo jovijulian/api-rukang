@@ -124,9 +124,9 @@
         const data = {
           fullname: $('#fullname').val(),
           email: $('#email').val(),
-          // birthdate: $('#birthdate').val(),
-          // phone_number: $('#phone').val(),
-          // address: $('#address').val(),
+          birthdate: '',
+          phone_number: '',
+          address: '',
           password: $('#password').val(),
           isAdmin: $('#role').val(),
         }

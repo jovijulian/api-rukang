@@ -31,4 +31,9 @@ class Segment extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function ModuleCompleteness()
+    {
+        return $this->hasMany(ModuleCompleteness::class, 'id');
+    }
 }

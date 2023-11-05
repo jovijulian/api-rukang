@@ -69,8 +69,8 @@ class ModuleCompletenessController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'segment' => ['required', 'string', 'min:1', 'max:40'],
-            'module' => ['required', 'string', 'min:1', 'max:40'],
+            'segment' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,segment,NULL,id,module,' . request('module')],
+            'module' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,module,NULL,id,segment,' . request('segment')],
             'completeness' => ['required'],
         ];
 
@@ -161,13 +161,23 @@ class ModuleCompletenessController extends Controller
      * Show the form for editing the specified resource.
      */
 
-    protected function validateUpdate(array $data)
+    protected function validateUpdate($id, array $data)
     {
-        $arrayValidator = [
-            'segment' => ['required', 'string', 'min:1', 'max:40'],
-            'module' => ['required', 'string', 'min:1', 'max:40'],
-            'completeness' => ['required'],
-        ];
+        $getData = ModuleCompleteness::where('id', $id)->first();
+        if ($getData->segment != $data['segment'] || $getData->module != $data['module']) {
+            $arrayValidator = [
+                'segment' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,segment,NULL,id,module,' . request('module')],
+                'module' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,module,NULL,id,segment,' . request('segment')],
+                'completeness' => ['required'],
+            ];
+        } else {
+            $arrayValidator = [
+                'segment' => ['required', 'string', 'min:1', 'max:40'],
+                'module' => ['required', 'string', 'min:1', 'max:40'],
+                'completeness' => ['required'],
+            ];
+        }
+
         return Validator::make($data, $arrayValidator);
     }
 
@@ -202,7 +212,7 @@ class ModuleCompletenessController extends Controller
     {
         DB::beginTransaction();
         try {
-            $validate = $this->validateUpdate($request->all());
+            $validate = $this->validateUpdate($id, $request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
