@@ -31,4 +31,8 @@ class ModuleCompleteness extends Model
         'updated_by',
         'deleted_by',
     ];
+    public function segments()
+    {
+        return $this->belongsTo(Segment::class, 'segment_id', 'id');
+    }
 }

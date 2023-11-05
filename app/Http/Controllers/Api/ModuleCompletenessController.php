@@ -69,8 +69,8 @@ class ModuleCompletenessController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'segment' => ['required', 'string', 'min:1', 'max:40'],
-            'module' => ['required', 'string', 'min:1', 'max:40'],
+            'segment' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,segment,NULL,id,module,' . request('module')],
+            'module' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,module,NULL,id,segment,' . request('segment')],
             'completeness' => ['required'],
         ];
 
@@ -164,8 +164,8 @@ class ModuleCompletenessController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'segment' => ['required', 'string', 'min:1', 'max:40'],
-            'module' => ['required', 'string', 'min:1', 'max:40'],
+            'segment' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,segment,NULL,id,module,' . request('module')],
+            'module' => ['required', 'string', 'min:1', 'max:40', 'unique:module_completeness,module,NULL,id,segment,' . request('segment')],
             'completeness' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);

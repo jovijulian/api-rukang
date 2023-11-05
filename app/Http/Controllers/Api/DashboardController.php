@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use App\Models\Product;
+use App\Models\Segment;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
@@ -68,7 +69,7 @@ class DashboardController extends Controller
     public function dashboardGaruda(Request $request)
     {
         try {
-            $data = ModuleCompleteness::select('segment', 'module', 'completeness')->get()->map(function ($moduleCompleteness) {
+            $data = ModuleCompleteness::select('segment_id', 'segment', 'module', 'completeness')->get()->map(function ($moduleCompleteness) {
                 if ($moduleCompleteness->completeness == 1) {
                     $moduleCompleteness->completeness = true;
                 }
@@ -77,7 +78,8 @@ class DashboardController extends Controller
                 }
                 $changeSegment = 'S' . substr($moduleCompleteness->segment, 7);
                 $moduleCompleteness->segment = $changeSegment;
-                return $moduleCompleteness;
+                $moduleCompleteness->barcode_color = $moduleCompleteness->segments->barcode_color ?? null;
+                return $moduleCompleteness->only(['segment', 'module', 'completeness', 'barcode_color']);;
             });
             return response()->json([
                 'status' => 'success',
