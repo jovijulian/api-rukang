@@ -225,12 +225,6 @@ class UserController extends Controller
                 new OnlyVerifiedMail
             ],
             'password' => ['required', 'string', 'min:3'],
-            'phone_number' => [
-                'required',
-                'min:9',
-                'max:15',
-                'unique:users,phone_number,NULL,id'
-            ],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -330,11 +324,6 @@ class UserController extends Controller
                 new OnlyVerifiedMail
             ],
             'password' => ['required', 'string', 'min:3'],
-            'phone_number' => [
-                'required',
-                'min:9',
-                'max:15',
-            ],
         ];
         return Validator::make($data, $arrayValidator);
     }
