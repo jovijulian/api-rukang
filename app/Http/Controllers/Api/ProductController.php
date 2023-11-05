@@ -1519,4 +1519,30 @@ class ProductController extends Controller
         $status_id = $request->has('status_id') ? $request->input('status_id') : null;
         return Excel::download(new ProductPerStatusExport($status_id), 'Daftar Manajemen Status Aset.xlsx');
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function showByBarcode(string $barcode)
+    {
+        try {
+            $model = Product::where('barcode', $barcode)->first();
+            if (empty($model)) {
+                throw new \Exception("Produk tidak ada", 404);
+            }
+            $single = new ProductResource($model);
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
 }

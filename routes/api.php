@@ -120,6 +120,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/generate-travel-document', 'generateTravelDocument')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::get('/siap-kirim-table', 'indexSiapKirimTable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::get('/report-product-per-status', 'exportProductPerStatus');
+            Route::get('/detail-product/{barcode}', 'showByBarcode')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('shipping')->group(function () {
