@@ -8213,4 +8213,38 @@ span.select2-container.select2-container--default.select2-container--open {
   right: 10px;
 }
 
+#garuda-table tbody {
+  background-image: url(../img/img-01.jpg);
+  background-size: cover;
+  /* background-repeat: no-repeat; */
+}
+
+#garuda-table tr:hover {
+  background: none !important;
+}
+
+#garuda-segment-table {
+  position: sticky;
+  left: 0;
+  overflow-x: auto; 
+  z-index: 10;
+  background: #FAFBFE;
+}
+
+#garuda-segment-table td {
+  /* border: 1px solid black; */
+  padding: 8px;
+}
+
+#garuda-table td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 8px;
+}
+
+#garuda-table tfoot td {
+  text-align: center;
+  border: none;
+}
+
 /*# sourceMappingURL=style.css.map */
