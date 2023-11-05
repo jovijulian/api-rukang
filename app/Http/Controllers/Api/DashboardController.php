@@ -75,6 +75,8 @@ class DashboardController extends Controller
                 if ($moduleCompleteness->completeness == 0) {
                     $moduleCompleteness->completeness = false;
                 }
+                $changeSegment = 'S' . substr($moduleCompleteness->segment, 7);
+                $moduleCompleteness->segment = $changeSegment;
                 return $moduleCompleteness;
             });
             return response()->json([
