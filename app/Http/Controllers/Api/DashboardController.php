@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Models\ModuleCompleteness;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -59,5 +60,40 @@ class DashboardController extends Controller
             'message' => 'Jumlah produk berdasarkan status:',
             'data' => $data,
         ], 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function dashboardGaruda(Request $request)
+    {
+        try {
+            $data = ModuleCompleteness::select('segment', 'module', 'completeness')->get()->map(function ($moduleCompleteness) {
+                if ($moduleCompleteness->completeness == 1) {
+                    $moduleCompleteness->completeness = true;
+                }
+                if ($moduleCompleteness->completeness == 0) {
+                    $moduleCompleteness->completeness = false;
+                }
+                return $moduleCompleteness;
+            });
+            return response()->json([
+                'status' => 'success',
+                'message' => 'List Segmen dan Modul untuk garuda:',
+                'data' => $data,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
     }
 }
