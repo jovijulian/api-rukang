@@ -999,13 +999,11 @@
 
           datas.map(data => {
             const row = $(`.${data.module}.${data.segment}`)
-            
+
             if (data.completeness) {
-              row.css("background-color", "red")
+              row.css("background-color", data.barcode_color)
             }
           })
-
-
         })
         .catch(err => {
           console.log(err)
