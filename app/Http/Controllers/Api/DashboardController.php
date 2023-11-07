@@ -8,12 +8,14 @@ use App\Models\Segment;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Models\StatusProductLog;
 use App\Models\ModuleCompleteness;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\CategoryResource;
+use App\Models\StatusProduct;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -66,6 +68,7 @@ class DashboardController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function dashboardGaruda(Request $request)
     {
         try {
@@ -85,6 +88,60 @@ class DashboardController extends Controller
                 'status' => 'success',
                 'message' => 'List Segmen dan Modul untuk garuda:',
                 'data' => $data,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    public function dashboardGrafikStatus(Request $request)
+    {
+        try {
+            /*
+            harian = 0
+            bulanan = 1
+            */
+            $groupBy = $request->input('group_by', 0);
+            $statusId = $request->input('status_id', null);
+            $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
+
+            $query = StatusProductLog::select('status_date as daily');
+
+            if (!is_null($statusId)) {
+                $query->where('status_id', $statusId);
+            }
+
+            if ($groupBy == 0) {
+                $dataHarian = $query
+                    ->groupBy('status_name', 'status_date')
+                    ->selectRaw('status_date as daily, COUNT(*) as total_data')
+                    ->orderBy('status_date', 'ASC')
+                    ->get();
+            } elseif ($groupBy == 1) {
+                $dataBulanan = DB::table('status_product_logs')
+                    ->select(DB::raw("DATE_FORMAT(status_date, '%Y-%m') AS monthly"))
+                    ->selectRaw('COUNT(*) AS total_data')
+                    ->where('status_id', $statusId)
+                    ->groupBy('monthly', 'status_name')
+                    ->orderBy('monthly')
+                    ->get();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'List Total Data:',
+                'status_name' => $getStatusName->status,
+                'data' => ($groupBy == 0) ? $dataHarian : $dataBulanan,
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

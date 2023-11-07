@@ -203,6 +203,7 @@ Route::prefix('v1')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/index-status', 'countStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::get('/index-garuda', 'dashboardGaruda')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/index-grafik', 'dashboardGrafikStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('module-completeness')->group(function () {
