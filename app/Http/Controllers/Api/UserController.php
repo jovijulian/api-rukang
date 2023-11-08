@@ -437,7 +437,7 @@ class UserController extends Controller
 
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('isAdmin', '!=', 1)->get();
+            $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('id', '!=', auth()->user()->id)->get();
             $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
@@ -452,7 +452,7 @@ class UserController extends Controller
             }
             //QUERI CUSTOM
             $data =  User::whereRaw($conditions)
-                ->where('isAdmin', 0)
+                ->where('id', '!=', auth()->user()->id)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
