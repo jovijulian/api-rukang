@@ -916,7 +916,7 @@
               <td class="S00 M43"></td>
               <td class="S00 M44"></td>
               <td class="S00 M45"></td>
-            </tr>            
+            </tr>
           </tbody>
           <tfoot>
             <tr>
@@ -964,14 +964,83 @@
               <td>42</td>
               <td>43</td>
               <td>44</td>
-              <td>45</td>              
+              <td>45</td>
             </tr>
           </tfoot>
         </table>
       </div>
     </div>
 
-    <div class="row mt-4" id="status-product"></div>
+    <div class="mt-4">
+      <div class="row" id="status-bilah"></div>
+      <div class="row" id="status-product"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header pb-0">
+        <div class="card-title">Data Agregat Berdasarkan Status</div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-nowrap" id="table-agregat-status">
+            <thead class="text-center">
+              <tr>
+                <th rowspan="2">#</th>
+                <th rowspan="2">Nama Status</th>
+                <th colspan="2">Kategori</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr>
+                <th>Kulit (Kuningan)</th>
+                <th>Rangka (Perforated)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header pb-0">
+        <div class="card-title">Data Agregat Berdasarkan Segmen</div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-nowrap" id="table-agregat-segment">
+            <thead class="text-center">
+              <tr>
+                <th rowspan="2">Segmen</th>
+                <th rowspan="2">Kategori</th>
+                <th colspan="5">Status</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr>
+                <th>Selesai Produksi</th>
+                <th>Pengiriman</th>
+                <th>Diterima</th>
+                <th>Pemasangan</th>
+                <th>Disetujui PP</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Grafik Harian Produksi Bilah</div>
+      </div>
+      <div class="card-body">
+        <div id="dashboard-chart">
+          <canvas id="production-chart" height="500"></canvas>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -989,13 +1058,15 @@
       }
     }
 
+    let labelChart = []
+    let dataChart = []
+
 
     $(document).ready(function() {
+      // TABLE GARUDA
       axios.get("{{ url('api/v1/dashboard/index-garuda') }}", config)
         .then(res => {
           const datas = res.data.data
-
-          console.log(datas);
 
           datas.map(data => {
             const row = $(`.${data.module}.${data.segment}`)
@@ -1009,27 +1080,51 @@
           console.log(err)
         })
 
-
+      // STATUS
+      const elementStatus = (title, total, totalKulit, totalRangka) => {
+        const countTotal = total + .00
+        const countKulit = totalKulit + .00
+        const countRangka = totalRangka + .00
+        return `
+          <div class="col-lg-3 col-sm-6 col-12">
+            <div class="bg-white p-4 card">
+              <h2 style="font-weight: 700"><span class="counters" data-count="${countTotal}">${total}</span></h2>
+              <h6 style="font-weight: 500">${title}</h6>
+              <div class="row mt-2 text-center">
+                <div class="col-6 border py-2">
+                  <p style="font-weight: 600">Kulit</p>
+                </div>
+                <div class="col-6 border py-2">
+                  <p style="font-weight: 600">Rangka</p>
+                </div>
+                <div class="col-6 border py-2">
+                  <p><span class="counters" data-count="${countKulit}">${totalKulit}</span></p>
+                </div>
+                <div class="col-6 border py-2">
+                  <p><span class="counters" data-count="${countRangka}">${totalRangka}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      }
 
       axios.get("{{ url('api/v1/dashboard/index-status') }}", config)
         .then(res => {
-          const datas = res.data.data
+          const data = res.data
+          const dataProduct = data.data_product
+          const dataProductPerStatus = data.data_product_per_status
 
-          datas.map(data => {
-            const count = data.total + .00
-            const el = `
-              <div class="col-lg-3 col-sm-6 col-12">
-                <div class="dash-widget">
-                  <div class="dash-widgetcontent">
-                    <h3 style="font-weight: 700"><span class="counters" data-count="${count}">${data.total}</span></h3>
-                    <h6>Total ${data.title}</h6>
-                  </div>
-                </div>
-              </div>
-            `
-
-            $('#status-product').append(el)
+          dataProduct.map(data => {
+            $('#status-bilah').append(elementStatus(data.title, data.total, data.kategori_kulit, data.kategori_rangka))
           })
+
+          dataProductPerStatus.map(data => {
+            let title = data.title.split(' ').slice(1).join(' ')
+            title = 'Total ' + title
+
+            $('#status-product').append(elementStatus(title, data.total, data.kategori_kulit, data.kategori_rangka))
+          })          
 
           $('.counters').each(function() {
             var $this = $(this),
@@ -1055,6 +1150,95 @@
         .catch(err => {
           console.log(err)
         })
+
+      // TABLE AGREGAT
+      axios.get("{{ url('api/v1/dashboard/index-agregat-status') }}", config)
+        .then(res => {
+          const datas = res.data
+          const dataPerStatus = res.data.data_product_per_status
+
+          dataPerStatus.map((data, i) => {
+            $('#table-agregat-status tbody').append(`
+              <tr>
+                <td class="text-center">${i + 1}</td>
+                <td>${data.nama_status}</td>
+                <td class="text-center">${data.kategori_kulit}</td>
+                <td class="text-center">${data.kategori_rangka}</td>
+                <td class="text-center">${data.total}</td>
+              </tr>
+            `)
+          })
+
+          $('#table-agregat-status tfoot').append(`
+            <tr style="font-weight: 700">
+              <td class="text-center"></td>
+              <td class="text-center">Total</td>
+              <td class="text-center">${datas.total_kategori_kulit}</td>
+              <td class="text-center">${datas.total_kategori_rangka}</td>
+              <td class="text-center">${datas.total_product}</td>
+            </tr>
+          `)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      axios.get("{{ url('api/v1/dashboard/index-agregat-segment') }}", config)
+        .then(res => {
+          const datas = res.data
+          const dataPerSegment = res.data.data_product_per_segment
+
+          dataPerSegment.map(data => {
+            $('#table-agregat-segment tbody').append(`
+              <tr>
+                <td rowspan="2" class="text-center">${data.nama_segment}</td>
+                <td>Kulit</td>
+                <td class="text-center">${data.data_per_status[0].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.data_per_status[1].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.data_per_status[2].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.data_per_status[3].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.data_per_status[4].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.total_kategori_kulit}</td>
+              </tr>
+              <tr>
+                <td>Rangka</td>
+                <td class="text-center">${data.data_per_status[0].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.data_per_status[1].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.data_per_status[2].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.data_per_status[3].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.data_per_status[4].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.total_kategori_rangka}</td>
+              </tr>
+            `)
+          })
+
+          $('#table-agregat-segment tfoot').append(`
+            <tr style="font-weight: 700">
+              <td rowspan="2" class="text-center">Total/td>
+              <td>Kulit</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status1}</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status2}</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status3}</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status4}</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status5}</td>
+              <td class="text-center">${datas.total_kategori_kulit}</td>
+            </tr>
+            <tr style="font-weight: 700">
+              <td>Rangka</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status1}</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status2}</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status3}</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status4}</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status5}</td>
+              <td class="text-center">${datas.total_kategori_rangka}</td>
+            </tr>
+          `)
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+  
     })
   </script>
 @endsection

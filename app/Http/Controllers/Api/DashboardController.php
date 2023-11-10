@@ -8,12 +8,14 @@ use App\Models\Segment;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Models\StatusProductLog;
 use App\Models\ModuleCompleteness;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\CategoryResource;
+use App\Models\StatusProduct;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -22,50 +24,50 @@ class DashboardController extends Controller
 {
     public function countStatus()
     {
-        $selesaiProduksi = Product::where('status_id', 17)->count();
-        $pengecekan = Product::where('status_id', 18)->count();
-        $siapKirim = Product::where('status_id', 19)->count();
-        $pengiriman = Product::where('status_id', 20)->count();
-        $diterima = Product::where('status_id', 21)->count();
-        $disimpan = Product::where('status_id', 22)->count();
-        $perakitan = Product::where('status_id', 23)->count();
-        $perbaikan = Product::where('status_id', 26)->count();
-        $pemasangan = Product::where('status_id', 27)->count();
-        $belumDiproduksi = Product::where('status_id', 25)->count();
-        $materialOnSite = Product::where('status_id', 24)->count();
-        $disetujuiPp = Product::where('status_id', 28)->count();
-        $tidakDipakai = Product::where('status_id', 29)->count();
-        $duplikat = Product::where('status_id', 30)->count();
-        $revisi = Product::where('status_id', 31)->count();
-        $persiapanSuratJalan = Product::where('status_id', 32)->count();
-        $data = [
-            (object)['title' => 'Belum Diproduksi', 'total' => $belumDiproduksi],
-            (object)['title' => 'Selesai Produksi', 'total' => $selesaiProduksi],
-            (object)['title' => 'Pengecekan', 'total' => $pengecekan],
-            (object)['title' => 'Siap Kirim', 'total' => $siapKirim],
-            (object)['title' => 'Pengiriman', 'total' => $pengiriman],
-            (object)['title' => 'Diterima', 'total' => $diterima],
-            (object)['title' => 'Disimpan', 'total' => $disimpan],
-            (object)['title' => 'Perakitan', 'total' => $perakitan],
-            (object)['title' => 'Perbaikan', 'total' => $perbaikan],
-            (object)['title' => 'Pemasangan', 'total' => $pemasangan],
-            (object)['title' => 'Material On Site', 'total' => $materialOnSite],
-            (object)['title' => 'Disetujui PP', 'total' => $disetujuiPp],
-            (object)['title' => 'Tidak Dipakai', 'total' => $tidakDipakai],
-            (object)['title' => 'Duplikat', 'total' => $duplikat],
-            (object)['title' => 'Revisi', 'total' => $revisi],
-            (object)['title' => 'Persiapan Surat Jalan', 'total' => $persiapanSuratJalan],
+        $getAllProduct = Product::count();
+        $getAllProductKulit = Product::where('category_id', 1)->count();
+        $getAllProductRangka = Product::where('category_id', 2)->count();
+        $dataProduct = [
+            (object)[
+                'title' => 'Total Bilah',
+                'total' => $getAllProduct,
+                'kategori_kulit' => $getAllProductKulit,
+                'kategori_rangka' => $getAllProductRangka
+            ],
         ];
+
+        $statusIds = [17, 20, 21, 26, 27];
+        $data = [];
+
+        foreach ($statusIds as $statusId) {
+            $status_name = Product::select('status')->where('status_id', $statusId)->first();
+            $total_product = Product::where('status_id', $statusId)->count();
+            $kategoriKulit = Product::where('status_id', $statusId)->where('category_id', 1)->count();
+            $kategoriRangka = Product::where('status_id', $statusId)->where('category_id', 2)->count();
+            if ($status_name == null) {
+                $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
+                $statusNameDefault = $getStatusName->status;
+            }
+            $data[] = (object)[
+                'title' => $status_name->status ?? $statusNameDefault,
+                'total' => $total_product,
+                'kategori_kulit' => $kategoriKulit,
+                'kategori_rangka' => $kategoriRangka,
+            ];
+        }
+
         return response()->json([
             'status' => 'success',
-            'message' => 'Jumlah produk berdasarkan status:',
-            'data' => $data,
+            'message' => 'Jumlah Produk:',
+            'data_product' => $dataProduct,
+            'data_product_per_status' => $data,
         ], 200);
     }
 
     /**
      * Display a listing of the resource.
      */
+
     public function dashboardGaruda(Request $request)
     {
         try {
@@ -99,5 +101,202 @@ class DashboardController extends Controller
                 }
             }
         }
+    }
+
+    public function dashboardGrafikStatus(Request $request)
+    {
+        try {
+            /*
+            harian = 0
+            bulanan = 1
+            */
+            $groupBy = $request->input('group_by', 0);
+            $statusId = $request->input('status_id', null);
+            $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
+
+            $query = StatusProductLog::select('status_date as daily');
+
+            if (!is_null($statusId)) {
+                $query->where('status_id', $statusId);
+            }
+
+            if ($groupBy == 0) {
+                $dataHarian = $query
+                    ->groupBy('status_name', 'status_date')
+                    ->selectRaw('status_date as daily, COUNT(*) as total_data')
+                    ->orderBy('status_date', 'ASC')
+                    ->get();
+            } elseif ($groupBy == 1) {
+                $dataBulanan = DB::table('status_product_logs')
+                    ->select(DB::raw("DATE_FORMAT(status_date, '%Y-%m') AS monthly"))
+                    ->selectRaw('COUNT(*) AS total_data')
+                    ->where('status_id', $statusId)
+                    ->groupBy('monthly', 'status_name')
+                    ->orderBy('monthly')
+                    ->get();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'List Total Data:',
+                'status_name' => $getStatusName->status,
+                'data' => ($groupBy == 0) ? $dataHarian : $dataBulanan,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    public function countAgregatStatus()
+    {
+
+        $statusIds = [16, 17, 18, 19, 32, 20, 21, 22, 23, 25, 24, 26, 27, 28, 29];
+        $data = [];
+
+        foreach ($statusIds as $statusId) {
+            $status_name = Product::select('status')->where('status_id', $statusId)->first();
+            $total_product = Product::where('status_id', $statusId)->count();
+            $kategoriKulit = Product::where('status_id', $statusId)->where('category_id', 1)->count();
+            $kategoriRangka = Product::where('status_id', $statusId)->where('category_id', 2)->count();
+            if ($status_name == null) {
+                $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
+                $statusNameDefault = $getStatusName->status;
+            }
+            $data[] = (object)[
+                'nama_status' => $status_name->status ?? $statusNameDefault,
+                'total' => $total_product,
+                'kategori_kulit' => $kategoriKulit,
+                'kategori_rangka' => $kategoriRangka,
+            ];
+        }
+        $totalProducts = array_reduce($data, function ($carry, $item) {
+            return $carry + $item->total;
+        }, 0);
+        $totalKategoriKulit = array_reduce($data, function ($carry, $item) {
+            return $carry + $item->kategori_kulit;
+        }, 0);
+        $totalKategoriRangka = array_reduce($data, function ($carry, $item) {
+            return $carry + $item->kategori_rangka;
+        }, 0);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Jumlah Produk:',
+            'data_product_per_status' => $data,
+            'total_product' => $totalProducts,
+            'total_kategori_kulit' => $totalKategoriKulit,
+            'total_kategori_rangka' => $totalKategoriRangka,
+        ], 200);
+    }
+
+    public function countAgregatSegment()
+    {
+
+        $segmentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        $statusIds = [17, 20, 21, 26, 27];
+        $data = [];
+
+        foreach ($segmentIds as $segmentId) {
+            $segmentName = Product::select('segment_name')->where('segment_id', $segmentId)->first();
+            $dataPerStatus = [];
+            $totalKategoriKulit1 = Product::where('segment_id', $segmentId)
+                ->where('category_id', 1)
+                ->whereIn('status_id', $statusIds)
+                ->count();
+
+            $totalKategoriRangka1 = Product::where('segment_id', $segmentId)
+                ->where('category_id', 2)
+                ->whereIn('status_id', $statusIds)
+                ->count();
+            foreach ($statusIds as $statusId) {
+                $kategoriKulitPerStatus = Product::where('segment_id', $segmentId)->where('status_id', $statusId)->where('category_id', 1)->count();
+                $kategoriRangkaPerStatus = Product::where('segment_id', $segmentId)->where('status_id', $statusId)->where('category_id', 2)->count();
+                $status_name = Product::select('status')->where('status_id', $statusId)->first();
+                if ($status_name == null) {
+                    $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
+                    $statusNameDefault = $getStatusName->status;
+                }
+                $dataPerStatus[] = (object)[
+                    'status_name' => $status_name->status ?? $statusNameDefault,
+                    'kategori_kulit_per_status' => $kategoriKulitPerStatus,
+                    'kategori_rangka_per_status' => $kategoriRangkaPerStatus,
+                ];
+            }
+
+            if ($segmentName == null) {
+                $getSegmentName = Segment::select('segment_name')->where('id', $segmentId)->first();
+                $segmentNameDefault = $getSegmentName->segment_name;
+            }
+
+            $data[] = (object)[
+                'nama_segment' => $segmentName->segment_name ?? $segmentNameDefault,
+                'data_per_status' => $dataPerStatus,
+                'total_kategori_kulit' => $totalKategoriKulit1,
+                'total_kategori_rangka' => $totalKategoriRangka1
+            ];
+        }
+
+        $totalKategoriKulit = Product::where('category_id', 1)
+            ->whereIn('status_id', $statusIds)
+            ->count();
+
+        $totalKategoriRangka = Product::where('category_id', 2)
+            ->whereIn('status_id', $statusIds)
+            ->count();
+
+        $totalKategoriKulitPerStatus1 = 0;
+        $totalKategoriKulitPerStatus2 = 0;
+        $totalKategoriKulitPerStatus3 = 0;
+        $totalKategoriKulitPerStatus4 = 0;
+        $totalKategoriKulitPerStatus5 = 0;
+
+        foreach ($data as $item) {
+            $totalKategoriKulitPerStatus1 += $item->data_per_status[0]->kategori_kulit_per_status;
+            $totalKategoriKulitPerStatus2 += $item->data_per_status[1]->kategori_kulit_per_status;
+            $totalKategoriKulitPerStatus3 += $item->data_per_status[2]->kategori_kulit_per_status;
+            $totalKategoriKulitPerStatus4 += $item->data_per_status[3]->kategori_kulit_per_status;
+            $totalKategoriKulitPerStatus5 += $item->data_per_status[4]->kategori_kulit_per_status;
+        }
+
+        $totalKategoriRangkaPerStatus1 = 0;
+        $totalKategoriRangkaPerStatus2 = 0;
+        $totalKategoriRangkaPerStatus3 = 0;
+        $totalKategoriRangkaPerStatus4 = 0;
+        $totalKategoriRangkaPerStatus5 = 0;
+
+        foreach ($data as $item) {
+            $totalKategoriRangkaPerStatus1 += $item->data_per_status[0]->kategori_rangka_per_status;
+            $totalKategoriRangkaPerStatus2 += $item->data_per_status[1]->kategori_rangka_per_status;
+            $totalKategoriRangkaPerStatus3 += $item->data_per_status[2]->kategori_rangka_per_status;
+            $totalKategoriRangkaPerStatus4 += $item->data_per_status[3]->kategori_rangka_per_status;
+            $totalKategoriRangkaPerStatus5 += $item->data_per_status[4]->kategori_rangka_per_status;
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Jumlah Produk:',
+            'data_product_per_segment' => $data,
+            'total_kategori_kulit_per_status1' => $totalKategoriKulitPerStatus1,
+            'total_kategori_kulit_per_status2' => $totalKategoriKulitPerStatus2,
+            'total_kategori_kulit_per_status3' => $totalKategoriKulitPerStatus3,
+            'total_kategori_kulit_per_status4' => $totalKategoriKulitPerStatus4,
+            'total_kategori_kulit_per_status5' => $totalKategoriKulitPerStatus5,
+            'total_kategori_rangka_per_status1' => $totalKategoriRangkaPerStatus1,
+            'total_kategori_rangka_per_status2' => $totalKategoriRangkaPerStatus2,
+            'total_kategori_rangka_per_status3' => $totalKategoriRangkaPerStatus3,
+            'total_kategori_rangka_per_status4' => $totalKategoriRangkaPerStatus4,
+            'total_kategori_rangka_per_status5' => $totalKategoriRangkaPerStatus5,
+            'total_kategori_kulit' => $totalKategoriKulit,
+            'total_kategori_rangka' => $totalKategoriRangka,
+        ], 200);
     }
 }

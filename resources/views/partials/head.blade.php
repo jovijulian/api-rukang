@@ -27,3 +27,7 @@
 <!-- Main CSS -->
 <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
 
+{{-- COLORIS --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/> <!-- 'monolith' theme -->

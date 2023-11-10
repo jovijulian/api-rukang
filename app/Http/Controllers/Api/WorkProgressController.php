@@ -393,8 +393,10 @@ class WorkProgressController extends Controller
                         //hapus picture sebelumnya
                         if (isset($workProgress->$key)) {
                             $old = parse_url($workProgress->$key);
-                            if (Storage::exists($old['path'])) {
+                            if ($old['path'] != "") {
                                 Storage::delete($old['path']);
+                            } else {
+                                $old['path'] = '';
                             }
                         }
                     }
@@ -430,5 +432,54 @@ class WorkProgressController extends Controller
         //Save
         $workProgress->save();
         return $workProgress;
+    }
+
+    protected function deleteSelectedImageWorkProgress($id, $request)
+    {
+        $selected_image = $request->input('selected_image');
+        $workProgress = WorkProgress::find($id);
+        if (empty($workProgress)) {
+            throw new \Exception("Invalid work progress id", 406);
+        }
+
+        foreach ($selected_image as $si) {
+            if (isset($workProgress->$si)) {
+                $old = parse_url($workProgress->$si);
+                if (Storage::exists($old['path'])) {
+                    Storage::delete($old['path']);
+                }
+            }
+            $workProgress->$si = '';
+            $workProgress->save();
+        }
+        return $workProgress;
+    }
+    public function destroySelectedImageWorkProgress(string $id, Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $this->deleteSelectedImageWorkProgress($id, $request);
+
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Gambar berhasil dihapus.',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else if ($e instanceof BadRequestHttpException) {
+                    return ResponseStd::fail($e->getMessage(), $e->getStatusCode());
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
     }
 }

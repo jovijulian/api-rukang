@@ -203,6 +203,9 @@ Route::prefix('v1')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/index-status', 'countStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::get('/index-garuda', 'dashboardGaruda')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/index-grafik', 'dashboardGrafikStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/index-agregat-status', 'countAgregatStatus')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
+            Route::get('/index-agregat-segment', 'countAgregatSegment')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
         });
     });
     Route::prefix('module-completeness')->group(function () {
@@ -224,6 +227,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/update-image-work-progress/{id}', 'updateImageWorkProgress')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::post('/delete-selected-image-work-progress/{id}', 'destroySelectedImageWorkProgress')->middleware(['auth:api', 'check_admin:1,2,3,4']);
         });
     });
 });

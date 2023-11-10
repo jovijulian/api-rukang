@@ -8247,4 +8247,10 @@ span.select2-container.select2-container--default.select2-container--open {
   border: none;
 }
 
+#table-agregat-status, #table-agregat-status th, #table-agregat-status td, #table-agregat-segment, #table-agregat-segment th, #table-agregat-segment td {
+  border: 1px #DEE2E6 solid;
+  vertical-align: middle;
+  overflow-y: hidden !important;
+}
+
 /*# sourceMappingURL=style.css.map */
