@@ -73,6 +73,28 @@
           'Authorization': `${tokenType} ${accessToken}`
         }
       }
+
+      let barcodeColor = ''
+      const pickr = Pickr.create({
+        el: '#barcode-color',
+        theme: 'monolith',
+        components: {
+          // Main components
+          preview: true,
+          hue: true,
+
+          // Input / output Options
+          interaction: {
+            input: true,
+          }
+        }
+      })
+
+      pickr.on('change', (color, instance) => {
+        const selectedColor = color.toHEXA().toString()
+        pickr.setColor(selectedColor)
+        barcodeColor = selectedColor
+      })
       
       getData()
 
@@ -82,10 +104,8 @@
 
         const data = {
           segment_name: $('#segment-name').val(),
-          segment_place: $('#segment-place').val(),
-          barcode_color: $('#barcode-color').val(),
+          barcode_color: barcodeColor,
         }
-
 
         axios.put("{{ url('api/v1/segment/update/' . $id) }}", data, config)
           .then(res => {
@@ -121,7 +141,7 @@
           .then(res => {
             const data = res.data.data.item
             $('#segment-name').val(data.segment_name)
-            $('#barcode-color').val(data.barcode_color)
+            pickr.setColor(data.barcode_color)
           })
           .catch(err => {
             console.log(err)
