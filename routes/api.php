@@ -227,6 +227,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4,5']);
             Route::post('/update-image-work-progress/{id}', 'updateImageWorkProgress')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::post('/delete-selected-image-work-progress/{id}', 'destroySelectedImageWorkProgress')->middleware(['auth:api', 'check_admin:1,2,3,4']);
         });
     });
 });
