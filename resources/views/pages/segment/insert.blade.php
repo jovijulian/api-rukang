@@ -64,6 +64,28 @@
       //   window.location.href = "{{ url('/dashboard') }}"
       // }
 
+      let barcodeColor = ''
+      const pickr = Pickr.create({
+        el: '#barcode-color',
+        theme: 'monolith',
+        components: {
+          // Main components
+          preview: true,
+          hue: true,
+
+          // Input / output Options
+          interaction: {
+            input: true,
+          }
+        }
+      })
+
+      pickr.on('change', (color, instance) => {
+        const selectedColor = color.toHEXA().toString()
+        pickr.setColor(selectedColor)
+        barcodeColor = selectedColor
+      })
+
 
       $('#insert-segment-form').on('submit', () => {
         event.preventDefault()
@@ -71,7 +93,7 @@
 
         const data = {
           segment_name: $('#segment-name').val(),
-          barcode_color: $('#barcode-color').val(),
+          barcode_color: barcodeColor,
         }
 
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
