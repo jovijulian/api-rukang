@@ -348,7 +348,7 @@
       axios.post(`{{ url('api/v1/work-progress/delete-selected-image-work-progress/${id}') }}`, data , {
         headers: {
           'X-CSRF-TOKEN': token,
-          'Content-Type': 'multipart/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
           'Authorization': `${tokenType} ${accessToken}`
         }
