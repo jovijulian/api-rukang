@@ -1214,7 +1214,7 @@
 
           $('#table-agregat-segment tfoot').append(`
             <tr style="font-weight: 700">
-              <td rowspan="2" class="text-center">Total/td>
+              <td rowspan="2" class="text-center">Total</td>
               <td>Kulit</td>
               <td class="text-center">${datas.total_kategori_kulit_per_status1}</td>
               <td class="text-center">${datas.total_kategori_kulit_per_status2}</td>

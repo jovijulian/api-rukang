@@ -29,7 +29,7 @@
               <h5 class="card-title">Basic Form</h5>
             </div> --}}
             <div class="card-body p-4">
-              <form id="update-photo">
+              <form id="update-module-complete-form">
                 <div class="form-group row">
                   <label class="col-lg-2 col-form-label">Upload Foto Proses (Maks 10 Foto)</label>
                   <div class="col-lg-10">
@@ -93,14 +93,14 @@
       
       getData()
 
-      $('#update-photo').on('submit', () => {
+      $('#update-module-complete-form').on('submit', () => {
         event.preventDefault()
         $('#global-loader').show()
 
         const data = {
           photo_01: $('#image-process')[0].files[0] ? $('#image-process')[0].files[0] : '',
-          photo_03: $('#image-process')[0].files[2] ? $('#image-process')[0].files[2] : '',
           photo_02: $('#image-process')[0].files[1] ? $('#image-process')[0].files[1] : '',
+          photo_03: $('#image-process')[0].files[2] ? $('#image-process')[0].files[2] : '',
           photo_04: $('#image-process')[0].files[3] ? $('#image-process')[0].files[3] : '',
           photo_05: $('#image-process')[0].files[4] ? $('#image-process')[0].files[4] : '',
           photo_06: $('#image-process')[0].files[5] ? $('#image-process')[0].files[5] : '',
@@ -109,6 +109,7 @@
           photo_09: $('#image-process')[0].files[8] ? $('#image-process')[0].files[8] : '',
           photo_10: $('#image-process')[0].files[9] ? $('#image-process')[0].files[9] : '',
         }
+
 
         axios.post("{{ url('api/v1/work-progress/update-image-work-progress/' . $id) }}", data, config)
           .then(res => {

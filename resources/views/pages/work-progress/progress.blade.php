@@ -15,51 +15,8 @@
     <div class="card bg-white">
       <div class="card-body">
         <ul class="nav nav-tabs" id="title-tab">
-          {{-- <li class="nav-item"><a class="nav-link active text-black" href="#basictab1" data-bs-toggle="tab">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-black" href="#basictab2" data-bs-toggle="tab">Profile</a></li>
-          <li class="nav-item"><a class="nav-link text-black" href="#basictab3" data-bs-toggle="tab">Messages</a></li> --}}
         </ul>
         <div class="tab-content" id="content-tab">
-          {{-- <div class="tab-pane show active" id="basictab1">
-            <div class="row py-5 align-items-center gap-3">
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-              <div class="card border-0 mx-auto" style="width: 18rem;">
-                <img src="{{ url('assets/img/product/product69.jpg') }}" class="p-0" style="max-width: 300px" alt="img">
-              </div>
-            </div>
-          </div>
-          <div class="tab-pane" id="basictab2">
-            Tab content 2
-          </div>
-          <div class="tab-pane" id="basictab3">
-            Tab content 3
-          </div> --}}
         </div>
       </div>
     </div>
