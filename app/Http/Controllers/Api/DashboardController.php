@@ -107,6 +107,7 @@ class DashboardController extends Controller
     {
         try {
             $bulan = $request->input('bulan', date("m"));
+            $tahun = $request->input('tahun', date("Y"));
             $statusId = $request->input('status_id', null);
             $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
 
@@ -121,6 +122,7 @@ class DashboardController extends Controller
                 ->orderBy('status_date', 'ASC')
                 ->where('status_id', $statusId)
                 ->whereMonth('status_date', $bulan)
+                ->whereYear('status_date', $tahun)
                 ->get();
 
             return response()->json([
