@@ -106,11 +106,7 @@ class DashboardController extends Controller
     public function dashboardGrafikStatus(Request $request)
     {
         try {
-            /*
-            harian = 0
-            bulanan = 1
-            */
-            $groupBy = $request->input('group_by', 0);
+            $bulan = $request->input('bulan', date("m"));
             $statusId = $request->input('status_id', null);
             $getStatusName = StatusProduct::select('status')->where('id', $statusId)->first();
 
@@ -119,28 +115,19 @@ class DashboardController extends Controller
             if (!is_null($statusId)) {
                 $query->where('status_id', $statusId);
             }
-
-            if ($groupBy == 0) {
-                $dataHarian = $query
-                    ->groupBy('status_name', 'status_date')
-                    ->selectRaw('status_date as daily, COUNT(*) as total_data')
-                    ->orderBy('status_date', 'ASC')
-                    ->get();
-            } elseif ($groupBy == 1) {
-                $dataBulanan = DB::table('status_product_logs')
-                    ->select(DB::raw("DATE_FORMAT(status_date, '%Y-%m') AS monthly"))
-                    ->selectRaw('COUNT(*) AS total_data')
-                    ->where('status_id', $statusId)
-                    ->groupBy('monthly', 'status_name')
-                    ->orderBy('monthly')
-                    ->get();
-            }
+            $dataHarian = $query
+                ->groupBy('status_name', 'status_date')
+                ->selectRaw('status_date as daily, COUNT(*) as total_data')
+                ->orderBy('status_date', 'ASC')
+                ->where('status_id', $statusId)
+                ->whereMonth('status_date', $bulan)
+                ->get();
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'List Total Data:',
                 'status_name' => $getStatusName->status,
-                'data' => ($groupBy == 0) ? $dataHarian : $dataBulanan,
+                'data' =>  $dataHarian,
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
