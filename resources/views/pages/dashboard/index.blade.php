@@ -1032,8 +1032,27 @@
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Grafik Harian Produksi Bilah</div>
+      <div class="card-header row">
+        <div id="title-chart" class="card-title col-lg-4">Grafik Harian Selesai Produksi Bilah</div>
+        <div class="form-group row col-lg-3 ms-lg-auto">
+          <div class="col-lg-12">
+            <input class="form-control" type="month" id="month-year">
+          </div>
+        </div>
+        <div class="form-group row col-lg-3">
+          <div class="col-lg-12">
+            <select id="status-filter" class="form-control select" style="padding: 8px">
+              <option value="17">Selesai Produksi</option>
+              <option value="20">Pengiriman</option>
+              <option value="26">Pemasangan (Erection)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row col-lg-2">
+          <div class="col-lg-12">
+            <button id="btn-filter" class="btn btn-primary p-2 text-white w-100">Filter</button>
+          </div>
+        </div>
       </div>
       <div class="card-body">
         <div id="dashboard-chart">
