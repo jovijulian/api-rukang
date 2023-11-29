@@ -8,11 +8,7 @@
       @yield('content')
     </div>
   </div>
-
-  @if (Request::is('dashboard'))
-    @include('partials.dashboard-chart')
-  @endif
-
+  
   <script>
     $(document).ready(function () {
       const token = localStorage.getItem('access_token')
