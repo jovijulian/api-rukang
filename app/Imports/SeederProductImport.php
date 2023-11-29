@@ -21,10 +21,25 @@ class SeederProductImport implements ToModel, WithHeadingRow
         $moduleCode = $row['module_number'];
         $bd = $row['bilah_number'];
         $cd = substr($row['category'], 0, 1);
-        $unixTimestamp = ($row['start_production_date'] - 25569) * 86400;
-        $start_production_date = date("Y-m-d", $unixTimestamp);
-        $unixTimestamp = ($row['finish_production_date'] - 25569) * 86400;
-        $finish_production_date = date("Y-m-d", $unixTimestamp);
+
+        if ($row['start_production_date'] != null) {
+            $unixTimestamp = ($row['start_production_date'] - 25569) * 86400;
+            $start_production_date = date("Y-m-d", $unixTimestamp);
+        } else {
+            $start_production_date = null;
+        }
+        if ($row['finish_production_date'] != null) {
+            $unixTimestamp = ($row['finish_production_date'] - 25569) * 86400;
+            $finish_production_date = date("Y-m-d", $unixTimestamp);
+        } else {
+            $finish_production_date = null;
+        }
+        if ($row['delivery_date'] != null) {
+            $unixTimestamp = ($row['delivery_date'] - 25569) * 86400;
+            $delivery_date = date("Y-m-d", $unixTimestamp) ?? null;
+        } else {
+            $delivery_date = null;
+        }
         $product = new Product([
             'id' =>  Uuid::uuid4()->toString(),
             'category_id' => $row['category_id'],
@@ -36,12 +51,12 @@ class SeederProductImport implements ToModel, WithHeadingRow
             'module_id' => $row['module_id'],
             'module_number' => $row['module_number'],
             'bilah_number' => $row['bilah_number'],
-            'start_production_date' => $start_production_date,
-            'finish_production_date' => $finish_production_date,
+            'start_production_date' => $start_production_date ?? null,
+            'finish_production_date' => $finish_production_date ?? null,
             'shelf_id' => $row['shelf_id'],
             'shelf_name' => $row['shelf_name'],
             'description' => $row['description'],
-            'delivery_date' => $row['delivery_date'],
+            'delivery_date' => $delivery_date ?? null,
             'qty' => $row['qty'],
             'status_id' => $row['status_id'],
             'status' => $row['status'],
@@ -59,11 +74,20 @@ class SeederProductImport implements ToModel, WithHeadingRow
         ]);
         $product->save();
         //save to log
+        $checkStatus = $product->status_id;
+        if ($checkStatus == 17) {
+            $statusDate = $product->finish_production_date ?? '2023-03-30';
+        } else if ($checkStatus == 20 || $checkStatus == 21) {
+            $statusDate = $product->delivery_date ?? '2023-03-30';
+        } else {
+            $statusDate = '2023-03-30';
+        }
         $statusLog = new StatusProductLog([
             'id' => Uuid::uuid4()->toString(),
             'product_id' => $product->id,
             'status_id' => $product->status_id,
             'status_name' => $product->status,
+            'status_date' => $statusDate,
             'status_photo' => $product->status_photo,
             'note' => $product->note,
             'shipping_id' => $product->shipping_id,
