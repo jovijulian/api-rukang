@@ -31,7 +31,7 @@
 
         <!-- Search -->
         <li class="nav-item nav-searchinputs">
-            <div class="top-nav-search">
+            {{-- <div class="top-nav-search">
 
                 <a href="javascript:void(0);" class="responsive-search">
                     <i class="fa fa-search"></i>
@@ -45,7 +45,7 @@
                     </div>
                     <!-- <a class="btn"  id="searchdiv"><img src="assets/img/icons/search.svg" alt="img"></a> -->
                 </form>
-            </div>
+            </div> --}}
         </li>
         <!-- /Search -->
 
