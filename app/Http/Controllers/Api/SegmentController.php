@@ -85,6 +85,7 @@ class SegmentController extends Controller
         // input data segment
         $segment->segment_name = $data['segment_name'];
         $segment->barcode_color = $data['barcode_color'];
+        $segment->bilah_target = $data['bilah_target'];
         $segment->created_at = $timeNow;
         $segment->updated_at = null;
         $segment->created_by = auth()->user()->fullname;
@@ -179,6 +180,7 @@ class SegmentController extends Controller
         $segment->id = $id;
         $segment->segment_name = $data['segment_name'];
         $segment->barcode_color = $data['barcode_color'];
+        $segment->bilah_target = $data['bilah_target'];
         $segment->updated_at = $timeNow;
         $segment->updated_by = auth()->user()->fullname;
         //Save
@@ -284,7 +286,10 @@ class SegmentController extends Controller
         $totalData = Segment::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Segment::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Segment::offset($start)->limit($limit)->orderBy($order, $dir)->get()->map(function ($item) {
+                $item->bilah_target = $item->bilah_target ?? 0;
+                return $item;
+            });
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
@@ -292,6 +297,7 @@ class SegmentController extends Controller
             if (!empty($search)) {
                 $conditions .= " AND segment_name LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR barcode_color LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR bilah_target LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR created_by LIKE '%" . trim($search) . "%'";
                 $conditions .= " OR updated_by LIKE '%" . trim($search) . "%'";
             }
@@ -300,12 +306,15 @@ class SegmentController extends Controller
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
-                ->get();
+                ->get()
+                ->map(function ($item) {
+                    $item->bilah_target = $item->bilah_target ?? 0;
+                    return $item;
+                });
 
             //QUERI CUSTOM
             $totalFiltered = Segment::whereRaw($conditions)->count();
         }
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),

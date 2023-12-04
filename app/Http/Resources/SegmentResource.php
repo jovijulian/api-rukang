@@ -18,6 +18,7 @@ class SegmentResource extends JsonResource
             'id' => $this->id,
             'segment_name' => $this->segment_name,
             'barcode_color' => $this->barcode_color,
+            'bilah_target' => $this->bilah_target ?? 0,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
