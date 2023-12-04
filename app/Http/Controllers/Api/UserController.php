@@ -434,7 +434,7 @@ class UserController extends Controller
         $order = $columns[$request->has('order.0.column')] ? 'fullname'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = User::count();
+        $totalData = User::where('id', '!=', auth()->user()->id)->count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
             $data = User::offset($start)->limit($limit)->orderBy($order, $dir)->where('id', '!=', auth()->user()->id)->get();
