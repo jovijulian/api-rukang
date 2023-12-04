@@ -192,11 +192,13 @@ class DashboardController extends Controller
     {
 
         $segmentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-        $statusIds = [17, 20, 21, 26, 27];
+        $statusIds = [16, 17, 20, 21, 26, 27];
         $data = [];
 
         foreach ($segmentIds as $segmentId) {
             $segmentName = Product::select('segment_name')->where('segment_id', $segmentId)->first();
+            $totalSelesaiProduksiPerKulit = Product::where('segment_id', $segmentId)->where('status_id', 17)->where('category_id', 1)->count();
+            $totalSelesaiProduksiPerRangka = Product::where('segment_id', $segmentId)->where('status_id', 17)->where('category_id', 2)->count();
             $dataPerStatus = [];
             $totalKategoriKulit1 = Product::where('segment_id', $segmentId)
                 ->where('category_id', 1)
@@ -222,16 +224,26 @@ class DashboardController extends Controller
                 ];
             }
 
+            $getSegment = Segment::select('segment_name', 'bilah_target')->where('id', $segmentId)->first();
             if ($segmentName == null) {
-                $getSegmentName = Segment::select('segment_name')->where('id', $segmentId)->first();
-                $segmentNameDefault = $getSegmentName->segment_name;
+                $segmentNameDefault = $getSegment->segment_name;
             }
-
+            if ($getSegment->bilah_target != 0) {
+                $persentaseProgresKulit = ($totalSelesaiProduksiPerKulit / $getSegment->bilah_target) * 100;
+                $persentaseProgresRangka = ($totalSelesaiProduksiPerRangka / $getSegment->bilah_target) * 100;
+            } else {
+                $persentaseProgresKulit = 0;
+                $persentaseProgresRangka = 0;
+            }
             $data[] = (object)[
                 'nama_segment' => $segmentName->segment_name ?? $segmentNameDefault,
+                'target_bilah_per_segment' => $getSegment->bilah_target ?? 0,
+                'persentase_progres_kulit' => round($persentaseProgresKulit),
+                'persentase_progres_rangka' => round($persentaseProgresRangka),
                 'data_per_status' => $dataPerStatus,
                 'total_kategori_kulit' => $totalKategoriKulit1,
-                'total_kategori_rangka' => $totalKategoriRangka1
+                'total_kategori_rangka' => $totalKategoriRangka1,
+
             ];
         }
 
