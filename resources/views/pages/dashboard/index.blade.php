@@ -552,15 +552,20 @@
               <tr>
                 <th rowspan="2">Segmen</th>
                 <th rowspan="2">Kategori</th>
-                <th colspan="5">Status</th>
+                <th colspan="6">Status</th>
                 <th rowspan="2">Total</th>
+                <th rowspan="2">Target Bilah</th>
+                <th colspan="2">Persentase Progres</th>
               </tr>
               <tr>
+                <th>Dalam Proses Produksi</th>
                 <th>Selesai Produksi</th>
                 <th>Pengiriman</th>
                 <th>Diterima</th>
                 <th>Pemasangan</th>
                 <th>Disetujui PP</th>
+                <th>Kulit</th>
+                <th>Rangka</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -741,7 +746,11 @@
                 <td class="text-center">${data.data_per_status[2].kategori_kulit_per_status}</td>
                 <td class="text-center">${data.data_per_status[3].kategori_kulit_per_status}</td>
                 <td class="text-center">${data.data_per_status[4].kategori_kulit_per_status}</td>
+                <td class="text-center">${data.data_per_status[5].kategori_kulit_per_status}</td>
                 <td class="text-center">${data.total_kategori_kulit}</td>
+                <td rowspan="2" class="text-center">${data.target_bilah_per_segment}</td>
+                <td rowspan="2" class="text-center">${data.persentase_progres_kulit}</td>
+                <td rowspan="2" class="text-center">${data.persentase_progres_rangka}</td>
               </tr>
               <tr>
                 <td>Rangka</td>
@@ -750,6 +759,7 @@
                 <td class="text-center">${data.data_per_status[2].kategori_rangka_per_status}</td>
                 <td class="text-center">${data.data_per_status[3].kategori_rangka_per_status}</td>
                 <td class="text-center">${data.data_per_status[4].kategori_rangka_per_status}</td>
+                <td class="text-center">${data.data_per_status[5].kategori_rangka_per_status}</td>
                 <td class="text-center">${data.total_kategori_rangka}</td>
               </tr>
             `)
@@ -764,6 +774,7 @@
               <td class="text-center">${datas.total_kategori_kulit_per_status3}</td>
               <td class="text-center">${datas.total_kategori_kulit_per_status4}</td>
               <td class="text-center">${datas.total_kategori_kulit_per_status5}</td>
+              <td class="text-center">${datas.total_kategori_kulit_per_status6}</td>
               <td class="text-center">${datas.total_kategori_kulit}</td>
             </tr>
             <tr style="font-weight: 700">
@@ -773,6 +784,7 @@
               <td class="text-center">${datas.total_kategori_rangka_per_status3}</td>
               <td class="text-center">${datas.total_kategori_rangka_per_status4}</td>
               <td class="text-center">${datas.total_kategori_rangka_per_status5}</td>
+              <td class="text-center">${datas.total_kategori_rangka_per_status6}</td>
               <td class="text-center">${datas.total_kategori_rangka}</td>
             </tr>
           `)

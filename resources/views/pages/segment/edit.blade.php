@@ -42,6 +42,12 @@
                     <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-lg-2 col-form-label">Target Bilah</label>
+                  <div class="col-lg-10">
+                    <input type="number" id="bilah-target" class="form-control" placeholder="Masukan target bilah">
+                  </div>
+                </div>
                 <div class="text-end">
                   <button type="submit" class="btn btn-primary">Ubah Data</button>
                 </div>
@@ -105,6 +111,7 @@
         const data = {
           segment_name: $('#segment-name').val(),
           barcode_color: barcodeColor,
+          bilah_target: $('#bilah-target').val(),
         }
 
         axios.put("{{ url('api/v1/segment/update/' . $id) }}", data, config)
@@ -142,6 +149,7 @@
             const data = res.data.data.item
             $('#segment-name').val(data.segment_name)
             pickr.setColor(data.barcode_color)
+            $('#bilah-target').val(data.bilah_target)
           })
           .catch(err => {
             console.log(err)
