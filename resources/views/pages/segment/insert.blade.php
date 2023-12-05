@@ -42,6 +42,12 @@
                     <input type="text" id="barcode-color" class="form-control" placeholder="Masukan warna barcode segmen">
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-lg-2 col-form-label">Target Bilah</label>
+                  <div class="col-lg-10">
+                    <input type="number" id="bilah-target" class="form-control" placeholder="Masukan target bilah">
+                  </div>
+                </div>
                 <div class="text-end">
                   <button type="submit" class="btn btn-primary">Tambah Data</button>
                 </div>
@@ -94,6 +100,7 @@
         const data = {
           segment_name: $('#segment-name').val(),
           barcode_color: barcodeColor,
+          bilah_target: $('#bilah-target').val(),
         }
 
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')

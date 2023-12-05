@@ -45,6 +45,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Warna Barcode</th>
+                <th>Target</th>
                 <th>Dibuat Pada</th>
                 <th>Diubah Pada</th>
                 <th>Dibuat Oleh</th>
@@ -145,6 +146,7 @@
             },
             {data: 'segment_name'},
             {data: 'barcode_color'},
+            {data: 'bilah_target'},
             {
               data: 'created_at',
               render: function (data) {
