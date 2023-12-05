@@ -237,13 +237,13 @@
                             render: function(data) {
                                 console.log(data);
                                 if (data == 1) {
-                                    return 'Admin'
+                                    return 'Super Admin'
                                 } else if (data == 2) {
                                     return 'Admin Produksi'
                                 } else if (data == 3) {
-                                    return 'Officer Produksi'
+                                    return 'Admin Pengiriman'
                                 } else if (data == 4) {
-                                    return 'Officer Monitoring'
+                                    return 'Admin Onsite'
                                 } else if (data == 5) {
                                     return 'Owner'
                                 }

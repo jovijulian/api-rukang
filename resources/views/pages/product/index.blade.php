@@ -12,7 +12,7 @@
         <h4>Produk</h4>
         <h6>Manajemen data produk</h6>
       </div>
-      <div class="page-btn">
+      <div id="add" class="page-btn">
         <a href="/product/insert" class="btn btn-added remove-role"><img src="assets/img/icons/plus.svg" alt="img" class="me-1">Tambah produk baru</a>
       </div>
     </div>
@@ -144,6 +144,10 @@
     const currentUser = JSON.parse(localStorage.getItem('current_user'))
     const tokenType = localStorage.getItem('token_type')
     const accessToken = localStorage.getItem('access_token')
+    
+    if (currentUser.isAdmin === 3 || currentUser.isAdmin === 4) {
+      $('.page-btn').remove()
+    }
 
     let hiddenRole = false
 

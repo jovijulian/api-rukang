@@ -22,11 +22,11 @@ class CheckAdminMiddleware extends Middleware
             return $next($request);
         }
         /*
-            Super Admin = 1
-            Admin Produksi = 2
-            Officer Produksi = 3
-            Officer Monitoring = 4
-            Owner = 5
+        Super Admin = 1
+        Admin Produksi = 2
+        Admin Pengiriman = 3
+        Admin onsite = 4
+        Owner = 5
             */
         return response()->json(['message' => 'Unauthorized'], 401);
     }

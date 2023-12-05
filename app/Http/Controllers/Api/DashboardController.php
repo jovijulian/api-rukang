@@ -192,11 +192,13 @@ class DashboardController extends Controller
     {
 
         $segmentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-        $statusIds = [17, 20, 21, 26, 27];
+        $statusIds = [16, 17, 20, 21, 26, 27];
         $data = [];
 
         foreach ($segmentIds as $segmentId) {
             $segmentName = Product::select('segment_name')->where('segment_id', $segmentId)->first();
+            $totalSelesaiProduksiPerKulit = Product::where('segment_id', $segmentId)->where('status_id', 17)->where('category_id', 1)->count();
+            $totalSelesaiProduksiPerRangka = Product::where('segment_id', $segmentId)->where('status_id', 17)->where('category_id', 2)->count();
             $dataPerStatus = [];
             $totalKategoriKulit1 = Product::where('segment_id', $segmentId)
                 ->where('category_id', 1)
@@ -222,16 +224,26 @@ class DashboardController extends Controller
                 ];
             }
 
+            $getSegment = Segment::select('segment_name', 'bilah_target')->where('id', $segmentId)->first();
             if ($segmentName == null) {
-                $getSegmentName = Segment::select('segment_name')->where('id', $segmentId)->first();
-                $segmentNameDefault = $getSegmentName->segment_name;
+                $segmentNameDefault = $getSegment->segment_name;
             }
-
+            if ($getSegment->bilah_target != 0) {
+                $persentaseProgresKulit = ($totalSelesaiProduksiPerKulit / $getSegment->bilah_target) * 100;
+                $persentaseProgresRangka = ($totalSelesaiProduksiPerRangka / $getSegment->bilah_target) * 100;
+            } else {
+                $persentaseProgresKulit = 0;
+                $persentaseProgresRangka = 0;
+            }
             $data[] = (object)[
                 'nama_segment' => $segmentName->segment_name ?? $segmentNameDefault,
+                'target_bilah_per_segment' => $getSegment->bilah_target ?? 0,
+                'persentase_progres_kulit' => round($persentaseProgresKulit),
+                'persentase_progres_rangka' => round($persentaseProgresRangka),
                 'data_per_status' => $dataPerStatus,
                 'total_kategori_kulit' => $totalKategoriKulit1,
-                'total_kategori_rangka' => $totalKategoriRangka1
+                'total_kategori_rangka' => $totalKategoriRangka1,
+
             ];
         }
 
@@ -248,6 +260,7 @@ class DashboardController extends Controller
         $totalKategoriKulitPerStatus3 = 0;
         $totalKategoriKulitPerStatus4 = 0;
         $totalKategoriKulitPerStatus5 = 0;
+        $totalKategoriKulitPerStatus6 = 0;
 
         foreach ($data as $item) {
             $totalKategoriKulitPerStatus1 += $item->data_per_status[0]->kategori_kulit_per_status;
@@ -255,6 +268,7 @@ class DashboardController extends Controller
             $totalKategoriKulitPerStatus3 += $item->data_per_status[2]->kategori_kulit_per_status;
             $totalKategoriKulitPerStatus4 += $item->data_per_status[3]->kategori_kulit_per_status;
             $totalKategoriKulitPerStatus5 += $item->data_per_status[4]->kategori_kulit_per_status;
+            $totalKategoriKulitPerStatus6 += $item->data_per_status[5]->kategori_kulit_per_status;
         }
 
         $totalKategoriRangkaPerStatus1 = 0;
@@ -262,6 +276,7 @@ class DashboardController extends Controller
         $totalKategoriRangkaPerStatus3 = 0;
         $totalKategoriRangkaPerStatus4 = 0;
         $totalKategoriRangkaPerStatus5 = 0;
+        $totalKategoriRangkaPerStatus6 = 0;
 
         foreach ($data as $item) {
             $totalKategoriRangkaPerStatus1 += $item->data_per_status[0]->kategori_rangka_per_status;
@@ -269,6 +284,7 @@ class DashboardController extends Controller
             $totalKategoriRangkaPerStatus3 += $item->data_per_status[2]->kategori_rangka_per_status;
             $totalKategoriRangkaPerStatus4 += $item->data_per_status[3]->kategori_rangka_per_status;
             $totalKategoriRangkaPerStatus5 += $item->data_per_status[4]->kategori_rangka_per_status;
+            $totalKategoriRangkaPerStatus6 += $item->data_per_status[5]->kategori_rangka_per_status;
         }
         return response()->json([
             'status' => 'success',
@@ -279,11 +295,13 @@ class DashboardController extends Controller
             'total_kategori_kulit_per_status3' => $totalKategoriKulitPerStatus3,
             'total_kategori_kulit_per_status4' => $totalKategoriKulitPerStatus4,
             'total_kategori_kulit_per_status5' => $totalKategoriKulitPerStatus5,
+            'total_kategori_kulit_per_status6' => $totalKategoriKulitPerStatus6,
             'total_kategori_rangka_per_status1' => $totalKategoriRangkaPerStatus1,
             'total_kategori_rangka_per_status2' => $totalKategoriRangkaPerStatus2,
             'total_kategori_rangka_per_status3' => $totalKategoriRangkaPerStatus3,
             'total_kategori_rangka_per_status4' => $totalKategoriRangkaPerStatus4,
             'total_kategori_rangka_per_status5' => $totalKategoriRangkaPerStatus5,
+            'total_kategori_rangka_per_status6' => $totalKategoriRangkaPerStatus6,
             'total_kategori_kulit' => $totalKategoriKulit,
             'total_kategori_rangka' => $totalKategoriRangka,
         ], 200);

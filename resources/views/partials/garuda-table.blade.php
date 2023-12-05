@@ -1076,8 +1076,6 @@
       .then(res => {
         const datas = res.data.data
 
-        console.log(datas);
-
         datas.map(data => {
           const row = $(`.${data.module}.${data.segment}`)
 
