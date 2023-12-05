@@ -749,8 +749,8 @@
                 <td class="text-center">${data.data_per_status[5].kategori_kulit_per_status}</td>
                 <td class="text-center">${data.total_kategori_kulit}</td>
                 <td rowspan="2" class="text-center">${data.target_bilah_per_segment}</td>
-                <td rowspan="2" class="text-center">${data.persentase_progres_kulit}</td>
-                <td rowspan="2" class="text-center">${data.persentase_progres_rangka}</td>
+                <td rowspan="2" class="text-center">${data.persentase_progres_kulit}%</td>
+                <td rowspan="2" class="text-center">${data.persentase_progres_rangka}%</td>
               </tr>
               <tr>
                 <td>Rangka</td>
