@@ -98,7 +98,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/update/{id}', 'update')->middleware(['auth:api', 'check_admin:1,2']);
             // Route::delete('/delete/{id}', 'destroy')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::get('/report-status-product', 'export')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/report-status-product', 'export');
         });
     });
     Route::prefix('product')->group(function () {
@@ -112,14 +112,14 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/update-status-product/{id}', 'updateStatusProduct')->middleware(['auth:api', 'check_admin:1,2,3,4']);
-            Route::get('/report-product', 'export')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::get('/report-product', 'export');
             Route::post('/datatable-product-status', 'datatableProductPerStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/continue-status', 'continueStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/rewind-status', 'rewindStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/drop-status', 'dropStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::post('/generate-travel-document', 'generateTravelDocument')->middleware(['auth:api', 'check_admin:1,2,3,4']);
             Route::get('/siap-kirim-table', 'indexSiapKirimTable')->middleware(['auth:api', 'check_admin:1,2,3,4']);
-            Route::get('/report-product-per-status', 'exportProductPerStatus')->middleware(['auth:api', 'check_admin:1,2,3,4']);
+            Route::get('/report-product-per-status', 'exportProductPerStatus');
             Route::get('/detail-product/{barcode}', 'showByBarcode')->middleware(['auth:api', 'check_admin:1,2,3,4']);
         });
     });
@@ -174,7 +174,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2']);
             Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::get('/report-tool', 'export')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/report-tool', 'export');
         });
     });
     Route::prefix('material')->group(function () {
@@ -188,7 +188,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/datatable', 'datatable')->middleware(['auth:api', 'check_admin:1,2']);
             Route::put('/edit-location/{id}', 'editLocation')->middleware(['auth:api', 'check_admin:1,2']);
             Route::post('/multiple-image-status/{id}', 'addMultipleImagesStatus')->middleware(['auth:api', 'check_admin:1,2']);
-            Route::get('/report-material', 'export')->middleware(['auth:api', 'check_admin:1,2']);
+            Route::get('/report-material', 'export');
         });
     });
     Route::prefix('seeder-product')->group(function () {
