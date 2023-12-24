@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     /**
      * The primary key for the model.
@@ -17,17 +16,13 @@ class Category extends Model
      */
     protected $primaryKey = 'id';
 
-    protected $dates = ['deleted_at'];
-
     protected $fillable = [
-        'category',
-        'created_by',
-        'updated_by',
-        'deleted_by',
+        'category_name',
+        'price',
     ];
 
-    public function products()
+    public function talents()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Talent::class);
     }
 }

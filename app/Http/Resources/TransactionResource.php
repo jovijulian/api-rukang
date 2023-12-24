@@ -2,9 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
-class CategoryResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +19,14 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'category_name' => $this->category_name,
-            'price' => $this->price,
+            'order_id' => $this->order_id,
+            'order' => new OrderResource(Order::where('id', $this->order_id)->first()),
+            'transaction_date' => $this->transaction_date,
+            'payment_method' => $this->payment_method,
+            'status' => $this->status,
+            'customer_id' => $this->customer_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
         ];
     }
 }

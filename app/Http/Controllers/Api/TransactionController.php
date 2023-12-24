@@ -3,19 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Category;
+use App\Models\Order;
+use Ramsey\Uuid\Uuid;
+use App\Models\Talent;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\TransactionResource;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class CategoryController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +27,7 @@ class CategoryController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'category_name';
+            $sort = $request->has('sort') ? $request->input('sort') : 'transaction_date';
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -34,19 +36,19 @@ class CategoryController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND categories.category_name LIKE '%$search_term%'";
+                $conditions .= " AND transactions.transaction_date LIKE '%$search_term%'";
             }
 
-            $paginate = Category::query()->select(['categories.*'])
+            $paginate = Transaction::query()->select(['transactions.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Category::query()
+            $countAll = Order::query()
                 ->count();
 
             // paging response.
-            $response = CategoryResource::collection($paginate);
+            $response = TransactionResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,34 +72,42 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50', 'unique:categories,category_name,NULL,id'],
-            'price' => ['required'],
+            'order_id' => ['required', 'unique:transactions,order_id,NULL,id'],
         ];
 
         return Validator::make($data, $arrayValidator);
     }
-    protected function create(array $data, Request $request)
+    protected function create($status, array $data, Request $request)
     {
 
         $timeNow = Carbon::now();
-        $categoryData = new Category();
+        $transactionData = new Transaction();
 
-        // input data category
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->created_at = $timeNow;
-        $categoryData->updated_at = null;
+        if ($status == 1) {
+            $transactionData->status = 1;
+        } else {
+            $transactionData->status = 0;
+        }
 
-        // save category
-        $categoryData->save();
+        // input data transaction
+        $transactionData->id = Uuid::uuid4()->toString();
+        $transactionData->order_id = $data['order_id'];
+        $transactionData->transaction_date = $timeNow;
+        $transactionData->payment_method = 'Cash';
+        $transactionData->customer_id = auth()->user()->id;
+        $transactionData->created_at = $timeNow;
+        $transactionData->updated_at = null;
 
-        return $categoryData;
+        // save transaction
+        $transactionData->save();
+
+        return $transactionData;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($status, Request $request)
     {
         DB::beginTransaction();
         try {
@@ -105,11 +115,11 @@ class CategoryController extends Controller
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $model = $this->create($request->all(), $request);
+            $model = $this->create($status, $request->all(), $request);
             DB::commit();
 
             // return
-            $single = new CategoryResource($model);
+            $single = new TransactionResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -132,11 +142,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Category::query()->find($id);
+            $model = Transaction::query()->find($id);
             if (empty($model)) {
-                throw new \Exception("Kategori tidak ada", 404);
+                throw new \Exception("Transaksi tidak ada", 404);
             }
-            $single = new CategoryResource($model);
+            $single = new TransactionResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -152,70 +162,6 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    protected function validateUpdate(array $data)
-    {
-        $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50'],
-        ];
-        return Validator::make($data, $arrayValidator);
-    }
-
-    protected function edit($id, array $data, Request $request)
-    {
-        $timeNow = Carbon::now();
-
-        // Find category by id
-        $categoryData = Category::find($id);
-
-        if (empty($categoryData)) {
-            throw new \Exception("Invalid category id", 406);
-        }
-        $categoryData->id = $id;
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->updated_at = $timeNow;
-        //Save
-        $categoryData->save();
-
-        return $categoryData;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update($id, Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $validate = $this->validateUpdate($request->all());
-            if ($validate->fails()) {
-                throw new ValidationException($validate);
-            }
-            $data = $this->edit($id, $request->all(), $request);
-
-            DB::commit();
-
-            // return.
-            $single = new CategoryResource($data);
-            return ResponseStd::okSingle($single);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return ResponseStd::validation($e->validator);
-            } else {
-                Log::error($e->getMessage());
-                if ($e instanceof QueryException) {
-                    return ResponseStd::fail(trans('error.global.invalid-query'));
-                } else {
-                    return ResponseStd::fail($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-    }
 
     public function datatable(Request $request)
     {
@@ -227,30 +173,30 @@ class CategoryController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->has('order.0.column')] ? 'category_name'  : $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'transaction_date'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Category::count();
+        $totalData = Transaction::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Category::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Transaction::offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND category_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR price LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND transction_date LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR status LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Category::whereRaw($conditions)
+            $data =  Transaction::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = Category::whereRaw($conditions)->count();
+            $totalFiltered = Transaction::whereRaw($conditions)->count();
         }
 
         $json_data = array(
@@ -262,25 +208,37 @@ class CategoryController extends Controller
         return json_encode($json_data);
     }
 
-    protected function delete($id)
+    public function indexPerUser($customer_id, Request $request)
     {
-
-        $category = Category::find($id);
-
-        $category->delete();
-
-        return $category;
-    }
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
         try {
-            $this->delete($id);
-            DB::commit();
-            // return
-            return ResponseStd::okNoOutput("Category berhasil dihapus.");
+            $search_term = $request->input('search');
+            $limit = $request->has('limit') ? $request->input('limit') : 100;
+            $sort = $request->has('sort') ? $request->input('sort') : 'transaction_date';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
+            $conditions = '1 = 1';
+            // Jika dari frontend memaksa limit besar.
+            if ($limit > 100) {
+                $limit = 100;
+            }
+
+            if (!empty($search_term)) {
+                $conditions .= " AND transactions.transaction_date LIKE '%$search_term%'";
+            }
+
+            $paginate = Transaction::query()->select(['transactions.*'])
+                ->where('customer_id', $customer_id)
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+
+            $countAll = Order::query()
+                ->count();
+
+            // paging response.
+            $response = TransactionResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
-            DB::rollBack();
+            Log::error($e->getMessage());
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {

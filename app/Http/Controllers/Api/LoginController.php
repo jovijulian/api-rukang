@@ -48,16 +48,16 @@ class LoginController extends ParentAccessTokenController
             $tmp['grant_type'] = Constants::GRANT_TYPE;
             $tmp['scope'] = Constants::SCOPE;
             $model = User::query()->where('email', $body['username'])->first();
-            $verified = !empty($model->isActive);
+            // $verified = !empty($model->isActive);
 
 
             // if verified is false => email not verify
 
             $responseData = (new UserResource($model));
             $this->ValidateEmail($model, $body['password']);
-            if ($verified === false) {
-                throw new BadRequestHttpException("Login gagal, Akun Anda belum diverifikasi oleh admin.");
-            }
+            // if ($verified === false) {
+            //     throw new BadRequestHttpException("Login gagal, Akun Anda belum diverifikasi oleh admin.");
+            // }
             $data = array_merge($tmp, $body);
 
 

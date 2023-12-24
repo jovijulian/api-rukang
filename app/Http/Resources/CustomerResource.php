@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Customer;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
-class CategoryResource extends JsonResource
+class CustomerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +18,15 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'category_name' => $this->category_name,
-            'price' => $this->price,
+            'email' => $this->email,
+            'fullname' => $this->fullname,
+            'phone_number' => $this->phone_number,
+            'address' => $this->address,
+            'birthdate' => $this->birthdate,
+            'gender' => $this->gender,
+            'image_profile' => $this->image_profile ? url(Storage::url($this->image_profile)) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
         ];
     }
 }

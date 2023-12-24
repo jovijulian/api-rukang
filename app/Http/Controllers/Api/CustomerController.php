@@ -3,19 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Category;
+use App\Models\User;
+use Ramsey\Uuid\Uuid;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Libraries\FilesLibrary;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
-use App\Http\Resources\CategoryResource;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\CustomerResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class CategoryController extends Controller
+class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +30,7 @@ class CategoryController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'category_name';
+            $sort = $request->has('sort') ? $request->input('sort') : 'fullname';
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -34,19 +39,19 @@ class CategoryController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND categories.category_name LIKE '%$search_term%'";
+                $conditions .= " AND customers.fullname LIKE '%$search_term%'";
             }
 
-            $paginate = Category::query()->select(['categories.*'])
+            $paginate = Customer::query()->select(['customers.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Category::query()
+            $countAll = Customer::query()
                 ->count();
 
             // paging response.
-            $response = CategoryResource::collection($paginate);
+            $response = CustomerResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,8 +75,10 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50', 'unique:categories,category_name,NULL,id'],
-            'price' => ['required'],
+            'fullname' => ['required', 'string', 'min:1', 'max:100'],
+            'email' => ['required', 'email', 'unique:talents,email,NULL,id'],
+            'phone_number' => ['required'],
+            'address' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -80,18 +87,57 @@ class CategoryController extends Controller
     {
 
         $timeNow = Carbon::now();
-        $categoryData = new Category();
+        $customerData = new Customer();
 
-        // input data category
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->created_at = $timeNow;
-        $categoryData->updated_at = null;
+        // input data customer
+        $customerData->id = Uuid::uuid4()->toString();
+        $customerData->fullname = $data['fullname'];
+        $customerData->email = $data['email'];
+        $customerData->phone_number = $data['phone_number'];
+        $customerData->address = $data['address'];
+        $customerData->birthdate = $data['birthdate'];
+        $customerData->gender = $data['gender'];
+        $customerData->email = $data['email'];
+        foreach ($request->file() as $key => $file) {
+            if ($request->hasFile($key)) {
+                if ($request->file($key)->isValid()) {
+                    $imageId = (new FilesLibrary())
+                        ->saveImage(
+                            $request->file($key),
+                            'images/profile-customer',
+                            false,
+                            300,
+                            300,
+                            'profile-customer'
+                        );
+                    if ($key == 'image_profile') {
+                        $customerData->image_profile = $imageId;
+                    } else {
+                        $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
+                        $customerData->$key = $key_id;
+                    }
+                }
+            }
+        }
+        $customerData->created_at = $timeNow;
+        $customerData->updated_at = null;
 
-        // save category
-        $categoryData->save();
+        // save customer
+        $customerData->save();
 
-        return $categoryData;
+        //input users
+        $userData = new User();
+        $userData->id = $customerData->id;;
+        $userData->email = $data['email'];
+        $userData->password = Hash::make($data['password']);
+        $userData->fullname = $data['fullname'];
+        $userData->phone_number = $data['phone_number'];
+        $userData->role = 0;
+        $userData->created_at = $timeNow;
+        $userData->updated_at = null;
+        $userData->save();
+
+        return $customerData;
     }
 
     /**
@@ -109,7 +155,7 @@ class CategoryController extends Controller
             DB::commit();
 
             // return
-            $single = new CategoryResource($model);
+            $single = new CustomerResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -132,11 +178,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Category::query()->find($id);
+            $model = Customer::query()->find($id);
             if (empty($model)) {
-                throw new \Exception("Kategori tidak ada", 404);
+                throw new \Exception("Pelanggan tidak ada", 404);
             }
-            $single = new CategoryResource($model);
+            $single = new CustomerResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -159,8 +205,12 @@ class CategoryController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50'],
+            'fullname' => ['required', 'string', 'min:1', 'max:100'],
+            'email' => ['required', 'email', 'unique:talents,email,NULL,id'],
+            'phone_number' => ['required'],
+            'address' => ['required'],
         ];
+
         return Validator::make($data, $arrayValidator);
     }
 
@@ -168,20 +218,26 @@ class CategoryController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find category by id
-        $categoryData = Category::find($id);
+        // Find customer by id
+        $customerData = Customer::find($id);
 
-        if (empty($categoryData)) {
-            throw new \Exception("Invalid category id", 406);
+        if (empty($customerData)) {
+            throw new \Exception("Invalid customer id", 406);
         }
-        $categoryData->id = $id;
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->updated_at = $timeNow;
+        $customerData->id = $id;
+        $customerData->fullname = $data['fullname'];
+        $customerData->email = $data['email'];
+        $customerData->phone_number = $data['phone_number'];
+        $customerData->address = $data['address'];
+        $customerData->birthdate = $data['birthdate'];
+        $customerData->gender = $data['gender'];
+        $customerData->email = $data['email'];
+        $customerData->updated_at = $timeNow;
         //Save
-        $categoryData->save();
+        $customerData->save();
 
-        return $categoryData;
+
+        return $customerData;
     }
 
     /**
@@ -200,7 +256,7 @@ class CategoryController extends Controller
             DB::commit();
 
             // return.
-            $single = new CategoryResource($data);
+            $single = new CustomerResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -227,30 +283,45 @@ class CategoryController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->has('order.0.column')] ? 'category_name'  : $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'fullname'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Category::count();
+        $totalData = Customer::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Category::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Customer::offset($start)->limit($limit)->orderBy($order, $dir)->get()->map(function ($customer) {
+                if ($customer->image_profile !== null) {
+                    $customer->image_profile = url(Storage::url($customer->image_profile));
+                }
+                return $customer;
+            });
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND category_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR price LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND fullname LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR email LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR phone_number LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR address LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR birthdate LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR gender LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Category::whereRaw($conditions)
+            $data =  Customer::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
-                ->get();
+                ->get()
+                ->map(function ($customer) {
+                    if ($customer->image_profile !== null) {
+                        $customer->image_profile = url(Storage::url($customer->image_profile));
+                    }
+                    return $customer;
+                });
 
             //QUERI CUSTOM
-            $totalFiltered = Category::whereRaw($conditions)->count();
+            $totalFiltered = Customer::whereRaw($conditions)->count();
         }
 
         $json_data = array(
@@ -265,11 +336,11 @@ class CategoryController extends Controller
     protected function delete($id)
     {
 
-        $category = Category::find($id);
+        $customer = Customer::find($id);
 
-        $category->delete();
+        $customer->delete();
 
-        return $category;
+        return $customer;
     }
     public function destroy(string $id)
     {
@@ -278,7 +349,7 @@ class CategoryController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Category berhasil dihapus.");
+            return ResponseStd::okNoOutput("Pelanggan berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e instanceof ValidationException) {

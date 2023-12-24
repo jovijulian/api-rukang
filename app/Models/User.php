@@ -13,12 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\Traits\MustVerifyEmail;
+// use App\Traits\MustVerifyEmail;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use HasFactory, Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
-
+    use HasFactory, Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens;
     /**
      * The primary key for the model.
      *
@@ -45,17 +44,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
         'fullname',
         'phone_number',
-        'address',
-        'birthdate',
-        'isActive',
-        'isAdmin',
-        'group_id',
-        'group_name',
-        'created_by',
-        'updated_by',
+        'role',
         'reset_password_token',
         'token_expire',
-        'email_verified_at',
     ];
 
     /**
@@ -74,17 +65,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    public function group()
+    public function role()
     {
-        return $this->belongsTo(Group::class);
-    }
-
-    public function isAdmin()
-    {
-        return $this->isAdmin;
+        return $this->role;
     }
 }

@@ -3,19 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use App\Models\Category;
+use App\Models\Order;
+use Ramsey\Uuid\Uuid;
+use App\Models\Review;
+use App\Models\Talent;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Libraries\ResponseStd;
+use App\Libraries\FilesLibrary;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewResource;
 use Illuminate\Database\QueryException;
-use App\Http\Resources\CategoryResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class CategoryController extends Controller
+class ReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +31,7 @@ class CategoryController extends Controller
         try {
             $search_term = $request->input('search');
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $sort = $request->has('sort') ? $request->input('sort') : 'category_name';
+            $sort = $request->has('sort') ? $request->input('sort') : 'talent_name';
             $order = $request->has('order') ? $request->input('order') : 'ASC';
             $conditions = '1 = 1';
             // Jika dari frontend memaksa limit besar.
@@ -34,19 +40,19 @@ class CategoryController extends Controller
             }
 
             if (!empty($search_term)) {
-                $conditions .= " AND categories.category_name LIKE '%$search_term%'";
+                $conditions .= " AND reviews.talent_name LIKE '%$search_term%'";
             }
 
-            $paginate = Category::query()->select(['categories.*'])
+            $paginate = Review::query()->select(['reviews.*'])
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
 
-            $countAll = Category::query()
+            $countAll = Review::query()
                 ->count();
 
             // paging response.
-            $response = CategoryResource::collection($paginate);
+            $response = ReviewResource::collection($paginate);
             return ResponseStd::pagedFrom($response, $paginate, $countAll);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,34 +76,82 @@ class CategoryController extends Controller
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50', 'unique:categories,category_name,NULL,id'],
-            'price' => ['required'],
+            'rating' => ['required'],
+            'comment' => ['required'],
         ];
 
         return Validator::make($data, $arrayValidator);
     }
-    protected function create(array $data, Request $request)
+    protected function create($transaction_id, array $data, Request $request)
     {
 
         $timeNow = Carbon::now();
-        $categoryData = new Category();
+        $reviewData = new Review();
 
-        // input data category
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->created_at = $timeNow;
-        $categoryData->updated_at = null;
+        // input data review
+        $getTransaction = Transaction::where('id', $transaction_id)->first();
+        $getTalent = Order::where('id', $getTransaction->order_id)->first();
+        $reviewId = Uuid::uuid4()->toString();
+        $reviewData->id = $reviewId;
+        $reviewData->customer_id = auth()->user()->id;
+        $reviewData->customer_name = auth()->user()->fullname;
+        $reviewData->talent_id = $getTalent->talent_id;
+        $reviewData->talent_name = $getTalent->talent_name;
+        $reviewData->transaction_id = $transaction_id;
+        $reviewData->review_date = $timeNow;
+        $reviewData->rating = $data['rating'];
+        $reviewData->comment = $data['comment'];
 
-        // save category
-        $categoryData->save();
+        foreach ($request->file() as $key => $file) {
+            if ($request->hasFile($key)) {
+                if ($request->file($key)->isValid()) {
+                    $imageId = (new FilesLibrary())
+                        ->saveImage(
+                            $request->file($key),
+                            'images/review',
+                            false,
+                            300,
+                            300,
+                            'review'
+                        );
+                    if ($key == 'review_photo') {
+                        $reviewData->review_photo = $imageId;
+                    } elseif ($key == 'review_photo2') {
+                        $reviewData->review_photo2 = $imageId;
+                    } elseif ($key == 'review_photo3') {
+                        $reviewData->review_photo3 = $imageId;
+                    } elseif ($key == 'review_photo4') {
+                        $reviewData->review_photo4 = $imageId;
+                    }
+                } else {
+                    $key_id = !empty($request->$key . '_old') ? $request->$key . '_old' : null;
+                    $reviewData->$key = $key_id;
+                }
+            }
+        }
+        $reviewData->created_at = $timeNow;
+        $reviewData->updated_at = null;
 
-        return $categoryData;
+        // save review
+        $reviewData->save();
+
+        $allRatings = Review::where('talent_id', $getTalent->talent_id)->pluck('rating');
+
+        // Hitung rata-rata rating
+        $averageRating = $allRatings->average();
+
+        // Perbarui kolom "rating" pada model "Talent" dengan nilai rata-rata
+        $talentData = Talent::find($getTalent->talent_id);
+        $talentData->rating = $averageRating;
+        $talentData->save();
+
+        return $reviewData;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($transaction_id, Request $request)
     {
         DB::beginTransaction();
         try {
@@ -105,11 +159,11 @@ class CategoryController extends Controller
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $model = $this->create($request->all(), $request);
+            $model = $this->create($transaction_id, $request->all(), $request);
             DB::commit();
 
             // return
-            $single = new CategoryResource($model);
+            $single = new ReviewResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -132,11 +186,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $model = Category::query()->find($id);
+            $model = Review::query()->find($id);
             if (empty($model)) {
-                throw new \Exception("Kategori tidak ada", 404);
+                throw new \Exception("Review tidak ada", 404);
             }
-            $single = new CategoryResource($model);
+            $single = new ReviewResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
@@ -159,7 +213,8 @@ class CategoryController extends Controller
     protected function validateUpdate(array $data)
     {
         $arrayValidator = [
-            'category_name' => ['required', 'string', 'min:1', 'max:50'],
+            'rating' => ['required'],
+            'comment' => ['required'],
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -168,20 +223,32 @@ class CategoryController extends Controller
     {
         $timeNow = Carbon::now();
 
-        // Find category by id
-        $categoryData = Category::find($id);
+        // Find review by id
+        $reviewData = Review::find($id);
 
-        if (empty($categoryData)) {
-            throw new \Exception("Invalid category id", 406);
+        if (empty($reviewData)) {
+            throw new \Exception("Invalid review id", 406);
         }
-        $categoryData->id = $id;
-        $categoryData->category_name = $data['category_name'];
-        $categoryData->price = $data['price'];
-        $categoryData->updated_at = $timeNow;
+        $reviewData->id = $id;
+        $reviewData->customer_id;
+        $reviewData->customer_name;
+        $reviewData->rating = $data['rating'];
+        $reviewData->comment = $data['comment'];
+        $reviewData->updated_at = $timeNow;
         //Save
-        $categoryData->save();
+        $reviewData->save();
 
-        return $categoryData;
+        $allRatings = Review::where('talent_id', $reviewData->talent_id)->pluck('rating');
+
+        // Hitung rata-rata rating
+        $averageRating = $allRatings->average();
+
+        // Perbarui kolom "rating" pada model "Talent" dengan nilai rata-rata
+        $talentData = Talent::find($reviewData->talent_id);
+        $talentData->rating = $averageRating;
+        $talentData->save();
+
+        return $reviewData;
     }
 
     /**
@@ -200,7 +267,7 @@ class CategoryController extends Controller
             DB::commit();
 
             // return.
-            $single = new CategoryResource($data);
+            $single = new ReviewResource($data);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -227,32 +294,33 @@ class CategoryController extends Controller
         }
         $limit = $request->input('length');
         $start = $request->input('start');
-        $order = $columns[$request->has('order.0.column')] ? 'category_name'  : $columns[$request->input('order.0.column')];
+        $order = $columns[$request->has('order.0.column')] ? 'talent_name'  : $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         //QUERI CUSTOM
-        $totalData = Category::count();
         if (empty($request->input('search.value'))) {
             //QUERI CUSTOM
-            $data = Category::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $data = Review::offset($start)->limit($limit)->orderBy($order, $dir)->get();
+
+            $totalData = $data->count();
             $totalFiltered = $totalData;
         } else {
             $search = $request->input('search.value');
             $conditions = '1 = 1';
             if (!empty($search)) {
-                $conditions .= " AND category_name LIKE '%" . trim($search) . "%'";
-                $conditions .= " OR price LIKE '%" . trim($search) . "%'";
+                $conditions .= " AND talent_name LIKE '%" . trim($search) . "%'";
+                $conditions .= " OR customer_name LIKE '%" . trim($search) . "%'";
             }
             //QUERI CUSTOM
-            $data =  Category::whereRaw($conditions)
+            $data =  Review::whereRaw($conditions)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //QUERI CUSTOM
-            $totalFiltered = Category::whereRaw($conditions)->count();
+            $totalFiltered = Review::whereRaw($conditions)->count();
+            $totalData = $totalFiltered;
         }
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
@@ -265,11 +333,12 @@ class CategoryController extends Controller
     protected function delete($id)
     {
 
-        $category = Category::find($id);
+        $review = Review::where('id', $id)->first();
+        FilesLibrary::deleteReview($review);
+        // $review->review_photo::
+        $review->delete();
 
-        $category->delete();
-
-        return $category;
+        return $review;
     }
     public function destroy(string $id)
     {
@@ -278,9 +347,52 @@ class CategoryController extends Controller
             $this->delete($id);
             DB::commit();
             // return
-            return ResponseStd::okNoOutput("Category berhasil dihapus.");
+            return ResponseStd::okNoOutput("Review berhasil dihapus.");
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    public function indexPerTalent(Request $request)
+    {
+        try {
+            $search_term = $request->input('search');
+            $talent_id = $request->input('talent_id');
+            $limit = $request->has('limit') ? $request->input('limit') : 100;
+            $sort = $request->has('sort') ? $request->input('sort') : 'review_date';
+            $order = $request->has('order') ? $request->input('order') : 'ASC';
+            $conditions = '1 = 1';
+            // Jika dari frontend memaksa limit besar.
+            if ($limit > 100) {
+                $limit = 100;
+            }
+
+
+
+            $paginate = Review::query()->select(['reviews.*'])
+                ->where('talent_id', $talent_id)
+                ->whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+
+            $countAll = Order::query()
+                ->count();
+
+            // paging response.
+            $response = ReviewResource::collection($paginate);
+            return ResponseStd::pagedFrom($response, $paginate, $countAll);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {

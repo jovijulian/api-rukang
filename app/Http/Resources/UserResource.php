@@ -24,15 +24,9 @@ class UserResource extends JsonResource
             'phone_number' => $this->phone_number,
             'address' => $this->address,
             'birthdate' => $this->birthdate,
-            'group_id' => $this->group_id,
-            'group_name' => $this->group_name,
-            'group' => new GroupResource(Group::find($this->group_id)),
-            'isActive' => $this->isActive,
-            'isAdmin' => $this->isAdmin,
+            'role' => $this->role,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
         ];
     }
 }

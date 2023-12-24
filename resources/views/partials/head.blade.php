@@ -1,5 +1,5 @@
 <!-- Favicon -->
-<link rel="shortcut icon" type="image/x-icon" href="{{ url('assets/img/favicon.png') }}">
+<link rel="shortcut icon" type="image/x-icon" href="{{ url('assets/img/logo_rukang.png') }}">
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
 
 {{-- COLORIS --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/> <!-- 'monolith' theme -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
+<!-- 'monolith' theme -->
